@@ -55,7 +55,7 @@ TODO Abstract
 Secure multi-computation systems like Distributed Aggregration Protocol
 {{!DAP=I-D.draft-ietf-ppm-dap-04}} enables secure aggregation of a set of
 reports submitted by Clients. DAP and the cryptographic computation scheme
-(Verifiable Distributed Aggregation Function {{!VDAF=I-D.draft-irtf-cfrg-vdaf-05}}) 
+(Verifiable Distributed Aggregation Function {{!VDAF=I-D.draft-irtf-cfrg-vdaf-05}})
 it uses provides privacy by prevent any server from learning Client's
 individual contributions, as long as at least one of the aggregation servers is
 honset.
@@ -72,7 +72,7 @@ system.
 
 This document uses the same conventions for error handling as {{!DAP}}.
 
-[TODO: add more]
+> TODO: add more
 
 
 # Differential Privacy Primitives {#primitives}
@@ -91,22 +91,22 @@ individual's data was included in the results or not.
 There are two model of differential privacy: deletion differential privacy (
 deletion dp) and replacement differntial privacy (replacement dp).
 
-[OPEN ISSUE: or call it substitution dp].
+> OPEN ISSUE: or call it substitution dp.
 
 For two dataset X and Y that differ only by 1 data point. Then the difference
 between the two are:
 * Replacement DP: Y differs from X by replacing a data point in X.
 * Deletion DP: Y differs from X by removing a data point in X.
 
-[TODO: make the definition more accurate]
-[TODO: talk about the relationship of the two]
+> TODO: make the definition more accurate
+> TODO: talk about the relationship of the two
 
 
 ## Differential privacy levels
 Ther are two levels of privacy protection: local differential privacy (local DP)
 and aggregator differential privacy (aggregator DP).
 
-[OPEN ISSUE: or call it secure aggregator dp, or central dp].
+> OPEN ISSUE: or call it secure aggregator dp, or central dp.
 
 In the local-DP settings, Clients apply noise to their own measurements. In
 this way, Clients have some control to protect the privacy of their own data.
@@ -123,7 +123,7 @@ built using DAP protocol is ideal for this setting because DAP ensures no server
 can access any individual data, but only the aggregation.
 
 If there are no local DP added from client, noise added to the aggregation
-provides the privacy guarantee of the aggregation. 
+provides the privacy guarantee of the aggregation.
 
 One can use the Aggregator DP noise together with local DP noise to achieve
 privacy guarantee. If the DP guarantee is achieved with a minimum batch size
@@ -133,39 +133,39 @@ by generating the same local DP noise, on the missing number of Clients being
 the gap between actual number of Clients and minimum batch size.
 
 
-## Protected entity 
+## Protected entity
 
-[TODO: Chris P to fill: user or report, given time]
+> TODO: Chris P to fill: user or report, given time
 
 ## Privacy budget and accounting
 
-[TODO: Junye to fill, Pure ϵ-DP, (ϵ,δ)-approximate DP, (α,τ)-Renyi DP, Zero Concentrated-DP]
-[TODO: talk about composability of DP]
+> TODO: Junye to fill, Pure ϵ-DP, (ϵ,δ)-approximate DP, (α,τ)-Renyi DP, Zero Concentrated-DP
+> TODO: talk about composability of DP
 
 ## Sentitity
 
-[TODO: Chris P to fill: sensitivity, l1 vs l2]
+> TODO: Chris P to fill: sensitivity, l1 vs l2
 
-## Data type and Noise type 
+## Data type and Noise type
 
 Differential Privacy guarantee can only be achieved if data type is applied
 with the correct noise type.
 
-[TODO: Junye to fill, mention DAP is expected to ensure the right pair of VDAF and DP mechanism]
+> TODO: Junye to fill, mention DAP is expected to ensure the right pair of VDAF and DP mechanism
 
-[Chris P: we will mention Prio3SumVec because that's what we use to describe aggregator DP with amplification]
+> TODO: Chris P: we will mention Prio3SumVec because that's what we use to describe aggregator DP with amplification
 
 
 # Differential Privacy Mechanism {#dp mechanism}
 
 This section should define a framework to apply different dp noise type to a
-client measurement and/or an aggregation. 
+client measurement and/or an aggregation.
 
-[TODO: Junye to spell out the interface of dp mechanisms, "Noise Mechanisms to Accomplish DP"]
+> TODO: Junye to spell out the interface of dp mechanisms, "Noise Mechanisms to Accomplish DP"
 
 
-[TODO: Chris P: can we talk about primitives like sampling gaussian noise here,
-or do we just mention the various types briefly and detail in a separate section?]
+> TODO: Chris P: can we talk about primitives like sampling gaussian noise here,
+or do we just mention the various types briefly and detail in a separate section?
 
 ### Discrete Laplace
 
@@ -176,10 +176,10 @@ or do we just mention the various types briefly and detail in a separate section
 
 # Apply Differential Privacy Policy In a Secure Agggregator Settting {#dp policy}
 
-[OPEN ISSUE: or call it dp strategy?]
+> OPEN ISSUE: or call it dp strategy?
 
-[TODO: Junye to fill in, expand on aggregator DP, aggregator DP amplified by
-local DP, includes contents in "Execution of an Aggregation Protocol with DP"]
+> TODO: Junye to fill in, expand on aggregator DP, aggregator DP amplified by
+local DP, includes contents in "Execution of an Aggregation Protocol with DP"
 
 
 # Security Considerations
