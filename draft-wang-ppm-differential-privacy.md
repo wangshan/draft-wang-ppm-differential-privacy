@@ -229,8 +229,14 @@ privacy guarantee. If the DP guarantee is achieved with a minimum batch size
 number of Clients adding local DP noise, and minimum batch size is not reached
 when a data collection task expires, each Aggregator can add the remaining noise
 by generating the same local DP noise, on the missing number of Clients being
-the gap between actual number of Clients and minimum batch size.
+the gap between actual number of Clients and minimum batch size. For example:
 
+* {{FMT20}} describes a way to quantify the privacy guarantee in terms of
+  approximate-DP guarantee. The overall privacy guarantee is amplified by
+  aggregation of Clients' measurements with local DP noise with ϵ-DP guarantee.
+
+* {{FMT22}} further tightens the privacy amplification analysis in terms of
+  Rényi-DP guarantee.
 
 ## Protected entity
 
@@ -319,12 +325,114 @@ or do we just mention the various types briefly and detail in a separate section
 ### Randomized Response
 
 
-# Apply Differential Privacy Policy In a Secure Agggregator Settting {#dp policy}
+# Apply Differential Privacy Policy In a Secure Aggregator Setting {#dp policy}
 
 > OPEN ISSUE: or call it dp strategy?
 
-> TODO: Junye to fill in, expand on aggregator DP, aggregator DP amplified by
-local DP, includes contents in "Execution of an Aggregation Protocol with DP"
+An Aggregator MUST enforce the privacy guarantee of its aggregate share before
+it outputs its aggregate share.
+
+Therefore, we will define a class `DpPolicy` used by an Aggregator to enforce
+the privacy guarantee. A concrete implementation of `DpPolicy` should provide
+the necessary parameters that quantify the DP guarantee to the initializer, and
+provide the implementation in `guarantee_privacy` method to accomplish such
+guarantee.
+
+~~~
+class DpPolicy:
+    AggShare
+
+    def guarantee_privacy(self,
+                          agg_share: AggShare,
+                          num_reports: int,
+                          min_batch_size: int) -> AggShare:
+        pass
+~~~
+
+An Aggregator can enforce the DP policy in one of the following ways:
+
+## Pure Aggregator DP {#dp-policy-pure-aggregator}
+
+If the target privacy guarantee is provided only by Aggregators, each Aggregator
+can use a concrete implementation of `DpMechanism` to enforce Aggregator-DP.
+
+## Composition of Aggregator DP with Local DP {#dp-policy-composition}
+
+DP guarantee can be accomplished with composition of Aggregator DP and
+local DP added by Clients.
+
+For example, [FMT20] and [FMT22] relies on privacy amplification by aggregation
+of Clients' measurements with local DP noise. The target privacy guarantee
+is fulfilled as long as there are "minimum batch size" number of Clients
+adding local DP noise. In case `num_reports` is less than `min_batch_size`,
+each Aggregator can still enforce the privacy guarantee, by sampling local
+DP noise on the "missing" number of Clients, which is the difference between
+`num_reports` and `min_batch_size`.
+
+> TODO: For privacy amplification with local DP, it's important to mention
+an aggregation can still be outputted if `num_reports < min_batch_size`,
+because DP guarantee is met. Other DP policies may still need at least
+`min_batch_size` number of Clients. Maybe we should mention it somewhere
+in DAP, maybe in batch-validation section?
+
+Together with the DP mechanisms in {{dp-mechanism}}, we can formally describe
+how Clients, Aggregators, and Collector collectively enforce the DP guarantee,
+in an aggregation protocol:
+
+## Client Behavior
+
+If local DP is configured, Client will use a concrete implementation of
+`DpMechanism.add_noise` {{dp-mechanism}} to add noise to its measurement,
+before sending its data to the Aggregator(s).
+
+## Aggregator Behavior
+
+When an Aggregator is ready to output a batch, it will use a concrete
+implementation of `DpPolicy` to make sure its aggregation has enough DP
+guarantee.
+
+## Collector Behavior
+
+Collector will debias the aggregation based on `DpMechanism.debias`, if the
+local DP mechanism has debiasing functionality.
+If the `DpPolicy` is enforced with the composition of Aggregator DP and
+local DP, the `num_reports` in `DpMechanism.debias` needs to adjust
+accordingly based on the actual number of Clients, minimum batch size,
+and number of Aggregators.
+
+## Execution of an Aggregation Protocol with DP
+
+We will assume we have an aggregation protocol `AggProtocol` that has the
+following methods:
+
+* `aggregate` that aggregates Clients’ measurements.
+
+* `zero` that initializes an aggregation.
+
+~~~
+# Type definitions.
+Measurement = ...
+
+def aggregate_with_dp(
+    AggProtocol,
+    measurements: List[Measurement],
+    min_batch_size: int,
+    num_aggregators: int,
+    local_dp: DpMechanism,
+    dp_policy: DpPolicy
+):
+    num_reports = len(measurements)
+    aggregation = AggProtocol.zero()
+    for i in range(len(measurements)):
+        noised_measurement = local_dp.add_noise(measurements[i])
+        aggregation = AggProtocol.aggregate(aggregation,
+                                            noised_measurement)
+    for i in range(num_aggregators):
+        aggregation = dp_policy.guarantee_privacy(
+            aggregation, num_reports, min_batch_size
+        )
+    return aggregation
+~~~
 
 
 # Security Considerations
