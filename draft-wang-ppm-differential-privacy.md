@@ -60,7 +60,7 @@ informative:
     date: 2022
     target: https://arxiv.org/abs/2208.04591
 
-  MJTBCCDFGHJKLLMPPPPPRSWZ22:
+  MJTBp22:
     title: "Private Federated Statistics in an Interactive Setting"
     author:
       - ins: A. McMillan
@@ -211,10 +211,10 @@ In the local-DP settings, Clients apply noise to their own measurements. In
 this way, Clients have some control to protect the privacy of their own data.
 Any measurement uploaded by a Client will be have local dp, Client's privacy is
 protected even if none of the Aggregators is honest (although this protection
-may be weak). Furthermore, one can analyze the aggregator DP guarantee with privacy
-amplification by aggregation, assuming each Client has added the required amount
-of local DP noise, and there are at least minimum batch size number of Clients
-in the aggregation.
+may be weak). Furthermore, one can analyze the aggregator DP guarantee with
+privacy amplification by aggregation, assuming each Client has added the
+required amount of local DP noise, and there are at least minimum batch size
+number of Clients in the aggregation.
 
 In Aggregator DP settings, an Aggregator applies noise on the aggregation.
 Aggregator DP relies on the server being secure and trustworthy. Aggregators
@@ -241,19 +241,19 @@ the gap between actual number of Clients and minimum batch size.
 There are various types of DP guarantees and budgets that can be enforced.
 Many applications need to query the Client data multiple times, for example:
 
-* Federated machine learning applications are usually composed of multiple
-  iterations.
+* Federated machine learning applications require multiple aggregates to be
+  computed over the same underlying data, but with different machine learning
+  model parameters.
 
-* {{MJTBCCDFGHJKLLMPPPPPRSWZ22}} describes an interactive approach of building
-  histograms over multiple iterations, and Section 4.3 of
-  {{MJTBCCDFGHJKLLMPPPPPRSWZ22}} describes a way to track Client-side budget
-  when the Client data is queried multiple times.
+* {{MJTBp22}} describes an interactive approach of building histograms over
+  multiple iterations, and Section 4.3 describes a way to track Client-side
+  budget when the Client data is queried multiple times.
 
 > TODO: have citations for machine learning
 
 It’s hard for Aggregator(s) to keep track of the privacy budget over time,
 because different Clients can participate in different data collection tasks,
-and only Clients know when their data is queried. Therefore, Clients MUST
+and only Clients know when their data is queried. Therefore, Clients must
 enforce the privacy budget.
 
 There could be multiple ways to compose DP guarantees, based on different
@@ -264,31 +264,48 @@ we describe the following:
 
 * Composition theorems that apply to the DP guarantee.
 
-### Pure ϵ-DP, or (ϵ,δ)-approximate DP {#adp}
+### Pure `EPSILON`-DP, or `(EPSILON, DELTA)`-approximate DP {#adp}
 
-Pure ϵ-DP was first proposed in {{DMNS06}}, and a formal definition of (ϵ,δ)-DP
-can be found in Definition 2.4 of {{DR14}}.
+Pure `EPSILON`-DP was first proposed in {{DMNS06}}, and a formal definition of
+`(EPSILON, DELTA)`-DP can be found in Definition 2.4 of {{DR14}}.
 
-One can compose multiple (ϵ,δ)-approximate DP guarantees, per Theorem 3.4
-of {{KOV15}}.
+The `EPSILON` parameter quantifies the "privacy loss" of observing the outcomes
+of querying two databases differing by one element. The smaller `EPSILON` is,
+the stronger the privacy guarantee is, that is, the outcomes of querying two
+adjacent databases are more or less the same.
+The `DELTA` parameter provides a small probability of the privacy loss
+exceeding `EPSILON`.
+
+One can compose multiple `(EPSILON, DELTA)`-approximate DP guarantees, per
+Theorem 3.4 of {{KOV15}}.
 One can also compose the guarantees in other types of guarantee first, such as
 Rényi DP {{rdp}}, and then convert the composed guarantee to approximate
 DP guarantee.
 
-### (α,τ)-Rényi DP {#rdp}
+### `(ALPHA, TAU)`-Rényi DP {#rdp}
 
 A formal definition of Rényi DP can be found in Definitions 3 and 4 of
 {{Mir17}}.
 
+The intuition behind Rényi-DP is to use `TAU` parameter to measure the
+divergence of probability distributions of querying two adjacent databases,
+given Rényi order parameter `ALPHA`. The smaller the `TAU` parameter,
+the harder it is to distinguish the outputs from querying two adjacent
+databases, and thus the stronger the privacy guarantee is.
+
 One can compose multiple Rényi DP guarantees based on Proposition 1 of
 {{Mir17}}.
-After composition, one can convert the (α,τ)-Rényi DP guarantee to
-(ϵ,δ)-approximate DP, per Proposition 12 of {{CKS20}}.
+After composition, one can convert the `(ALPHA, TAU)`-Rényi DP guarantee to
+`(EPSILON, DELTA)`-approximate DP, per Proposition 12 of {{CKS20}}.
 
 ### Zero Concentrated-DP {#zcdp}
 
 A formal definition of zero Concentrated-DP can be found in Definition 1.1
 of {{BS16}}.
+
+Zero Concentrated-DP uses different parameters from Rényi-DP, but uses a similar
+idea to measure the output distribution divergence of querying two adjacent
+databases.
 
 One can compose multiple zCDP guarantees, per Lemma 1.7 of {{BS16}}.
 
