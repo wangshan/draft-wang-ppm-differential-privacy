@@ -42,6 +42,105 @@ normative:
 
 informative:
 
+  FMT20:
+    title: "Hiding Among the Clones: A Simple and Nearly Optimal Analysis of Privacy Amplification by Shuffling"
+    author:
+      - ins: V. Feldman
+      - ins: A. McMillan
+      - ins: K. Talwar
+    date: 2020
+    target: https://arxiv.org/abs/2012.12803
+
+  FMT22:
+    title: "Stronger Privacy Amplification by Shuffling for Rényi and Approximate Differential Privacy"
+    author:
+      - ins: V. Feldman
+      - ins: A. McMillan
+      - ins: K. Talwar
+    date: 2022
+    target: https://arxiv.org/abs/2208.04591
+
+  MJTBCCDFGHJKLLMPPPPPRSWZ22:
+    title: "Private Federated Statistics in an Interactive Setting"
+    author:
+      - ins: A. McMillan
+      - ins: O. Javidbakht
+      - ins: K. Talwar
+      - ins: E. Briggs
+      - ins: M. Chatzidakis
+      - ins: J. Chen
+      - ins: J. Duchi
+      - ins: V. Feldman
+      - ins: Y. Goren
+      - ins: M. Hesse
+      - ins: V. Jina
+      - ins: A. Katti
+      - ins: A. Liu
+      - ins: C. Lyford
+      - ins: J. Meyer
+      - ins: A. Palmer
+      - ins: D. Park
+      - ins: W. Park
+      - ins: G. Parsa
+      - ins: P. Pelzl
+      - ins: R. Rishi
+      - ins: C. Song
+      - ins: S. Wang
+      - ins: S. Zhou
+    date: 2022
+    target: https://arxiv.org/abs/2211.10082
+
+  Mir17:
+    title: "Rényi Differential Privacy"
+    author:
+      - ins: I. Mironov
+    date: 2017
+    target: https://arxiv.org/abs/1702.07476
+
+  CKS20:
+    title: "The Discrete Gaussian for Differential Privacy"
+    author:
+      - ins: C. L. Canonne
+      - ins: G. Kamath
+      - ins: T. Steinke
+    date: 2020
+    target: https://arxiv.org/abs/2004.00010
+
+  KOV15:
+    title: "The Composition Theorem for Differential Privacy"
+    author:
+      - ins: P. Kairouz
+      - ins: S. Oh
+      - ins: P. Viswanath
+    date: 2015
+    target: http://proceedings.mlr.press/v37/kairouz15.pdf
+
+  DMNS06:
+    title: "Calibrating Noise to Sensitivity in Private Data Analysis"
+    author:
+      - ins: C. Dwork
+      - ins: F. McSherry
+      - ins: K. Nissim
+      - ins: A. Smith
+    date: 2006
+    target: https://link.springer.com/chapter/10.1007/11681878_14
+
+  DR14:
+    title: "The Algorithmic Foundations of Differential Privacy"
+    author:
+      - ins: C. Dwork
+      - ins: A. Roth
+    date: 2014
+    target: https://www.cis.upenn.edu/~aaroth/Papers/privacybook.pdf
+
+  BS16:
+    title: "Concentrated Differential Privacy: Simplifications, Extensions, and Lower Bounds"
+    author:
+      - ins: M. Bun
+      - ins: T. Steinke
+    date: 2016
+    target: https://arxiv.org/abs/1605.02065
+
 
 --- abstract
 
