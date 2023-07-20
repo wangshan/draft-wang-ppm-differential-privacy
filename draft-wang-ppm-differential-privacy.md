@@ -189,18 +189,20 @@ Noise can be introduced at various steps at the computation, and by various
 parties. Depending on the mechanism: the Clients might add noise to their own
 measurements; the Aggregators might add noise to their aggregate shares (the
 values they produce for the Collector); and the Collector might add noise to
-the aggregate result before publishing it. We refer to these classes of
-mechanisms as "Client-DP", "Aggregator-DP", and "Collector-DP" respectively.
-[TODO: I put "Collector-DP" here as a strawman. Would we actually want to use
-it?]
+the aggregate result before publishing it.
 
-In addition, it is possible to compuse different DP mechanisms. [TODO: Say why
-we would want to do this and give an illustrative example of combining
-Client-DP and Aggregator-DP.]
+> NOTE The Collector adding noise is mentioned here only as a strawman. We
+> typically consider the Collector to be under control of the attacker, so we
+> want to ensure the aggregate result is DP before the Collector computes it.
 
-[TODO: Transition text] This document defines a "DP policy" as the composition
-of an optional Client-DP mechanism and an optional Aggregator-DP mechanism
-with a VDAF.
+In this document, we shall refer to the composition of DP mechanisms into a
+scheme that provides (some notion of) DP as a "DP policy". For some policies,
+noise is added only by the Clients or only by the Aggregators, but for others,
+noise is added by both Clients and Aggregators. The main advantage of this
+strategy is that some degree of DP is achieved even if all other parties, in
+particular all Aggregators, are under control of the attacker. On the other
+hand, the noise introduced by honest Aggregators amplifies this baseline level
+of DP {{FMT22}}.
 
 The primary goal of this document is to specify how DP policies are implemented
 in DAP. It does so in the following stages:
@@ -209,21 +211,19 @@ in DAP. It does so in the following stages:
    apply to VDAFs in general and DAP/VDAF in particular. Many refinements of
    the basic DP notion are possible, some of which are not possible given the
    constraints imposed by DAP. This section enumerates these constraints and
-   describes the baseline requirements for a DP mechanism used with DAP.
+   describes the baseline DP requirements for DAP.
 
-1. {{primitives}} specifies various primitives required for implementing DP
-   mechansims, including algorithms for sampling from discrete Laplace and
+1. {{mechanisms}} specifies various mechanisms required for building DP
+   systems, including algorithms for sampling from discrete Laplace and
    Gaussian distributions.
 
-1. {{mechanisms}} defines an interface for DP mechanisms that are compatible
-   with VDAFs and, for all VDAFs specified in {{!VDAF}} [TODO: And other
-   drafts, once they appear], specifies concrete Client- and Aggregator-DP
-   mechanisms.
+1. {{policies}} defines DP policies and specifies concrete policies for
+   endowing VDAFs in {{!VDAF}} with DP. [TODO: And other drafts, once they
+   appear.]
 
-1. {{policy}} specifies the integration of DP mechanisms from the previous
-   section into DAP. In particular, it describes how a DP policy is implemented
-   by the Client, Aggregator, and Collector alongside the execution of the
-   VDAF.
+1. {{dp-in-dap}} specifies the integration of DP policies from the previous
+   section into DAP. In particular, it describes changes to the Client,
+   Aggregator, and Collector behavior required to implement the policy.
 
 The following considerations are out-of-scope for this document:
 
@@ -233,14 +233,12 @@ The following considerations are out-of-scope for this document:
    reduce the veracity of the result. This document provides no guidance for
    this selection process.
 
-1. This document describes a particular composition of narrowly-scoped DP
-   mechanisms. Other compositions and more sophisticated DP mechanisms are
-   possible.
+1. This document describes a particular class of narrowly-scoped DP policies.
+   Other, more sophisticated policies are possible. [TODO: Add citations.]
 
-1. The primitives described in {{primitives}} are intended for use beyond
+1. The mechanisms described in {{mechanisms}} are intended for use beyond
    DAP/VDAF. However, this document does not describe general-purpose DP
-   mechanisms. The mechanisms described in {{mechanisms}} are tailored to
-   specific VDAFs.
+   policies; those described in {{policies}} are tailored to specific VDAFs.
 
 # Conventions and Definitions
 
@@ -249,7 +247,6 @@ The following considerations are out-of-scope for this document:
 This document uses the same conventions for error handling as {{!DAP}}.
 
 > TODO: add more
-
 
 # Overview of Differential Privacy {#overview}
 
@@ -400,10 +397,10 @@ with the correct noise type.
 
 > TODO: Chris P: we will mention Prio3SumVec because that's what we use to describe aggregator DP with amplification
 
-# Primitives for Implementing DP Mechanisms {#primitives}
+# DP Mechanisms {#mechanisms}
 
-This section describes various primitives required for implementing DP
-mechansims. The algorithms are designed to securely expand a short, uniform
+This section describes various mechanisms required for implementing DP
+policies. The algorithms are designed to securely expand a short, uniform
 random seed into a sample from a given distribution.
 
 ## Discrete Laplace
@@ -416,13 +413,13 @@ random seed into a sample from a given distribution.
 
 ## Randomized Response
 
-> TODO: Specify any primitives required for randomized response mechanisms
+> TODO: Specify any mechanisms required for randomized response mechanisms
 
-# DP Mechanisms for VDAFs {#mechanisms}
+# DP Policies for VDAFs {#policies}
 
-The section defines a generic interface for DP mechanisms VDAFs.
+The section defines a generic interface for DP policies VDAFs.
 
-> TODO: Junye to spell out the interface of dp mechanisms, "Noise Mechanisms to Accomplish DP"
+> TODO: Junye to spell out the interface of dp policies, "Noise Mechanisms to Accomplish DP"
 
 ## Client-DP for Prio3Histogram
 
@@ -432,11 +429,9 @@ The section defines a generic interface for DP mechanisms VDAFs.
 
 > TODO: Concretely describe an Aggregator-DP mechanism for Prio3Histogram.
 
-# DP Policies for DAP {#policy}
+# Executing DP Policies in DAP {#dp-in-dap}
 
-> TODO: Junye to fill in, expand on aggregator DP, aggregator DP amplified by
-local DP, includes contents in "Execution of an Aggregation Protocol with DP"
-
+> TODO: Specify integration of a `DpPolicy` into DAP.
 
 # Security Considerations
 
