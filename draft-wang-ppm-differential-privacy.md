@@ -275,7 +275,7 @@ between the two are:
 > TODO: talk about the relationship of the two
 
 
-## Differential privacy levels
+## Differential privacy levels {#levels}
 
 Ther are two levels of privacy protection: local differential privacy (local DP)
 and aggregator differential privacy (aggregator DP).
@@ -403,31 +403,266 @@ This section describes various mechanisms required for implementing DP
 policies. The algorithms are designed to securely expand a short, uniform
 random seed into a sample from a given distribution.
 
+For each mechanism, we expect the noise parameters are computed based on the
+DP guarantee that it is supposed to provide.
+
+We also expect DP mechanisms to contain the following functionalities:
+
+* Add noise to a piece of input data (i.e. a measurement or an aggregate share).
+  Some DP mechanisms apply noise based on the input data, e.g. randomized
+  response mechanism {{rr}} flips the bit at each dimension, which means the
+  noised output depends on the input.
+
+* Sample noise with the DP mechanism.
+
+* Debias the noised data. Note that not all noise will need this functionality.
+  Some DP mechanisms will need this functionality, for example, randomized
+  response mechanisms have a debiasing step that removes bias.
+
+Therefore, we define three methods for an interface `DpMechanism`:
+
+~~~
+class DpMechanism:
+    DataType
+    DebiasedDataType
+
+    def add_noise(self, data: DataType) -> DataType:
+        """Add noise to a piece of input data. """
+        pass
+
+    def sample_noise(self, num_reps: int, dimension: int) -> DataType:
+        """
+        Sample noise for `num_reps` number of times,
+        with `dimension`.
+        """
+        pass
+
+    def debias(self,
+               agg: DataType,
+               meas_count: int) -> DebiasedDataType:
+        """
+        Debias the data due to the added noise.
+        This doesn't apply to all noises. Some Client-DP mechanisms
+        need this functionality.
+        """
+        pass
+~~~
+
 ## Discrete Laplace
 
 > TODO: Specify a Laplace sampler
 
-## Discrete Gaussian
+## Discrete Gaussian {#discrete-gaussian}
 
 > TODO: Specify a Gaussian sampler
 
-## Randomized Response
+## Randomized Response {#rr}
 
 > TODO: Specify any mechanisms required for randomized response mechanisms
 
 # DP Policies for VDAFs {#policies}
 
-The section defines a generic interface for DP policies VDAFs.
+The section defines a generic interface for DP policies for VDAFs.
 
-> TODO: Junye to spell out the interface of dp policies, "Noise Mechanisms to Accomplish DP"
+We will define an interface `DpPolicy` that composes the following:
 
-## Client-DP for Prio3Histogram
+* An optional Client-DP mechanism that adds noise to Clients' measurements.
 
-> TODO: Concretely describe a Client-DP mechanism for Prio3Histogram.
+* An optional Aggregator-DP mechanism that adds noise to an Aggregator's
+  aggregate share, based on the number of measurements, and the minimum
+  batch size.
 
-## Aggregator-DP for Prio3Histogram
+* An optional debiasing step that removes the bias in DP mechanisms (i.e.
+  `DpMechanism.debias`).
 
-> TODO: Concretely describe an Aggregator-DP mechanism for Prio3Histogram.
+The composition of Client- and Aggregator-DP mechanisms defines the DP
+policy for a VDAF, and enforces the DP guarantee.
+
+~~~
+class DpPolicy:
+    Measurement
+    AggregateShare
+    AggregateResult
+    DebiasedAggregateResult
+
+    def add_noise_to_measurement(self,
+                                 meas: Measurement,
+                                 ) -> Measurement:
+        """
+        Add noise to measurement, if required by the Client-DP
+        mechanism.
+        """
+        pass
+
+    def add_noise_to_agg_share(self,
+                               agg_share: AggregateShare,
+                               meas_count: Unsigned,
+                               min_batch_size: Unsigned,
+                               ) -> AggregateShare:
+        """
+        Add noise to aggregate share, if required by the Aggregator-DP
+        mechanism.
+        """
+        pass
+
+    def debias_agg_result(self,
+                          agg_result: AggregateResult,
+                          meas_count: Unsigned,
+                          min_batch_size: Unsigned,
+                          num_aggregators: Unsigned,
+                          ) -> DebiasedAggregateResult:
+        """
+        Debias aggregate result, if any of the Client- or
+        Aggregator-DP mechanism requires this operation,
+        based on the number of measurements, minimum batch size,
+        and the number of Aggregators.
+        """
+        pass
+~~~
+
+## Concrete Instantiations of DP Policies with VDAFs
+
+### Prio3SumVec, `bits = 1`, with Randomized Response Client-DP
+
+Client-DP allows Clients to protect their privacy by adding noise to their
+measurements directly, as described in {{levels}}. Analyses ({{FMT20}} and
+{{FMT22}}) have shown that the central DP guarantee can also be amplified
+by aggregating Clients' measurements with Client-DP.
+
+For this particular instantiation of `Prio3SumVec` with `bits = 1`, i.e. each
+value in the vector is either a 0 or 1, we can apply randomized response {{rr}}
+Client-DP to Clients' measurements, with a configured Client-DP with `EPSILON_0`
+parameter.
+
+The DP guarantee is met, as long as there are at least "minimum batch size"
+number of Clients, each of which adds the randomized response Client-DP.
+However, in case the minimum batch size is not met when Aggregators want to
+output their aggregate shares, each Aggregator can sample the same randomized
+response Client-DP on the "missing" Clients with zero-hot vectors, so the
+central DP guarantee can still be satisfied, based on the privacy amplification
+analysis in {{FMT20}} and {{FMT22}}.
+
+~~~
+class Prio3SumVecWithRandomizedResponse:
+    Measurement = Vec[Unsigned]
+    AggregateShare = Vec[Field]
+    AggregateResult = Vec[Unsigned]
+    DebiasedAggregateResult = Vec[float]
+
+    def __init__(self,
+                 rr_mechanism: DpMechanism):
+        self.rr_mechanism = rr_mechanism
+
+    def add_noise_to_measurement(self,
+                                 meas: Measurement,
+                                 ) -> Measurement:
+        """
+        Apply randomized response mechanism to measurement.
+        """
+        return self.rr_mechanism.add_noise(meas)
+
+    def add_noise_to_agg_share(self,
+                               agg_share: AggregateShare,
+                               meas_count: Unsigned,
+                               min_batch_size: Unsigned,
+                               ) -> AggregateShare:
+        """
+        If minimum batch size is met, this function does nothing,
+        because DP guarantee would have already been met.
+        Otherwise, add the same randomized response noise on the
+        missing Clients.
+        """
+        if meas_count >= batch_size:
+            return agg_share
+        noise = self.rr_mechanism.sample_noise(
+            batch_size - meas_count, len(agg_share)
+        )
+        return [a + Field(b) for (a, b) in zip(agg_share, noise)]
+
+    def debias_agg_result(self,
+                          agg_result: AggregateResult,
+                          meas_count: Unsigned,
+                          min_batch_size: Unsigned,
+                          num_aggregators: Unsigned,
+                          ) -> DebiasedAggregateResult:
+        """
+        Debias aggregate result with randomized response.
+        """
+        if meas_count >= min_batch_size:
+            return self.rr_mechanism.debias(agg_result, meas_count)
+        # The count passed to debiasing will be:
+        # the number of actual Clients + the "missing" Clients
+        # sampled by all Aggregators.
+        debiasing_count = \
+            meas_count + \
+            num_aggregators * (min_batch_size - meas_count)
+        return self.rr_mechanism.debias(agg_result, debiasing_count)
+~~~
+
+> TODO(issue #10): replace `rr_mechanism` once we have concretely defined
+> it in {{rr}}.
+
+### Prio3Histogram with Discrete Gaussian
+
+For Prio3Histogram, we will apply an Aggregator-only DP mechanism,
+that is implemented with discrete Gaussian.
+
+~~~
+class Prio3HistogramWithDiscreteGaussian:
+    Measurement = Unsigned
+    AggregateShare = Vec[Field]
+    AggregateResult = Vec[int]
+    DebiasedAggregateResult = AggregateResult
+
+    def __init__(self,
+                 dgauss_mechanism: DpMechanism,
+                 ):
+        self.dgauss_mechanism = dgauss_mechanism
+
+    def add_noise_to_measurement(self,
+                                 meas: Measurement,
+                                 ) -> Measurement:
+        """
+        No Client-DP here.
+        """
+        return meas
+
+    def add_noise_to_agg_share(self,
+                               agg_share: AggregateShare,
+                               meas_count: Unsigned,
+                               min_batch_size: Unsigned,
+                               ) -> AggregateShare:
+        """
+        Sample discrete Gaussian noise, and merge it with
+        aggregate share.
+        """
+        # Sample the noise once, with length equal to the length
+        # of aggregate share.
+        noise_vec = self.dgauss_mechanism.sample_noise(
+            1, len(agg_share)
+        )
+        result = []
+        for i in range(len(agg_share)):
+            noise = noise_vec[i]
+            if noise < 0:
+                noise = Field.MODULUS + noise
+            result.append(agg_share[i] + Field(noise))
+        return result
+
+    def debias_agg_result(self,
+                          agg_result: AggregateResult,
+                          meas_count: Unsigned,
+                          min_batch_size: Unsigned,
+                          num_aggregators: Unsigned,
+                          ) -> DebiasedAggregateResult:
+        """
+        No debiasing.
+        """
+        return agg_result
+~~~
+
+> TODO(issue #10): replace `dgauss_mechanism` once we have concretely defined
+> it in {{discrete-gaussian}}.
 
 # Executing DP Policies in DAP {#dp-in-dap}
 
