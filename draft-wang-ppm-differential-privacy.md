@@ -450,7 +450,9 @@ This document has no IANA actions.
 
 --- back
 
-# Acknowledgments
+# Contributors
 {:numbered="false"}
 
-TODO acknowledge.
+Pierre Tholoniat
+Columbia University
+pierre@cs.columbia.edu
