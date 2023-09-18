@@ -183,35 +183,24 @@ VDAFs are not DP on their own, but they can be composed with a variety of
 mechanisms that endow them with this property. All such mechanisms work by
 introducing "noise" into the computation that is carefully calibrated for a
 number of application-specific parameters, including the structure and number
-of measurements and the desired aggregation function. [TODO: Anything else?]
+of measurements and the desired aggregation function.
 
 Noise can be introduced at various steps at the computation, and by various
 parties. Depending on the mechanism: the Clients might add noise to their own
-measurements; the Aggregators might add noise to their aggregate shares (the
-values they produce for the Collector); and the Collector might add noise to
-the aggregate result before publishing it.
-
-> NOTE The Collector adding noise is mentioned here only as a strawman. We
-> typically consider the Collector to be under control of the attacker, so we
-> want to ensure the aggregate result is DP before the Collector computes it.
+measurements; and the Aggregators might add noise to their aggregate shares (the
+values they produce for the Collector).
 
 In this document, we shall refer to the composition of DP mechanisms into a
 scheme that provides (some notion of) DP as a "DP policy". For some policies,
 noise is added only by the Clients or only by the Aggregators, but for others,
-noise is added by both Clients and Aggregators. The main advantage of this
-strategy is that some degree of DP is achieved even if all other parties, in
-particular all Aggregators, are under control of the attacker. On the other
-hand, the noise introduced by honest Aggregators amplifies this baseline level
-of DP {{FMT22}}.
+noise might be added by both Clients and Aggregators.
 
 The primary goal of this document is to specify how DP policies are implemented
 in DAP. It does so in the following stages:
 
-1. {{overview}} provides an overview of DP properties in the literature that
-   apply to VDAFs in general and DAP/VDAF in particular. Many refinements of
-   the basic DP notion are possible, some of which are not possible given the
-   constraints imposed by DAP. This section enumerates these constraints and
-   describes the baseline DP requirements for DAP.
+1. {{overview}} describes the notion(s) of DP that are compatible with DAP and
+   the threat model in which we hope to achieve DP. It also provides a
+   systematization of applicable DP policies from the literature.
 
 1. {{mechanisms}} specifies various mechanisms required for building DP
    systems, including algorithms for sampling from discrete Laplace and
@@ -219,11 +208,14 @@ in DAP. It does so in the following stages:
 
 1. {{policies}} defines DP policies and specifies concrete policies for
    endowing VDAFs in {{!VDAF}} with DP. [TODO: And other drafts, once they
-   appear.]
+   appear.] [CP: This API may not be compatible with all DP polices we might
+   want to implement.]
 
 1. {{dp-in-dap}} specifies the integration of DP policies from the previous
    section into DAP. In particular, it describes changes to the Client,
-   Aggregator, and Collector behavior required to implement the policy.
+   Aggregator, and Collector behavior required to implement the policy. [CP:
+   This integration might not be compatible with all DP policies we might
+   want to implement.]
 
 The following considerations are out-of-scope for this document:
 
@@ -238,7 +230,8 @@ The following considerations are out-of-scope for this document:
 
 1. The mechanisms described in {{mechanisms}} are intended for use beyond
    DAP/VDAF. However, this document does not describe general-purpose DP
-   policies; those described in {{policies}} are tailored to specific VDAFs.
+   policies; those described in {{policies}} are tailored to specific VDAFs or
+   classes of VDAFs.
 
 # Conventions and Definitions
 
@@ -384,7 +377,7 @@ databases.
 
 One can compose multiple zCDP guarantees, per Lemma 1.7 of {{BS16}}.
 
-## Sentitity
+## Sensitivity
 
 > TODO: Chris P to fill: sensitivity, l1 vs l2
 
