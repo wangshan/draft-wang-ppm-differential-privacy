@@ -241,154 +241,9 @@ This document uses the same conventions for error handling as {{!DAP}}.
 
 > TODO: add more
 
-# Overview of Differential Privacy {#overview}
+# Security Goals and Threat Model {#overview}
 
-Differential privacy is a set of techniques used to protect the privacy of
-individuals when analyzing user's data. It provides a mathematical framework
-that ensures the analysis of a dataset does not reveal identifiable information
-about any specific individuals. The advantage of differential privacy is that it
-provides a strong, quantifiable and composable privacy guarantee. The main idea
-of differential privacy is to add carefully calibrated noise to the results,
-which makes it difficult to determine with high certainty whether a specific
-individual's data was included in the results or not.
-
-## Differential privacy models
-
-There are two model of differential privacy: deletion differential privacy (
-deletion dp) and replacement differntial privacy (replacement dp).
-
-> OPEN ISSUE: or call it substitution dp.
-
-For two dataset X and Y that differ only by 1 data point. Then the difference
-between the two are:
-* Replacement DP: Y differs from X by replacing a data point in X.
-* Deletion DP: Y differs from X by removing a data point in X.
-
-> TODO: make the definition more accurate
-> TODO: talk about the relationship of the two
-
-
-## Differential privacy levels {#levels}
-
-Ther are two levels of privacy protection: local differential privacy (local DP)
-and aggregator differential privacy (aggregator DP).
-
-> OPEN ISSUE: or call it secure aggregator dp, or central dp.
-
-In the local-DP settings, Clients apply noise to their own measurements. In
-this way, Clients have some control to protect the privacy of their own data.
-Any measurement uploaded by a Client will be have local dp, Client's privacy is
-protected even if none of the Aggregators is honest (although this protection
-may be weak). Furthermore, one can analyze the aggregator DP guarantee with
-privacy amplification by aggregation, assuming each Client has added the
-required amount of local DP noise, and there are at least minimum batch size
-number of Clients in the aggregation.
-
-In Aggregator DP settings, an Aggregator applies noise on the aggregation.
-Aggregator DP relies on the server being secure and trustworthy. Aggregators
-built using DAP protocol is ideal for this setting because DAP ensures no server
-can access any individual data, but only the aggregation.
-
-If there are no local DP added from client, noise added to the aggregation
-provides the privacy guarantee of the aggregation.
-
-One can use the Aggregator DP noise together with local DP noise to achieve
-privacy guarantee. If the DP guarantee is achieved with a minimum batch size
-number of Clients adding local DP noise, and minimum batch size is not reached
-when a data collection task expires, each Aggregator can add the remaining noise
-by generating the same local DP noise, on the missing number of Clients being
-the gap between actual number of Clients and minimum batch size.
-
-
-## Protected entity
-
-> TODO: Chris P to fill: user or report, given time
-
-## Privacy budget and accounting {#budget}
-
-There are various types of DP guarantees and budgets that can be enforced.
-Many applications need to query the Client data multiple times, for example:
-
-* Federated machine learning applications require multiple aggregates to be
-  computed over the same underlying data, but with different machine learning
-  model parameters.
-
-* {{MJTBp22}} describes an interactive approach of building histograms over
-  multiple iterations, and Section 4.3 describes a way to track Client-side
-  budget when the Client data is queried multiple times.
-
-> TODO: have citations for machine learning
-
-It’s hard for Aggregator(s) to keep track of the privacy budget over time,
-because different Clients can participate in different data collection tasks,
-and only Clients know when their data is queried. Therefore, Clients must
-enforce the privacy budget.
-
-There could be multiple ways to compose DP guarantees, based on different
-DP composition theorems. In the various example DP guarantees below,
-we describe the following:
-
-* A formal definition of the DP guarantee.
-
-* Composition theorems that apply to the DP guarantee.
-
-### Pure `EPSILON`-DP, or `(EPSILON, DELTA)`-approximate DP {#adp}
-
-Pure `EPSILON`-DP was first proposed in {{DMNS06}}, and a formal definition of
-`(EPSILON, DELTA)`-DP can be found in Definition 2.4 of {{DR14}}.
-
-The `EPSILON` parameter quantifies the "privacy loss" of observing the outcomes
-of querying two databases differing by one element. The smaller `EPSILON` is,
-the stronger the privacy guarantee is, that is, the outcomes of querying two
-adjacent databases are more or less the same.
-The `DELTA` parameter provides a small probability of the privacy loss
-exceeding `EPSILON`.
-
-One can compose multiple `(EPSILON, DELTA)`-approximate DP guarantees, per
-Theorem 3.4 of {{KOV15}}.
-One can also compose the guarantees in other types of guarantee first, such as
-Rényi DP {{rdp}}, and then convert the composed guarantee to approximate
-DP guarantee.
-
-### `(ALPHA, TAU)`-Rényi DP {#rdp}
-
-A formal definition of Rényi DP can be found in Definitions 3 and 4 of
-{{Mir17}}.
-
-The intuition behind Rényi-DP is to use `TAU` parameter to measure the
-divergence of probability distributions of querying two adjacent databases,
-given Rényi order parameter `ALPHA`. The smaller the `TAU` parameter,
-the harder it is to distinguish the outputs from querying two adjacent
-databases, and thus the stronger the privacy guarantee is.
-
-One can compose multiple Rényi DP guarantees based on Proposition 1 of
-{{Mir17}}.
-After composition, one can convert the `(ALPHA, TAU)`-Rényi DP guarantee to
-`(EPSILON, DELTA)`-approximate DP, per Proposition 12 of {{CKS20}}.
-
-### Zero Concentrated-DP {#zcdp}
-
-A formal definition of zero Concentrated-DP can be found in Definition 1.1
-of {{BS16}}.
-
-Zero Concentrated-DP uses different parameters from Rényi-DP, but uses a similar
-idea to measure the output distribution divergence of querying two adjacent
-databases.
-
-One can compose multiple zCDP guarantees, per Lemma 1.7 of {{BS16}}.
-
-## Sensitivity
-
-> TODO: Chris P to fill: sensitivity, l1 vs l2
-
-## Data type and Noise type
-
-Differential Privacy guarantee can only be achieved if data type is applied
-with the correct noise type.
-
-> TODO: Junye to fill, mention DAP is expected to ensure the right pair of VDAF and DP mechanism
-
-> TODO: Chris P: we will mention Prio3SumVec because that's what we use to describe aggregator DP with amplification
+TODO
 
 # DP Mechanisms {#mechanisms}
 
@@ -665,7 +520,6 @@ class Prio3HistogramWithDiscreteGaussian:
 
 TODO Security
 
-
 # IANA Considerations
 
 This document has no IANA actions.
@@ -674,8 +528,156 @@ This document has no IANA actions.
 --- back
 
 # Contributors
-{:numbered="false"}
 
 Pierre Tholoniat
 Columbia University
 pierre@cs.columbia.edu
+
+# Overview of Differential Privacy
+
+Differential privacy is a set of techniques used to protect the privacy of
+individuals when analyzing user's data. It provides a mathematical framework
+that ensures the analysis of a dataset does not reveal identifiable information
+about any specific individuals. The advantage of differential privacy is that it
+provides a strong, quantifiable and composable privacy guarantee. The main idea
+of differential privacy is to add carefully calibrated noise to the results,
+which makes it difficult to determine with high certainty whether a specific
+individual's data was included in the results or not.
+
+## Differential privacy models
+
+There are two model of differential privacy: deletion differential privacy (
+deletion dp) and replacement differntial privacy (replacement dp).
+
+> OPEN ISSUE: or call it substitution dp.
+
+For two dataset X and Y that differ only by 1 data point. Then the difference
+between the two are:
+* Replacement DP: Y differs from X by replacing a data point in X.
+* Deletion DP: Y differs from X by removing a data point in X.
+
+> TODO: make the definition more accurate
+> TODO: talk about the relationship of the two
+
+
+## Differential privacy levels {#levels}
+
+Ther are two levels of privacy protection: local differential privacy (local DP)
+and aggregator differential privacy (aggregator DP).
+
+> OPEN ISSUE: or call it secure aggregator dp, or central dp.
+
+In the local-DP settings, Clients apply noise to their own measurements. In
+this way, Clients have some control to protect the privacy of their own data.
+Any measurement uploaded by a Client will be have local dp, Client's privacy is
+protected even if none of the Aggregators is honest (although this protection
+may be weak). Furthermore, one can analyze the aggregator DP guarantee with
+privacy amplification by aggregation, assuming each Client has added the
+required amount of local DP noise, and there are at least minimum batch size
+number of Clients in the aggregation.
+
+In Aggregator DP settings, an Aggregator applies noise on the aggregation.
+Aggregator DP relies on the server being secure and trustworthy. Aggregators
+built using DAP protocol is ideal for this setting because DAP ensures no server
+can access any individual data, but only the aggregation.
+
+If there are no local DP added from client, noise added to the aggregation
+provides the privacy guarantee of the aggregation.
+
+One can use the Aggregator DP noise together with local DP noise to achieve
+privacy guarantee. If the DP guarantee is achieved with a minimum batch size
+number of Clients adding local DP noise, and minimum batch size is not reached
+when a data collection task expires, each Aggregator can add the remaining noise
+by generating the same local DP noise, on the missing number of Clients being
+the gap between actual number of Clients and minimum batch size.
+
+
+## Protected entity
+
+> TODO: Chris P to fill: user or report, given time
+
+## Privacy budget and accounting {#budget}
+
+There are various types of DP guarantees and budgets that can be enforced.
+Many applications need to query the Client data multiple times, for example:
+
+* Federated machine learning applications require multiple aggregates to be
+  computed over the same underlying data, but with different machine learning
+  model parameters.
+
+* {{MJTBp22}} describes an interactive approach of building histograms over
+  multiple iterations, and Section 4.3 describes a way to track Client-side
+  budget when the Client data is queried multiple times.
+
+> TODO: have citations for machine learning
+
+It’s hard for Aggregator(s) to keep track of the privacy budget over time,
+because different Clients can participate in different data collection tasks,
+and only Clients know when their data is queried. Therefore, Clients must
+enforce the privacy budget.
+
+There could be multiple ways to compose DP guarantees, based on different
+DP composition theorems. In the various example DP guarantees below,
+we describe the following:
+
+* A formal definition of the DP guarantee.
+
+* Composition theorems that apply to the DP guarantee.
+
+## Pure `EPSILON`-DP, or `(EPSILON, DELTA)`-approximate DP {#adp}
+
+Pure `EPSILON`-DP was first proposed in {{DMNS06}}, and a formal definition of
+`(EPSILON, DELTA)`-DP can be found in Definition 2.4 of {{DR14}}.
+
+The `EPSILON` parameter quantifies the "privacy loss" of observing the outcomes
+of querying two databases differing by one element. The smaller `EPSILON` is,
+the stronger the privacy guarantee is, that is, the outcomes of querying two
+adjacent databases are more or less the same.
+The `DELTA` parameter provides a small probability of the privacy loss
+exceeding `EPSILON`.
+
+One can compose multiple `(EPSILON, DELTA)`-approximate DP guarantees, per
+Theorem 3.4 of {{KOV15}}.
+One can also compose the guarantees in other types of guarantee first, such as
+Rényi DP {{rdp}}, and then convert the composed guarantee to approximate
+DP guarantee.
+
+### `(ALPHA, TAU)`-Rényi DP {#rdp}
+
+A formal definition of Rényi DP can be found in Definitions 3 and 4 of
+{{Mir17}}.
+
+The intuition behind Rényi-DP is to use `TAU` parameter to measure the
+divergence of probability distributions of querying two adjacent databases,
+given Rényi order parameter `ALPHA`. The smaller the `TAU` parameter,
+the harder it is to distinguish the outputs from querying two adjacent
+databases, and thus the stronger the privacy guarantee is.
+
+One can compose multiple Rényi DP guarantees based on Proposition 1 of
+{{Mir17}}.
+After composition, one can convert the `(ALPHA, TAU)`-Rényi DP guarantee to
+`(EPSILON, DELTA)`-approximate DP, per Proposition 12 of {{CKS20}}.
+
+### Zero Concentrated-DP {#zcdp}
+
+A formal definition of zero Concentrated-DP can be found in Definition 1.1
+of {{BS16}}.
+
+Zero Concentrated-DP uses different parameters from Rényi-DP, but uses a similar
+idea to measure the output distribution divergence of querying two adjacent
+databases.
+
+One can compose multiple zCDP guarantees, per Lemma 1.7 of {{BS16}}.
+
+## Sensitivity
+
+> TODO: Chris P to fill: sensitivity, l1 vs l2
+
+## Data type and Noise type
+
+Differential Privacy guarantee can only be achieved if data type is applied
+with the correct noise type.
+
+> TODO: Junye to fill, mention DAP is expected to ensure the right pair of VDAF and DP mechanism
+
+> TODO: Chris P: we will mention Prio3SumVec because that's what we use to describe aggregator DP with amplification
