@@ -378,7 +378,8 @@ Clients' measurements have "local-DP". This property is defined the same way as
 pure- or approximate-DP, except that the bound we aim to achieve is much looser
 than usual. For example, if the parameters of a DP policy are tuned for OAMC
 security, but both Aggregators are corrupted by the attacker, then the noise
-added by the Client may not be sufficient to protect the measurement.
+added by the Client may not be sufficient to protect the measurement. Howver
+this is the best possible case in such a stringent threat model.
 
 # DP Mechanisms {#mechanisms}
 
