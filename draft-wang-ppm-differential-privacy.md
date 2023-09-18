@@ -328,8 +328,8 @@ underlying primitives (VDAF {{!VDAF}}, HPKE {{!RFC9180}}, and the transport
 security protocol).
 
 To account for such attackers, our goal for DAP is "computational-DP" as
-described by {{MPRV09}}, which formalizes the amount of information active
-attacker gleans about the measurement over the course of its attack on the
+described by {{MPRV09}}, which formalizes the amount of information an active
+attacker can glean about the measurements over the course of its attack on the
 protocol. We consider an attacker that controls the network and statically
 corrupts a subset of the parties.
 
