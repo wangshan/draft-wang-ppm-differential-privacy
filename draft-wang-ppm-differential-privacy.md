@@ -97,6 +97,15 @@ informative:
     date: 2017
     target: https://arxiv.org/abs/1702.07476
 
+  MPRV09:
+    title: "Computational Differential Privacy"
+    author:
+      - ins: I. Mironov
+      - ins: O. Pandey
+      - ins: O. Reingold
+      - ins: S. Vadhan
+    target: https://link.springer.com/chapter/10.1007/978-3-642-03356-8_8
+
   CKS20:
     title: "The Discrete Gaussian for Differential Privacy"
     author:
@@ -183,7 +192,10 @@ VDAFs are not DP on their own, but they can be composed with a variety of
 mechanisms that endow them with this property. All such mechanisms work by
 introducing "noise" into the computation that is carefully calibrated for a
 number of application-specific parameters, including the structure and number
-of measurements and the desired aggregation function.
+of measurements, the desired aggregation function, and the degree of "utility"
+required. Intuitively, a high degree of privacy can be achieved by adding a lot
+of noise; but adding too much noise can reduce the veracity of the aggregate
+result.
 
 Noise can be introduced at various steps at the computation, and by various
 parties. Depending on the mechanism: the Clients might add noise to their own
@@ -193,13 +205,18 @@ values they produce for the Collector).
 In this document, we shall refer to the composition of DP mechanisms into a
 scheme that provides (some notion of) DP as a "DP policy". For some policies,
 noise is added only by the Clients or only by the Aggregators, but for others,
-noise might be added by both Clients and Aggregators.
+noise might be added by both Clients and Aggregators. The best choice of policy
+depends one's "trust model": if most Clients can be trusted to noise their
+measurements correctly, then a high degree of privacy can be achieved with
+minimal loss in utility; but if most Clients are corrupted by the attacker,
+then the same degree of privacy can only be achieved at the cost of higher
+utility.
 
 The primary goal of this document is to specify how DP policies are implemented
 in DAP. It does so in the following stages:
 
 1. {{overview}} describes the notion(s) of DP that are compatible with DAP and
-   the threat model in which we hope to achieve DP. It also provides a
+   the trust model(s) in which we hope to achieve them. It also provides a
    systematization of applicable DP policies from the literature.
 
 1. {{mechanisms}} specifies various mechanisms required for building DP
@@ -219,11 +236,9 @@ in DAP. It does so in the following stages:
 
 The following considerations are out-of-scope for this document:
 
-1. Apart from privacy, the primary consideration for choosing a DP policy and
-   calibrating it for an application is "utility". Intuitively, the more noise
-   is added, the stronger the DP guarantee, but adding too much noise can
-   reduce the veracity of the result. This document provides no guidance for
-   this selection process.
+1. DP policies have a few parameters that need to be tuned in order to meet the
+   privacy/utility tradeoff required by the application. This document provides
+   no guidance for this process.
 
 1. This document describes a particular class of narrowly-scoped DP policies.
    Other, more sophisticated policies are possible. [TODO: Add citations.]
@@ -239,11 +254,131 @@ The following considerations are out-of-scope for this document:
 
 This document uses the same conventions for error handling as {{!DAP}}.
 
-> TODO: add more
+Let `exp(EPSILON)` denote raising the numeric constant `e` to the power of
+`EPSILON`.
 
-# Security Goals and Threat Model {#overview}
+# Security Goals and Trust Model {#overview}
 
-TODO
+## Differential Privacy
+
+DP formalizes a property of any randomized algorithm that takes in a sequence
+of measurements, aggregates them, and outputs an aggregate result. Intuitively,
+this property guarantees that no single measurement signficantly impacts the
+value of the aggregate result. This intuition is formalized by {{DMNS06}} as
+follows.
+
+> CP: The following is might be too jargony for an informative RFC, but for now
+> I think we're all just trying to agree on the definition. Once we have
+> consensus among ourselves, we can punt this to the appendix and leave a less
+> formal description here.
+
+[CP: This is substitution+pure-DP: Is {{DMNS06}} the right reference?] We say
+that two sequences of measurements `D1` and `D2` are "neighboring" if they are
+the same length and contain all the same measurements except one (i.e., the
+difference between their multisets contains one element).
+
+Let `p(S, D, R)` denote the probability that randomized algorithm `S`, on input
+of measurements `D`, outputs aggregate result `R`.
+
+A randomized algorithm `R` is called "`EPSILON`-DP" if for all neighboring `D1`
+and `D2` and all possible aggregate results `S`, the following inequality
+holds:
+
+~~~
+p(S, D1, R) <= exp(EPSILON) * p(S, D2, R)
+~~~
+
+In other words, the probability that neighboring inputs produce a given
+aggregate result differs by at most a constant factor, `exp(EPSILON)`.
+
+One can think of `EPSILON` as a measure of how much information about the
+measurements is leaked by the aggregate result: the smaller the `EPSILON`, the
+less information is leaked by `S`. For many DP mechanisms, it is possible to
+make `EPSILON` so close to `0` that the difference between `p(S, D1, R)` and
+`p(S, D2, R)` is negligible. However, this requires adding more noise, which
+has an adverse impact on utility. Most applications will accept a
+non-negligible bound in order achieve reasonable utility. See {{dp-explainer}}
+for details.
+
+This notion of `EPSILON`-DP is sometimes referred to as "pure-DP". The
+following is a relaxation of pure-DP, called "approximate-DP", from {{DR14}}. A
+randomized algorithm `R` is called "`(EPSILON, DELTA)`-DP" if for all
+neighboring `D1` and `D2` and all possible aggregate results `S`, the following
+inequality holds:
+
+~~~
+p(S, D1, R) <= exp(EPSILON) * p(S, D2, R) + DELTA
+~~~
+
+Compared to pure-DP, approximate-DP loses an additive factor of `DELTA` in the
+bound. This is to account for certain DP mechanisms that have some desirable
+properties, but are not pure-DP. See {{mechanisms}} for details.
+
+Other variants of DP are possible; see the literature review in
+{{dp-explainer}} for details.
+
+## Trust Models
+
+When considering whether a given DP policy is sufficient for DAP, it is not
+enough to consider the mechanisms used in isolation. It is also necessary to
+consider the process by which the policy is executed. In particular, our threat
+model for DAP considers an attacker that participates in the upload,
+aggregation, and collection protocols and may use its resources to attack the
+underlying primitives (VDAF {{!VDAF}}, HPKE {{!RFC9180}}, and the transport
+security protocol).
+
+To account for such attackers, our goal for DAP is "computational-DP" as
+described by {{MPRV09}}, which formalizes the amount of information active
+attacker gleans about the measurement over the course of its attack on the
+protocol. We consider an attacker that controls the network and statically
+corrupts a subset of the parties.
+
+We say the protocol is pure-DP (resp. approximate-DP) if the view of any
+computationally bounded attacker can be efficiently simulated by a simulator
+`S` that itself is pure-DP (i.e., apprixmate-DP) as defined above. (`S` takes
+the measurements as input and outputs a value that is computationally
+indistinguishable from the transcript of the protocol's execution in the
+presence of the attacker.)
+
+Whether this property holds for a given DP policy depends on which parties can
+be trusted to execute the prtocol correctly (i.e., which parties were not
+corrupted by the attacker). The DP policies described in this document are
+secure in one of two trust models described below.
+
+### OAMC: One-Aggregator-most-Clients
+
+Assume that most Clients and at least one Aggregator is honest. The other
+Aggregator(s) and the Collector are controlled by the atacker. The degree of
+privacy provided by the DP policy (i.e., `EPSILON`) degrades as the number of
+honest Clients decreases.
+
+### COA: Collector-one-Aggregator
+
+Assume that the Collector and at least one Aggregator is honest. In particular,
+assume the Collector does not reveal the aggregate result to the honest
+Aggregator. The other Aggregator(s) and most Clients are controlled by the
+collecter.
+
+## Desirable Preoprties
+
+### Hedging
+
+If a trust model's assumptions turn out to be false in practice, then it is
+desirable for a DP policy to maintain security in a different trust model. For
+example, a deployment of DAP might be to provide some mechanism (e.g., a
+Trusted Execution Environment (TEE)) to ensure that most, if not all, reports
+that are consumed were generated by trusted Clients, thereby achieving OAMC
+security. But if this mechanism is broken (e.g., a flaw is found in the TEE),
+then it is desirable if the DP strategy is at least COA-secure.
+
+### Local DP
+
+If no parties are honest, then the best we can hope for is that the honest
+Clients' measurements have "local-DP". This property is defined the same way as
+pure- or approximate-DP, except that the bound we aim to achieve is much looser
+than usual. For example, if the parameters of a DP policy are tuned for OAMC
+security, but both Aggregators are corrupted by the attacker, then the noise
+added by the Client may not be sufficient to protect the measurement.
 
 # DP Mechanisms {#mechanisms}
 
@@ -533,7 +668,7 @@ Pierre Tholoniat
 Columbia University
 pierre@cs.columbia.edu
 
-# Overview of Differential Privacy
+# Overview of Differential Privacy {#dp-explainer}
 
 Differential privacy is a set of techniques used to protect the privacy of
 individuals when analyzing user's data. It provides a mathematical framework
