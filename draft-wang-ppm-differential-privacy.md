@@ -515,9 +515,30 @@ class DpPolicy:
         pass
 ~~~
 
-## Concrete Instantiations of DP Policies with VDAFs
+## Executing DP Policies in DAP {#dp-in-dap}
 
-### Prio3SumVec, `bits = 1`, with Randomized Response Client-DP
+> TODO: Specify integration of a `DpPolicy` into DAP.
+
+# Use Cases
+
+## Histograms
+
+Many applications require aggregating histograms in which each Client submits a
+bit vector with exactly one bit set. We describe two policies for this use
+case: one which targets the OAMC trust model and provides optimal utility [JC:
+Prove this with numbers]; and another which targets the more stringent OAOC
+trust model and provides sub-optimal utility.
+
+### Prio3Histogram with Client-DP
+
+> TODO Figure out if there is a way to endow Prio3Histogram with local DP
+> without modifying it.
+>
+> If so, specify a policy that targets OAMC trust model.
+>
+> If not, decide whether to use Prio3SumVec or specify a Prio3 variant that
+> suffices for https://github.com/cfrg/draft-irtf-cfrg-vdaf/issues/287 and
+> specify a policy for it.
 
 Client-DP allows Clients to protect their privacy by adding noise to their
 measurements directly, as described in {{levels}}. Analyses ({{FMT20}} and
@@ -597,10 +618,11 @@ class Prio3SumVecWithRandomizedResponse:
 > TODO(issue #10): replace `rr_mechanism` once we have concretely defined
 > it in {{rr}}.
 
-### Prio3Histogram with Discrete Gaussian
 
-For Prio3Histogram, we will apply an Aggregator-only DP mechanism,
-that is implemented with discrete Gaussian.
+### Prio3Histogram with Aggregator-DP
+
+> TODO Describe a policy that is compatible with Prio3Histogram and that
+> targets the OAOC trust model.
 
 ~~~
 class Prio3HistogramWithDiscreteGaussian:
@@ -658,10 +680,6 @@ class Prio3HistogramWithDiscreteGaussian:
 
 > TODO(issue #10): replace `dgauss_mechanism` once we have concretely defined
 > it in {{discrete-gaussian}}.
-
-# Executing DP Policies in DAP {#dp-in-dap}
-
-> TODO: Specify integration of a `DpPolicy` into DAP.
 
 # Security Considerations
 
