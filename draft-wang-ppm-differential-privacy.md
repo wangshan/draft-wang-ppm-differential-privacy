@@ -28,11 +28,11 @@ author:
     fullname: Junye Chen
     organization: Apple Inc.
     email: "junyec@apple.com"
-
+ -
     fullname: Christopher Patton
     organization: Cloudflare
     email: "chrispatton+ietf@gmail.com"
-
+ -
     fullname: Shan Wang
     organization: Apple Inc.
     email: "shan_wang@apple.com"
