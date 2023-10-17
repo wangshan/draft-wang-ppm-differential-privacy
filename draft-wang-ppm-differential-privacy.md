@@ -418,29 +418,34 @@ Therefore, we define three methods for an interface `DpMechanism`:
 
 ~~~
 class DpMechanism:
-    DataType
-    DebiasedDataType
+    # The data type applicable to this `DpMechanism`. The type is the
+    # same for the noised data and the un-noised data.
+    DataType = None
+    # Debiased data type after removing bias added by the noise. For
+    # most of the mechanisms, `DebiasedDataType == DataType`.
+    DebiasedDataType = None
 
     def add_noise(self, data: DataType) -> DataType:
         """Add noise to a piece of input data. """
-        pass
+        raise NotImplementedError()
 
-    def sample_noise(self, num_reps: int, dimension: int) -> DataType:
+    def sample_noise(self, dimension: int) -> DataType:
         """
-        Sample noise for `num_reps` number of times,
-        with `dimension`.
+        Sample noise with the initialized `DpMechanism`. `dimension`
+        is used to determine the length of the output if `DataType` is
+        a list.
         """
-        pass
+        raise NotImplementedError()
 
     def debias(self,
-               agg: DataType,
+               data: DataType,
                meas_count: int) -> DebiasedDataType:
         """
-        Debias the data due to the added noise.
-        This doesn't apply to all noises. Some Client-DP mechanisms
-        need this functionality.
+        Debias the data due to the added noise, based on the number of
+        measurements `meas_count`. This doesn't apply to all DP
+        mechanisms. Some Client-DP mechanisms need this functionality.
         """
-        pass
+        return data
 ~~~
 
 ## Discrete Laplace
@@ -475,44 +480,44 @@ policy for a VDAF, and enforces the DP guarantee.
 
 ~~~
 class DpPolicy:
-    Measurement
-    AggregateShare
-    AggregateResult
-    DebiasedAggregateResult
+    # Client measurement type.
+    Measurement = None
+    # Aggregate share type, owned by an Aggregator.
+    AggShare = None
+    # Aggregate result type, unsharded result from all Aggregators.
+    AggResult = None
+    # Debiased aggregate result type.
+    DebiasedAggResult = None
 
     def add_noise_to_measurement(self,
                                  meas: Measurement,
                                  ) -> Measurement:
         """
         Add noise to measurement, if required by the Client-DP
-        mechanism.
+        mechanism. The default implementation is to do nothing.
         """
-        pass
+        return meas
 
     def add_noise_to_agg_share(self,
-                               agg_share: AggregateShare,
-                               meas_count: Unsigned,
-                               min_batch_size: Unsigned,
-                               ) -> AggregateShare:
+                               agg_share: AggShare,
+                               ) -> AggShare:
         """
         Add noise to aggregate share, if required by the Aggregator-DP
-        mechanism.
+        mechanism. The default implementation is to do nothing.
         """
-        pass
+        return agg_share
 
     def debias_agg_result(self,
-                          agg_result: AggregateResult,
-                          meas_count: Unsigned,
-                          min_batch_size: Unsigned,
-                          num_aggregators: Unsigned,
-                          ) -> DebiasedAggregateResult:
+                          agg_result: AggResult,
+                          meas_count: int,
+                          ) -> DebiasedAggResult:
         """
         Debias aggregate result, if any of the Client- or
-        Aggregator-DP mechanism requires this operation,
-        based on the number of measurements, minimum batch size,
-        and the number of Aggregators.
+        Aggregator-DP mechanism requires this operation, based on the
+        number of measurements `meas_count`. The default
+        implementation is to do nothing.
         """
-        pass
+        return agg_result
 ~~~
 
 ## Executing DP Policies in DAP {#dp-in-dap}
