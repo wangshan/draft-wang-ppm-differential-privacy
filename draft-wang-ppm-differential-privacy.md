@@ -161,57 +161,69 @@ informative:
   EFMR+20:
     title: "Encode, Shuffle, Analyze Privacy Revisited: Formalizations and Empirical Evaluation"
     author:
-      - ins: Úlfar Erlingsson
-      - ins: Vitaly Feldman
-      - ins: Ilya Mironov
-      - ins: Ananth Raghunathan
-      - ins: Shuang Song
-      - ins: Kunal Talwar
-      - ins: Abhradeep Thakurta
+      - ins: Ú. Erlingsson
+      - ins: V. Feldman
+      - ins: I. Mironov
+      - ins: A. Raghunathan
+      - ins: S. Song
+      - ins: K. Talwar
+      - ins: A. Thakurta
     date: 2020
     target: https://arxiv.org/abs/2001.03618
 
   TWMJ+23:
     title: "Samplable Anonymous Aggregation for Private Federated Data Analysis"
     author:
-      - ins: Kunal Talwar
-      - ins: Shan Wang
-      - ins: Audra McMillan
-      - ins: Vojta Jina
-      - ins: Vitaly Feldman
-      - ins: Bailey Basile
-      - ins: Aine Cahill
-      - ins: Yi Sheng Chan
-      - ins: Mike Chatzidakis
-      - ins: Junye Chen
-      - ins: Oliver Chick
-      - ins: Mona Chitnis
-      - ins: Suman Ganta
-      - ins: Yusuf Goren
-      - ins: Filip Granqvist
-      - ins: Kristine Guo
-      - ins: Frederic Jacobs
-      - ins: Omid Javidbakht
-      - ins: Albert Liu
-      - ins: Richard Low
-      - ins: Dan Mascenik
-      - ins: Steve Myers
-      - ins: David Park
-      - ins: Wonhee Park
-      - ins: Gianni Parsa
-      - ins: Tommy Pauly
-      - ins: Christian Priebe
-      - ins: Rehan Rishi
-      - ins: Guy Rothblum
-      - ins: Michael Scaria
-      - ins: Linmao Song
-      - ins: Congzheng Song
-      - ins: Karl Tarbe
-      - ins: Sebastian Vogt
-      - ins: Luke Winstrom
-      - ins: Shundong Zhou
+      - ins: K. Talwar
+      - ins: S. Wang
+      - ins: A. McMillan
+      - ins: V. Jina
+      - ins: V. Feldman
+      - ins: B. Basile
+      - ins: A. Cahill
+      - ins: Y. Chan
+      - ins: M. Chatzidakis
+      - ins: J. Chen
+      - ins: O. Chick
+      - ins: M. Chitnis
+      - ins: S. Ganta
+      - ins: Y. Goren
+      - ins: F. Granqvist
+      - ins: K. Guo
+      - ins: F. Jacobs
+      - ins: O. Javidbakht
+      - ins: A. Liu
+      - ins: R. Low
+      - ins: D. Mascenik
+      - ins: S. Myers
+      - ins: D. Park
+      - ins: W. Park
+      - ins: G. Parsa
+      - ins: T. Pauly
+      - ins: C. Priebe
+      - ins: R. Rishi
+      - ins: G. Rothblum
+      - ins: M. Scaria
+      - ins: L. Song
+      - ins: C. Song
+      - ins: K. Tarbe
+      - ins: S. Vogt
+      - ins: L. Winstrom
+      - ins: S. Zhou
     date: 2023
     target: https://arxiv.org/abs/2307.15017
+
+  BW18:
+    title: "Improving the Gaussian Mechanism for Differential Privacy: Analytical Calibration and Optimal Denoising"
+    author:
+      - ins: B. Balle
+      - ins: Y. Wang
+    date: 2018
+    target: https://arxiv.org/abs/1805.06530
+
+  AGM:
+    title: "analytic-gaussian-mechanism"
+    target: https://github.com/BorjaBalle/analytic-gaussian-mechanism
 
 
 --- abstract
@@ -390,6 +402,20 @@ properties, but are not pure-DP. See {{mechanisms}} for details.
 Other variants of DP are possible; see the literature review in
 {{dp-explainer}} for details.
 
+## Sensitivity
+
+Differential privacy noise sometimes needs to be calibered based on the
+`SENSITIVITY` of an aggregation function used to compute the aggregate result
+over Client measurements. Sensitivity characterizes how much a change in a
+Client measurement can affect the aggregate result. In this document, we focus on
+the L1 and L2 sensitivity. We define them as a function over two neighboring
+Client measurements:
+
+* L1 sensitivity: the sum of the absolute values of differences at all coordinates
+  of the neighboring Client measurements.
+* L2 sensitivity: the sum of the squares of the differences at all coordinates of
+  the neighboring Client measurements.
+
 ## Trust Models
 
 When considering whether a given DP policy is sufficient for DAP, it is not
@@ -517,11 +543,11 @@ class DpMechanism:
 
 ## Discrete Laplace
 
-> TODO: Specify a Laplace sampler
+> TODO: Specify a Laplace sampler from Algorithm 2 of {{CKS20}} (#10).
 
 ## Discrete Gaussian {#discrete-gaussian}
 
-> TODO: Specify a Gaussian sampler
+> TODO: Specify a Gaussian sampler from Algorithm 3 of {{CKS20}} (#10).
 
 ## Binary Randomized Response {#rr}
 
@@ -783,9 +809,10 @@ bit vector with exactly one bit set, also known as, "one-hot vector". We
 describe two policies that achieve `(EPSILON, DELTA)`-DP on this use case: one
 which uses only a Client-DP mechanism and targets the OAMC trust model, and
 another which uses only an Aggregator-DP mechanism and targets the more
-stringent OAOC trust model. We will then compare the utility of both policies in
-different settings of `EPSILON` and `DELTA`, which can be tuned to provide
-different levels of DP guarantee.
+stringent OAOC trust model. We discover that both policies in different
+settings of `EPSILON` and `DELTA` provide comparable utility, except that the
+policy in the OAOC trust model requires all Aggregators to independently add
+noise, so we lose some utility when more than one Aggregator is honest.
 
 ### Prio3MultiHotHistogram with Client-DP
 
@@ -798,7 +825,7 @@ different levels of DP guarantee.
 
 Client-DP allows Clients to protect their privacy by adding noise to their
 measurements directly, as described in {{levels}}. Analyses ({{FMT20}} and
-{{FMT22}}) have shown that, under OAMC trust model, we get good
+{{FMT22}}) have shown that, in the OAMC trust model, we get good
 `(EPSILON, DELTA)`-DP, by aggregating noisy Clients' measurements with
 Client-DP. In this policy, we will describe how to achieve
 `(EPSILON, DELTA)`-DP, with binary randomized response Client-DP mechanism,
@@ -814,6 +841,7 @@ response Client-DP to its measurement, and contributes the noisy measurement
 to the batch. The `(EPSILON, DELTA)`-DP degrades gracefully as the number of
 honest Clients decreases, i.e., we can still achieve `(EPSILON', DELTA)`-DP,
 where `EPSILON'` is larger than `EPSILON`.
+
 > TODO(junyechen1996): Justify why RR with `EPSILON_0` + `batch_size` can
 > achieve `(EPSILON, DELTA)`-DP in the aggregate result.
 
@@ -884,65 +912,126 @@ in order to achieve various combinations of `(EPSILON, DELTA)`-DP.
 
 ### Prio3Histogram with Aggregator-DP
 
-> TODO Describe a policy that is compatible with Prio3Histogram and that
-> targets the OAOC trust model.
+Aggregator-DP requires Aggregators to add noise to their aggregate shares before
+outputting them. In the OAOC trust model, we can achieve good `EPSILON`-DP, or
+`(EPSILON, DELTA)`-DP, as long as at least one of the Aggregators is honest. The
+amount of noise needed by Aggregator-DP typically depends on the target DP
+parameters `EPSILON` and `DELTA`, and also the `SENSITIVITY` {{sensitivity}} of
+the aggregation function.
+
+In this section, we describe how to achieve `(EPSILON, DELTA)`-DP for
+`Prio3Histogram` {{Section 7.4.4 of !VDAF}} by asking each Aggregator to
+independently add discrete Gaussian noise to its aggregate share.
+
+#### Discrete Gaussian Mechanism for Aggregator-DP
+
+We use the discrete Gaussian mechanism described in {{discrete-gaussian}}, which
+has a mean of 0, and is initialized with a `SIGMA` parameter that stands for the
+standard deviation of the Gaussian distribution. In order to achieve
+`(EPSILON, DELTA)`-DP in the OAOC trust model, all Aggregators need to
+independently add discrete Gaussian noise to all coordinates of their aggregate
+shares.
+
+Theorem 8 in {{BW18}} shows how to compute `SIGMA` parameter for continuous
+Gaussian, based on the given `(EPSILON, DELTA)`-DP parameters and
+L2-sensitivity, and Theorem 7 in {{CKS20}} shows a similar result for discrete
+Gaussian. In a histogram use case where each Client submits an one-hot vector,
+the L2-sensitivity is `sqrt(2)`, because transforming an one-hot vector into
+another will affect two coordinates, e.g., transforming an one-hot vector
+`[1, 0]` to `[0, 1]` changes L2-sensitivity by
+`sqrt((1 - 0)^2 + (0 - 1)^2) = sqrt(2)`. Algorithm 1 in {{BW18}} elaborates on
+how to compute `SIGMA`, and we will refer to the calculation in the open sourced
+code {{AGM}}.
+
+> JC: We will need to provide an explanation of the parameter calculation in
+> the draft itself, instead of merely referring to the code.
+
+> JC: {{CKS20}} mentions in Theorem 7 about the approximate-DP guarantee
+> achieved by discrete {{CKS20}} and continuous Gaussian {{BW18}} that:
+> The discrete and continuous Gaussian attain almost identical guarantees for
+> large `SIGMA`, but the discretization creates a small difference that becomes
+> apparent for small `SIGMA`.
+> Therefore, if we use Algorithm 1 from {{BW18}}, we will need to be careful
+> when `SIGMA` is small, i.e., the desired `(EPSILON, DELTA)`-DP is weak.
+
+> JC: It's also worth exploring the utility of discrete Gaussian proven by
+> Definition 3 in {{CKS20}}, which defines the concentrated-DP achieved by
+> discrete Gaussian. Concentrated-DP is then converted to approximate-DP, which
+> is our target here. As a first draft, we won't overwhelm readers with other
+> types of DP.
 
 ~~~
-class Prio3HistogramWithDiscreteGaussian:
-    Measurement = Unsigned
-    AggregateShare = Vec[Field]
-    AggregateResult = Vec[int]
-    DebiasedAggregateResult = AggregateResult
+class HistogramWithAggregatorDp(DpPolicy):
+    Field = Histogram.Field
+    # A measurement is an unsigned integer, indicating an index less
+    # than `Histogram.length`.
+    Measurement = Histogram.Measurement
+    AggShare = list[Field]
+    AggResult = Histogram.AggResult
+    # The final aggregate result should be a vector of signed
+    # integers, because discrete Gaussian could produce negative
+    # noise that may have a larger absolute value than the count
+    # before noise.
+    DebiasedAggResult = list[int]
 
-    def __init__(self,
-                 dgauss_mechanism: DpMechanism,
-                 ):
-        self.dgauss_mechanism = dgauss_mechanism
-
-    def add_noise_to_measurement(self,
-                                 meas: Measurement,
-                                 ) -> Measurement:
-        """
-        No Client-DP here.
-        """
-        return meas
+    def __init__(self, epsilon: float, delta: float):
+        # TODO(junyechen1996): Consider using fixed precision or large
+        # decimal for parameters like `epsilon` and `delta`. (#23)
+        # Transforming an one-hot vector into another will affect two
+        # coordinates, e.g. from [1, 0, 0] to [0, 1, 0], so the change
+        # in L2-sensitivity is `sqrt(1 + 1) = sqrt(2)`.
+        dgauss_sigma = agm.calibrateAnalyticGaussianMechanism(
+            epsilon, delta, math.sqrt(2.0)
+        )
+        self.dgauss_mechanism = \
+            DiscreteGaussianWithZeroMean(dgauss_sigma)
 
     def add_noise_to_agg_share(self,
-                               agg_share: AggregateShare,
-                               meas_count: Unsigned,
-                               min_batch_size: Unsigned,
-                               ) -> AggregateShare:
+                               agg_share: AggShare,
+                               ) -> AggShare:
         """
-        Sample discrete Gaussian noise, and merge it with
+        Sample discrete Gaussian noise, and merge it with the
         aggregate share.
         """
-        # Sample the noise once, with length equal to the length
-        # of aggregate share.
-        noise_vec = self.dgauss_mechanism.sample_noise(
-            1, len(agg_share)
-        )
+        noise_vec = self.dgauss_mechanism.sample_noise(len(agg_share))
         result = []
-        for i in range(len(agg_share)):
-            noise = noise_vec[i]
-            if noise < 0:
-                noise = Field.MODULUS + noise
-            result.append(agg_share[i] + Field(noise))
+        for (agg_share_i, noise_vec_i) in zip(agg_share, noise_vec):
+            if noise_vec_i < 0:
+                noise_vec_i = Field.MODULUS + noise_vec_i
+            result.append(agg_share_i + self.Field(noise_vec_i))
         return result
 
     def debias_agg_result(self,
-                          agg_result: AggregateResult,
-                          meas_count: Unsigned,
-                          min_batch_size: Unsigned,
-                          num_aggregators: Unsigned,
-                          ) -> DebiasedAggregateResult:
-        """
-        No debiasing.
-        """
+                          agg_result: AggResult,
+                          meas_count: int,
+                          ) -> DebiasedAggResult:
+        # TODO(junyechen1996): Interpret large unsigned integers as
+        # negative values or 0 properly. For now, directly return it,
+        # since we haven't fully implemented discrete Gaussian
+        # mechanism (#10).
         return agg_result
 ~~~
 
-> TODO(issue #10): replace `dgauss_mechanism` once we have concretely defined
-> it in {{discrete-gaussian}}.
+#### Utility
+
+We will demonstrate the utility of this policy in the table below in terms of
+the standard deviation `SIGMA` in discrete Gaussian needed to achieve various
+combinations of `(EPSILON, DELTA)`-DP, based on the open-sourced code in
+{{AGM}}.
+
+It's worth noting that if more than one Aggregator is honest, we will lose some
+utility because each Aggregator is independently adding noise. The standard
+deviation in the aggregate result thus becomes `SIGMA * sqrt(c)`, where `c` is
+the number of honest Aggregators. In the table below, the numbers in
+"Standard deviation" column assume `c = 2`. The numbers in
+"Standard deviation (OAOC)" column assume only one Aggregator is honest.
+
+| `EPSILON`       | `DELTA`     | Standard deviation    | Standard deviation (OAOC) |
+|:----------------|:------------|:----------------------|:--------------------------|
+| 0.317           | 1e-9        | 33.0788               | 23.3903                   |
+| 0.906           | 1e-9        | 12.0777               | 8.5402                    |
+| 1.528           | 1e-9        | 7.3403                | 5.1904                    |
+{: #histogram-aggregator-dp title="Utility of Pure Aggregator-DP for histogram use case."}
 
 # Security Considerations
 
@@ -1080,10 +1169,6 @@ idea to measure the output distribution divergence of querying two adjacent
 databases.
 
 One can compose multiple zCDP guarantees, per Lemma 1.7 of {{BS16}}.
-
-## Sensitivity
-
-> TODO: Chris P to fill: sensitivity, l1 vs l2
 
 ## Data type and Noise type
 
