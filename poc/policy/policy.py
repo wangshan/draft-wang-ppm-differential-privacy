@@ -34,8 +34,8 @@ class DpPolicy:
                                  meas: Measurement,
                                  ) -> Measurement:
         """
-        Add noise to measurement, if required by the Client-DP mechanism.
-        The default implementation is to do nothing.
+        Add noise to measurement, if required by the Client randomization
+        mechanism. The default implementation is to do nothing.
         """
         return meas
 
@@ -43,8 +43,8 @@ class DpPolicy:
                                agg_share: AggShare,
                                ) -> AggShare:
         """
-        Add noise to aggregate share, if required by the Aggregator-DP mechanism.
-        The default implementation is to do nothing.
+        Add noise to aggregate share, if required by the Aggregator
+        randomization mechanism. The default implementation is to do nothing.
         """
         return agg_share
 
@@ -53,9 +53,10 @@ class DpPolicy:
                           meas_count: int,
                           ) -> DebiasedAggResult:
         """
-        Debias aggregate result, if any of the Client- or Aggregator-DP
-        mechanism requires this operation, based on the number of measurements
-        `meas_count`. The default implementation is to do nothing.
+        Debias aggregate result, if either of the Client or Aggregator
+        randomization mechanism requires this operation, based on the number
+        of measurements `meas_count`. The default implementation is to do
+        nothing.
         """
         return agg_result
 
@@ -99,7 +100,8 @@ def run_dp_policy_with_vdaf(
             'out_shares': [],
         }
 
-        # Each Client adds Client-DP noise to its measurement.
+        # Each Client adds Client randomization noise to its
+        # measurement.
         noisy_measurement = \
             dp_policy.add_noise_to_measurement(measurement)
         # Each Client shards its measurement into input shares.
@@ -172,9 +174,9 @@ def run_dp_policy_with_vdaf(
 
     num_measurements = len(measurements)
     # Each Aggregator aggregates its output shares into an
-    # aggregate share, and adds any Aggregator-DP noise to its
-    # aggregate share. In a distributed VDAF computation, the
-    # aggregate shares are sent over the network.
+    # aggregate share, and adds any Aggregator randomization
+    # mechanism to its aggregate share. In a distributed VDAF
+    # computation, the aggregate shares are sent over the network.
     agg_shares = []
     for j in range(Vdaf.SHARES):
         out_shares_j = [out[j] for out in out_shares]
