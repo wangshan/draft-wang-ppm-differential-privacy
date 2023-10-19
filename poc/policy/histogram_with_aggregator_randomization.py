@@ -1,6 +1,6 @@
 """
-A policy that uses only Aggregator-DP to achieve central `(EPSILON, DELTA)`-DP
-in the OAOC trust model.
+A policy that uses only Aggregator randomization to achieve
+`(EPSILON, DELTA)`-DP in the OAOC trust model.
 
 Each Aggregator independently adds discrete Gaussian noise to its aggregate
 share, so that as long as at least one Aggregator is honest, the final
@@ -35,7 +35,7 @@ from discrete_gaussian import DiscreteGaussianWithZeroMean
 from policy import DpPolicy, run_dp_policy_with_vdaf
 
 
-class HistogramWithAggregatorDp(DpPolicy):
+class HistogramWithAggregatorRandomization(DpPolicy):
     Field = Histogram.Field
     # A measurement is an unsigned integer, indicating an index less than
     # `Histogram.length`.
@@ -84,10 +84,10 @@ class HistogramWithAggregatorDp(DpPolicy):
 
 
 def test():
-    # DP policy with Aggregator-DP only.
+    # DP policy with Aggregator randomization only.
     # Expect this to fail before `DiscreteGaussianWithZeroMean` is fully
     # implemented.
-    dp_policy = HistogramWithAggregatorDp(0.03, 1e-9)
+    dp_policy = HistogramWithAggregatorRandomization(0.03, 1e-9)
 
     dimension = 50
     # Prio3Histogram VDAF with length = dimension, and chunk_length = 10.

@@ -1,9 +1,9 @@
 """
-A policy that uses only Client-DP to achieve central `(EPSILON, DELTA)`-DP in
+A policy that uses only Client randomization to achieve `(EPSILON, DELTA)`-DP in
 the OAMC trust model.
 
-Each Client adds binary randomized response noise with pure `EPSILON_0`-DP. With
-the target `batch_size` number of honest Clients, the final aggregate result is
+Each Client adds symmetric RAPPOR with pure `EPSILON_0`-DP. With the target
+`batch_size` number of honest Clients, the final aggregate result is
 `(EPSILON, DELTA)`-DP. If the number of Clients does not meet `batch_size`, the
 batch will be dropped.
 """
@@ -24,56 +24,56 @@ sys.path.append(os.path.join(dir_name, "draft-irtf-cfrg-vdaf", "poc"))
 from flp_generic import MultiHotHistogram
 from vdaf_prio3 import Prio3MultiHotHistogram
 
-from binary_randomized_response import BinaryRandomizedResponse
+from symmetric_rappor import SymmetricRappor
 from policy import DpPolicy, run_dp_policy_with_vdaf
 
 
-class MultiHotHistogramWithClientDp(DpPolicy):
+class MultiHotHistogramWithClientRandomization(DpPolicy):
     Field = MultiHotHistogram.Field
     Measurement = MultiHotHistogram.Measurement
     AggShare = list[Field]
     AggResult = MultiHotHistogram.AggResult
-    DebiasedAggResult = BinaryRandomizedResponse.DebiasedDataType
+    DebiasedAggResult = SymmetricRappor.DebiasedDataType
 
     def __init__(self, eps0: float):
         # TODO(junyechen1996): Justify how eps0 + batch_size can achieve
         # `(EPSILON, DELTA)`-DP.
-        self.rr = BinaryRandomizedResponse(eps0)
+        self.rappor = SymmetricRappor(eps0)
 
     def add_noise_to_measurement(self,
                                  meas: Measurement,
                                  ) -> Measurement:
-        return self.rr.add_noise(meas)
+        return self.rappor.add_noise(meas)
 
     def debias_agg_result(self,
                           agg_result: AggResult,
                           meas_count: int,
                           ) -> DebiasedAggResult:
-        return self.rr.debias(agg_result, meas_count)
+        return self.rappor.debias(agg_result, meas_count)
 
 
 def compute_max_count_for_multi_hot_histogram(
-    rr: BinaryRandomizedResponse,
+    rappor: SymmetricRappor,
     dimension: int,
     false_positive_rate: float,
 ):
     # As specified in {{client-dp-vdaf-robustness}}, we will compute the
     # maximum count of 1s in the noisy Client measurement, `max_count`,
     # such that, for the binomial random variable `C` with number of trials as
-    # `dimension - 1`, and probability as `rr.p`, the cumulative distribution
-    # function (CDF) satisfies:
+    # `dimension - 1`, and probability as `rappor.p`, the cumulative
+    # distribution function (CDF) satisfies:
     # `Pr(C <= max_count - 1) >= 1 - false_positive_rate`.
     #
     # We will use the inverse survival function with a survival probability
     # of `false_positive_rate`, for the binomial random variable `C`.
-    return round(binom.isf(false_positive_rate, dimension - 1, rr.p)) + 1
+    return round(binom.isf(false_positive_rate, dimension - 1, rappor.p)) + 1
 
 
 def test():
-    # DP policy with Client-DP only.
+    # DP policy with Client randomization only.
     # Note the parameters are only used for testing, and doesn't provide any
     # meaningful DP guarantee.
-    dp_policy = MultiHotHistogramWithClientDp(8.0)
+    dp_policy = MultiHotHistogramWithClientRandomization(8.0)
     dimension = 50
     batch_size = 20
 
@@ -81,7 +81,7 @@ def test():
     # `min_batch_size` number of Clients.
     false_positive_rate = 1.0 / (10 * batch_size)
     max_count = compute_max_count_for_multi_hot_histogram(
-        dp_policy.rr, dimension, false_positive_rate
+        dp_policy.rappor, dimension, false_positive_rate
     )
     # Prio3MultiHotHistogram VDAF with length = dimension,
     # max_count = max_count, and chunk_length = 10.

@@ -1,5 +1,6 @@
 """
-Binary randomized response mechanism from Appendix C.1 in
+Symmetric RAPPOR that was first proposed in https://arxiv.org/abs/1407.6981.
+We implement the version from Appendix C.1 in
 https://arxiv.org/pdf/2211.10082.pdf.
 """
 
@@ -9,7 +10,7 @@ import random
 from mechanism import DpMechanism
 
 
-class BinaryRandomizedResponse(DpMechanism):
+class SymmetricRappor(DpMechanism):
     DataType = list[int]
     # Debiasing produces an array of floats.
     DebiasedDataType = list[float]
@@ -47,7 +48,7 @@ class BinaryRandomizedResponse(DpMechanism):
 
 
 def test():
-    rr = BinaryRandomizedResponse(8.0)
+    rr = SymmetricRappor(8.0)
     measurement = [0, 1, 0, 1]
     noised_measurement = rr.add_noise(measurement)
     assert(all(val in [0, 1] for val in noised_measurement))

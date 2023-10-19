@@ -30,6 +30,6 @@ class DpMechanism:
         """
         Debias the data due to the added noise, based on the number of
         measurements `meas_count`. This doesn't apply to all DP mechanisms.
-        Some Client-DP mechanisms need this functionality.
+        Some Client randomization mechanisms need this functionality.
         """
         return data
