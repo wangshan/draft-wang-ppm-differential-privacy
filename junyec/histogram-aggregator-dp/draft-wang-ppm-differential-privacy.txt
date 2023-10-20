@@ -5,10 +5,10 @@
 Privacy Preserving Measurement                                   J. Chen
 Internet-Draft                                                Apple Inc.
 Intended status: Informational                                 C. Patton
-Expires: 21 April 2024                                        Cloudflare
+Expires: 22 April 2024                                        Cloudflare
                                                                  S. Wang
                                                               Apple Inc.
-                                                         19 October 2023
+                                                         20 October 2023
 
 
                 Differential Privacy Mechanisms for DAP
@@ -51,7 +51,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 April 2024.
+   This Internet-Draft will expire on 22 April 2024.
 
 Copyright Notice
 
@@ -299,8 +299,8 @@ Table of Contents
    result.  In this document, we focus on the L1 and L2 sensitivity.  We
    define them as a function over two neighboring Client measurements:
 
-   *  L1 sensitivity: the sum of absolute values of differences at all
-      coordinates of the neighboring Client measurements.
+   *  L1 sensitivity: the sum of the absolute values of differences at
+      all coordinates of the neighboring Client measurements.
 
    *  L2 sensitivity: the sum of squares of the differences at all
       coordinates of the neighboring Client measurements.
