@@ -2193,7 +2193,7 @@ class HistogramWithAggregatorDp(DpPolicy):
                                agg_share: AggShare,
                                ) -&gt; AggShare:
         """
-        Sample discrete Gaussian noise, and merge it with aggregate
+        Sample discrete Gaussian noise, and merge it with the aggregate
         share.
         """
         noise_vec = self.dgauss_mechanism.sample_noise(len(agg_share))

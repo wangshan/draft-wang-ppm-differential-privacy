@@ -862,55 +862,55 @@ Table of Contents
    recommend how to interpret large > unsigned integers as negative
    noise from Gaussian, after VDAF aggregation.
 
-  class HistogramWithAggregatorDp(DpPolicy):
-      Field = Histogram.Field
-      # A measurement is an unsigned integer, indicating an index
-      # less than `Histogram.length`.
-      Measurement = Histogram.Measurement
-      AggShare = list[Field]
-      AggResult = Histogram.AggResult
-      # The final aggregate result should be a vector of signed
-      # integers, because discrete Gaussian could produce negative
-      # noise that may have a larger absolute value than the count
-      # before noise.
-      DebiasedAggResult = list[int]
+ class HistogramWithAggregatorDp(DpPolicy):
+     Field = Histogram.Field
+     # A measurement is an unsigned integer, indicating an index
+     # less than `Histogram.length`.
+     Measurement = Histogram.Measurement
+     AggShare = list[Field]
+     AggResult = Histogram.AggResult
+     # The final aggregate result should be a vector of signed
+     # integers, because discrete Gaussian could produce negative
+     # noise that may have a larger absolute value than the count
+     # before noise.
+     DebiasedAggResult = list[int]
 
-      def __init__(self, epsilon: float, delta: float):
-          # TODO(junyechen1996): Consider using fixed precision or large
-          # decimal for parameters like `epsilon` and `delta`. (#23)
-          # Transforming a one-hot vector into another will affect two
-          # coordinates, so the change in L2-sensitivity is
-          # `sqrt(1 + 1) = sqrt(2)`.
-          dgauss_sigma = agm.calibrateAnalyticGaussianMechanism(
-              epsilon, delta, math.sqrt(2.0)
-          )
-          self.dgauss_mechanism = \
-              DiscreteGaussianWithZeroMean(dgauss_sigma)
+     def __init__(self, epsilon: float, delta: float):
+         # TODO(junyechen1996): Consider using fixed precision or large
+         # decimal for parameters like `epsilon` and `delta`. (#23)
+         # Transforming a one-hot vector into another will affect two
+         # coordinates, so the change in L2-sensitivity is
+         # `sqrt(1 + 1) = sqrt(2)`.
+         dgauss_sigma = agm.calibrateAnalyticGaussianMechanism(
+             epsilon, delta, math.sqrt(2.0)
+         )
+         self.dgauss_mechanism = \
+             DiscreteGaussianWithZeroMean(dgauss_sigma)
 
-      def add_noise_to_agg_share(self,
-                                 agg_share: AggShare,
-                                 ) -> AggShare:
-          """
-          Sample discrete Gaussian noise, and merge it with aggregate
-          share.
-          """
-          noise_vec = self.dgauss_mechanism.sample_noise(len(agg_share))
-          result = []
-          for (agg_share_i, noise_vec_i) in zip(agg_share, noise_vec):
-              if noise_vec_i < 0:
-                  noise_vec_i = Field.MODULUS + noise_vec_i
-              result.append(agg_share_i + self.Field(noise_vec_i))
-          return result
+     def add_noise_to_agg_share(self,
+                                agg_share: AggShare,
+                                ) -> AggShare:
+         """
+         Sample discrete Gaussian noise, and merge it with the aggregate
+         share.
+         """
+         noise_vec = self.dgauss_mechanism.sample_noise(len(agg_share))
+         result = []
+         for (agg_share_i, noise_vec_i) in zip(agg_share, noise_vec):
+             if noise_vec_i < 0:
+                 noise_vec_i = Field.MODULUS + noise_vec_i
+             result.append(agg_share_i + self.Field(noise_vec_i))
+         return result
 
-      def debias_agg_result(self,
-                            agg_result: AggResult,
-                            meas_count: int,
-                            ) -> DebiasedAggResult:
-          # TODO(junyechen1996): Interpret large unsigned integers as
-          # negative values or 0 properly. For now, directly return it,
-          # since we haven't fully implemented discrete Gaussian
-          # mechanism (#10).
-          return agg_result
+     def debias_agg_result(self,
+                           agg_result: AggResult,
+                           meas_count: int,
+                           ) -> DebiasedAggResult:
+         # TODO(junyechen1996): Interpret large unsigned integers as
+         # negative values or 0 properly. For now, directly return it,
+         # since we haven't fully implemented discrete Gaussian
+         # mechanism (#10).
+         return agg_result
 
 6.1.2.3.  Utility
 
