@@ -878,7 +878,7 @@ Table of Contents
       def __init__(self, epsilon: float, delta: float):
           # TODO(junyechen1996): Consider using fixed precision or large
           # decimal for parameters like `epsilon` and `delta`. (#23)
-          # Changing one-hot vector to another will affect two
+          # Transforming a one-hot vector into another will affect two
           # coordinates, so the change in L2-sensitivity is
           # `sqrt(1 + 1) = sqrt(2)`.
           dgauss_sigma = agm.calibrateAnalyticGaussianMechanism(
