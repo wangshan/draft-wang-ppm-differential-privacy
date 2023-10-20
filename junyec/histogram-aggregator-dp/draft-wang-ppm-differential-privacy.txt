@@ -740,9 +740,10 @@ Table of Contents
    measurement, and contributes the noisy measurement to the batch.  The
    (EPSILON, DELTA)-DP degrades gracefully as the number of honest
    Clients decreases, i.e., we can still achieve (EPSILON', DELTA)-DP,
-   where EPSILON' is larger than EPSILON. > TODO(junyechen1996): Justify
-   why RR with EPSILON_0 + batch_size can > achieve (EPSILON, DELTA)-DP
-   in the aggregate result.
+   where EPSILON' is larger than EPSILON.
+
+      TODO(junyechen1996): Justify why RR with EPSILON_0 + batch_size
+      can achieve (EPSILON, DELTA)-DP in the aggregate result.
 
 6.1.1.2.  VDAF Robustness
 
@@ -1000,9 +1001,9 @@ Table of Contents
               Privacy: Simplifications, Extensions, and Lower Bounds",
               2016, <https://arxiv.org/abs/1605.02065>.
 
-   [BW18]     Borja Balle and Yu-Xiang Wang, "Improving the Gaussian
-              Mechanism for Differential Privacy: Analytical Calibration
-              and Optimal Denoising", 2018,
+   [BW18]     Balle, B. and Y. Wang, "Improving the Gaussian Mechanism
+              for Differential Privacy: Analytical Calibration and
+              Optimal Denoising", 2018,
               <https://arxiv.org/abs/1805.06530>.
 
    [CKS20]    Canonne, C. L., Kamath, G., and T. Steinke, "The Discrete
@@ -1019,11 +1020,10 @@ Table of Contents
               <https://www.cis.upenn.edu/~aaroth/Papers/
               privacybook.pdf>.
 
-   [EFMR_20]  Úlfar Erlingsson, Vitaly Feldman, Ilya Mironov, Ananth
-              Raghunathan, Shuang Song, Kunal Talwar, and Abhradeep
-              Thakurta, "Encode, Shuffle, Analyze Privacy Revisited:
-              Formalizations and Empirical Evaluation", 2020,
-              <https://arxiv.org/abs/2001.03618>.
+   [EFMR_20]  Erlingsson, Ú., Feldman, V., Mironov, I., Raghunathan, A.,
+              Song, S., Talwar, K., and A. Thakurta, "Encode, Shuffle,
+              Analyze Privacy Revisited: Formalizations and Empirical
+              Evaluation", 2020, <https://arxiv.org/abs/2001.03618>.
 
    [FMT20]    Feldman, V., McMillan, A., and K. Talwar, "Hiding Among
               the Clones: A Simple and Nearly Optimal Analysis of
@@ -1059,17 +1059,15 @@ Table of Contents
               <https://link.springer.com/
               chapter/10.1007/978-3-642-03356-8_8>.
 
-   [TWMJ_23]  Kunal Talwar, Shan Wang, Audra McMillan, Vojta Jina,
-              Vitaly Feldman, Bailey Basile, Aine Cahill, Yi Sheng Chan,
-              Mike Chatzidakis, Junye Chen, Oliver Chick, Mona Chitnis,
-              Suman Ganta, Yusuf Goren, Filip Granqvist, Kristine Guo,
-              Frederic Jacobs, Omid Javidbakht, Albert Liu, Richard Low,
-              Dan Mascenik, Steve Myers, David Park, Wonhee Park, Gianni
-              Parsa, Tommy Pauly, Christian Priebe, Rehan Rishi, Guy
-              Rothblum, Michael Scaria, Linmao Song, Congzheng Song,
-              Karl Tarbe, Sebastian Vogt, Luke Winstrom, and Shundong
-              Zhou, "Samplable Anonymous Aggregation for Private
-              Federated Data Analysis", 2023,
+   [TWMJ_23]  Talwar, K., Wang, S., McMillan, A., Jina, V., Feldman, V.,
+              Basile, B., Cahill, A., Chan, Y., Chatzidakis, M., Chen,
+              J., Chick, O., Chitnis, M., Ganta, S., Goren, Y.,
+              Granqvist, F., Guo, K., Jacobs, F., Javidbakht, O., Liu,
+              A., Low, R., Mascenik, D., Myers, S., Park, D., Park, W.,
+              Parsa, G., Pauly, T., Priebe, C., Rishi, R., Rothblum, G.,
+              Scaria, M., Song, L., Song, C., Tarbe, K., Vogt, S.,
+              Winstrom, L., and S. Zhou, "Samplable Anonymous
+              Aggregation for Private Federated Data Analysis", 2023,
               <https://arxiv.org/abs/2307.15017>.
 
 Appendix A.  Contributors

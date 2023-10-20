@@ -2002,9 +2002,13 @@ described in <a href="#rr" class="auto internal xref">Section 4.3</a>, which is 
 response Client-DP to its measurement, and contributes the noisy measurement
 to the batch. The <code>(EPSILON, DELTA)</code>-DP degrades gracefully as the number of
 honest Clients decreases, i.e., we can still achieve <code>(EPSILON', DELTA)</code>-DP,
-where <code>EPSILON'</code> is larger than <code>EPSILON</code>.
-&gt; TODO(junyechen1996): Justify why RR with <code>EPSILON_0</code> + <code>batch_size</code> can
-&gt; achieve <code>(EPSILON, DELTA)</code>-DP in the aggregate result.<a href="#section-6.1.1.1-1" class="pilcrow">¶</a></p>
+where <code>EPSILON'</code> is larger than <code>EPSILON</code>.<a href="#section-6.1.1.1-1" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-6.1.1.1-2.1">
+                <p id="section-6.1.1.1-2.1.1">TODO(junyechen1996): Justify why RR with <code>EPSILON_0</code> + <code>batch_size</code> can
+achieve <code>(EPSILON, DELTA)</code>-DP in the aggregate result.<a href="#section-6.1.1.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
 </section>
 </div>
 <div id="client-dp-vdaf-robustness">
@@ -2354,7 +2358,7 @@ the number of honest Aggregators. In the table below, the numbers in
 <dd class="break"></dd>
 <dt id="BW18">[BW18]</dt>
         <dd>
-<span class="refAuthor">Borja Balle</span> and <span class="refAuthor">Yu-Xiang Wang</span>, <span class="refTitle">"Improving the Gaussian Mechanism for Differential Privacy: Analytical Calibration and Optimal Denoising"</span>, <time datetime="2018" class="refDate">2018</time>, <span>&lt;<a href="https://arxiv.org/abs/1805.06530">https://arxiv.org/abs/1805.06530</a>&gt;</span>. </dd>
+<span class="refAuthor">Balle, B.</span> and <span class="refAuthor">Y. Wang</span>, <span class="refTitle">"Improving the Gaussian Mechanism for Differential Privacy: Analytical Calibration and Optimal Denoising"</span>, <time datetime="2018" class="refDate">2018</time>, <span>&lt;<a href="https://arxiv.org/abs/1805.06530">https://arxiv.org/abs/1805.06530</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="CKS20">[CKS20]</dt>
         <dd>
@@ -2370,7 +2374,7 @@ the number of honest Aggregators. In the table below, the numbers in
 <dd class="break"></dd>
 <dt id="EFMR_20">[EFMR_20]</dt>
         <dd>
-<span class="refAuthor">Úlfar Erlingsson</span>, <span class="refAuthor">Vitaly Feldman</span>, <span class="refAuthor">Ilya Mironov</span>, <span class="refAuthor">Ananth Raghunathan</span>, <span class="refAuthor">Shuang Song</span>, <span class="refAuthor">Kunal Talwar</span>, and <span class="refAuthor">Abhradeep Thakurta</span>, <span class="refTitle">"Encode, Shuffle, Analyze Privacy Revisited: Formalizations and Empirical Evaluation"</span>, <time datetime="2020" class="refDate">2020</time>, <span>&lt;<a href="https://arxiv.org/abs/2001.03618">https://arxiv.org/abs/2001.03618</a>&gt;</span>. </dd>
+<span class="refAuthor">Erlingsson, Ú.</span>, <span class="refAuthor">Feldman, V.</span>, <span class="refAuthor">Mironov, I.</span>, <span class="refAuthor">Raghunathan, A.</span>, <span class="refAuthor">Song, S.</span>, <span class="refAuthor">Talwar, K.</span>, and <span class="refAuthor">A. Thakurta</span>, <span class="refTitle">"Encode, Shuffle, Analyze Privacy Revisited: Formalizations and Empirical Evaluation"</span>, <time datetime="2020" class="refDate">2020</time>, <span>&lt;<a href="https://arxiv.org/abs/2001.03618">https://arxiv.org/abs/2001.03618</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="FMT20">[FMT20]</dt>
         <dd>
@@ -2402,7 +2406,7 @@ the number of honest Aggregators. In the table below, the numbers in
 <dd class="break"></dd>
 <dt id="TWMJ_23">[TWMJ_23]</dt>
       <dd>
-<span class="refAuthor">Kunal Talwar</span>, <span class="refAuthor">Shan Wang</span>, <span class="refAuthor">Audra McMillan</span>, <span class="refAuthor">Vojta Jina</span>, <span class="refAuthor">Vitaly Feldman</span>, <span class="refAuthor">Bailey Basile</span>, <span class="refAuthor">Aine Cahill</span>, <span class="refAuthor">Yi Sheng Chan</span>, <span class="refAuthor">Mike Chatzidakis</span>, <span class="refAuthor">Junye Chen</span>, <span class="refAuthor">Oliver Chick</span>, <span class="refAuthor">Mona Chitnis</span>, <span class="refAuthor">Suman Ganta</span>, <span class="refAuthor">Yusuf Goren</span>, <span class="refAuthor">Filip Granqvist</span>, <span class="refAuthor">Kristine Guo</span>, <span class="refAuthor">Frederic Jacobs</span>, <span class="refAuthor">Omid Javidbakht</span>, <span class="refAuthor">Albert Liu</span>, <span class="refAuthor">Richard Low</span>, <span class="refAuthor">Dan Mascenik</span>, <span class="refAuthor">Steve Myers</span>, <span class="refAuthor">David Park</span>, <span class="refAuthor">Wonhee Park</span>, <span class="refAuthor">Gianni Parsa</span>, <span class="refAuthor">Tommy Pauly</span>, <span class="refAuthor">Christian Priebe</span>, <span class="refAuthor">Rehan Rishi</span>, <span class="refAuthor">Guy Rothblum</span>, <span class="refAuthor">Michael Scaria</span>, <span class="refAuthor">Linmao Song</span>, <span class="refAuthor">Congzheng Song</span>, <span class="refAuthor">Karl Tarbe</span>, <span class="refAuthor">Sebastian Vogt</span>, <span class="refAuthor">Luke Winstrom</span>, and <span class="refAuthor">Shundong Zhou</span>, <span class="refTitle">"Samplable Anonymous Aggregation for Private Federated Data Analysis"</span>, <time datetime="2023" class="refDate">2023</time>, <span>&lt;<a href="https://arxiv.org/abs/2307.15017">https://arxiv.org/abs/2307.15017</a>&gt;</span>. </dd>
+<span class="refAuthor">Talwar, K.</span>, <span class="refAuthor">Wang, S.</span>, <span class="refAuthor">McMillan, A.</span>, <span class="refAuthor">Jina, V.</span>, <span class="refAuthor">Feldman, V.</span>, <span class="refAuthor">Basile, B.</span>, <span class="refAuthor">Cahill, A.</span>, <span class="refAuthor">Chan, Y.</span>, <span class="refAuthor">Chatzidakis, M.</span>, <span class="refAuthor">Chen, J.</span>, <span class="refAuthor">Chick, O.</span>, <span class="refAuthor">Chitnis, M.</span>, <span class="refAuthor">Ganta, S.</span>, <span class="refAuthor">Goren, Y.</span>, <span class="refAuthor">Granqvist, F.</span>, <span class="refAuthor">Guo, K.</span>, <span class="refAuthor">Jacobs, F.</span>, <span class="refAuthor">Javidbakht, O.</span>, <span class="refAuthor">Liu, A.</span>, <span class="refAuthor">Low, R.</span>, <span class="refAuthor">Mascenik, D.</span>, <span class="refAuthor">Myers, S.</span>, <span class="refAuthor">Park, D.</span>, <span class="refAuthor">Park, W.</span>, <span class="refAuthor">Parsa, G.</span>, <span class="refAuthor">Pauly, T.</span>, <span class="refAuthor">Priebe, C.</span>, <span class="refAuthor">Rishi, R.</span>, <span class="refAuthor">Rothblum, G.</span>, <span class="refAuthor">Scaria, M.</span>, <span class="refAuthor">Song, L.</span>, <span class="refAuthor">Song, C.</span>, <span class="refAuthor">Tarbe, K.</span>, <span class="refAuthor">Vogt, S.</span>, <span class="refAuthor">Winstrom, L.</span>, and <span class="refAuthor">S. Zhou</span>, <span class="refTitle">"Samplable Anonymous Aggregation for Private Federated Data Analysis"</span>, <time datetime="2023" class="refDate">2023</time>, <span>&lt;<a href="https://arxiv.org/abs/2307.15017">https://arxiv.org/abs/2307.15017</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
