@@ -856,9 +856,9 @@ Table of Contents
 
 6.1.2.2.  VDAF Robustness
 
-   We will use Prio3Histogram Section 7.4.4 of [VDAF] to enforce each
-   Client only has exactly one bit set in its measurement, since there
-   is no Client-DP needed. > TODO(junyechen1996): We will need to
+   We will use Prio3Histogram Section 7.4.4 of [VDAF] to ensure that
+   each Client only has exactly one bit set in its measurement, since
+   there is no Client-DP needed. > TODO(junyechen1996): We will need to
    recommend how to interpret large > unsigned integers as negative
    noise from Gaussian, after VDAF aggregation.
 
