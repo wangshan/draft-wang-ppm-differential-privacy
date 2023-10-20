@@ -2123,10 +2123,9 @@ outputting them. Under OAOC trust model, we can achieve good <code>EPSILON</code
 amount of noise needed by Aggregator-DP typically depends on the target DP
 parameters <code>EPSILON</code> and <code>DELTA</code>, and also the <code>SENSITIVITY</code> of the aggregation
 function.<a href="#section-6.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-6.1.2-2">In this policy, we will describe how to achieve <code>(EPSILON, DELTA)</code>-DP, by asking
+<p id="section-6.1.2-2">In this section we describe how to achieve <code>(EPSILON, DELTA)</code>-DP for <code>Prio3Histogram</code> by asking
 each Aggregator to independently add discrete Gaussian noise to its aggregate
-share, and by using <code>Prio3Histogram</code> VDAF for aggregation and robustness
-considerations.<a href="#section-6.1.2-2" class="pilcrow">¶</a></p>
+share.<a href="#section-6.1.2-2" class="pilcrow">¶</a></p>
 <div id="discrete-gaussian-mechanism-for-aggregator-dp">
 <section id="section-6.1.2.1">
             <h5 id="name-discrete-gaussian-mechanism">

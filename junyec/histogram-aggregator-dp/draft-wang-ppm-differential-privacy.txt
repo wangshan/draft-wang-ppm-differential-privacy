@@ -826,10 +826,9 @@ Table of Contents
    Aggregator-DP typically depends on the target DP parameters EPSILON
    and DELTA, and also the SENSITIVITY of the aggregation function.
 
-   In this policy, we will describe how to achieve (EPSILON, DELTA)-DP,
-   by asking each Aggregator to independently add discrete Gaussian
-   noise to its aggregate share, and by using Prio3Histogram VDAF for
-   aggregation and robustness considerations.
+   In this section we describe how to achieve (EPSILON, DELTA)-DP for
+   Prio3Histogram by asking each Aggregator to independently add
+   discrete Gaussian noise to its aggregate share.
 
 6.1.2.1.  Discrete Gaussian Mechanism for Aggregator-DP
 
