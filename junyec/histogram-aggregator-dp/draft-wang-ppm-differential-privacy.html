@@ -1217,9 +1217,6 @@ svg :is([fill="white"], [fill^="#fff"]) {
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.2">
                     <p id="section-toc.1-1.6.2.1.2.2.1"><a href="#section-6.1.2" class="auto internal xref">6.1.2</a>.  <a href="#name-prio3histogram-with-aggrega" class="internal xref">Prio3Histogram with Aggregator-DP</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.3">
-                    <p id="section-toc.1-1.6.2.1.2.3.1"><a href="#section-6.1.3" class="auto internal xref">6.1.3</a>.  <a href="#name-conclusion" class="internal xref">Conclusion</a></p>
-</li>
                 </ul>
 </li>
             </ul>
@@ -1967,9 +1964,10 @@ bit vector with exactly one bit set, also known as, "one-hot vector". We
 describe two policies that achieve <code>(EPSILON, DELTA)</code>-DP on this use case: one
 which uses only a Client-DP mechanism and targets the OAMC trust model, and
 another which uses only an Aggregator-DP mechanism and targets the more
-stringent OAOC trust model. We will then compare the utility of both policies in
-different settings of <code>EPSILON</code> and <code>DELTA</code>, which can be tuned to provide
-different levels of DP guarantee.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+stringent OAOC trust model. We discover that both policies in different
+settings of <code>EPSILON</code> and <code>DELTA</code> provide comparable utility, except that the
+policy in the OAOC trust model requires all Aggregators to independently add
+noise, so we lose some utility when more than one Aggregator is honest.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 <div id="prio3multihothistogram-with-client-dp">
 <section id="section-6.1.1">
           <h4 id="name-prio3multihothistogram-with">
@@ -1987,7 +1985,7 @@ the validity circuit.<a href="#section-6.1.1-1.1.1" class="pilcrow">¶</a></p>
           </ul>
 <p id="section-6.1.1-2">Client-DP allows Clients to protect their privacy by adding noise to their
 measurements directly, as described in <a href="#levels" class="auto internal xref">Appendix B.1</a>. Analyses (<span>[<a href="#FMT20" class="cite xref">FMT20</a>]</span> and
-<span>[<a href="#FMT22" class="cite xref">FMT22</a>]</span>) have shown that, under OAMC trust model, we get good
+<span>[<a href="#FMT22" class="cite xref">FMT22</a>]</span>) have shown that, in the OAMC trust model, we get good
 <code>(EPSILON, DELTA)</code>-DP, by aggregating noisy Clients' measurements with
 Client-DP. In this policy, we will describe how to achieve
 <code>(EPSILON, DELTA)</code>-DP, with binary randomized response Client-DP mechanism,
@@ -2118,56 +2116,67 @@ in order to achieve various combinations of <code>(EPSILON, DELTA)</code>-DP.<a 
 <a href="#section-6.1.2" class="section-number selfRef">6.1.2. </a><a href="#name-prio3histogram-with-aggrega" class="section-name selfRef">Prio3Histogram with Aggregator-DP</a>
           </h4>
 <p id="section-6.1.2-1">Aggregator-DP requires Aggregators to add noise to their aggregate shares before
-outputting them. Under OAOC trust model, we can achieve good <code>EPSILON</code>-DP, or
+outputting them. In the OAOC trust model, we can achieve good <code>EPSILON</code>-DP, or
 <code>(EPSILON, DELTA)</code>-DP, as long as at least one of the Aggregators is honest. The
 amount of noise needed by Aggregator-DP typically depends on the target DP
-parameters <code>EPSILON</code> and <code>DELTA</code>, and also the <code>SENSITIVITY</code> of the aggregation
-function.<a href="#section-6.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-6.1.2-2">In this section we describe how to achieve <code>(EPSILON, DELTA)</code>-DP for <code>Prio3Histogram</code> by asking
-each Aggregator to independently add discrete Gaussian noise to its aggregate
-share.<a href="#section-6.1.2-2" class="pilcrow">¶</a></p>
+parameters <code>EPSILON</code> and <code>DELTA</code>, and also the <code>SENSITIVITY</code> <a href="#sensitivity" class="auto internal xref">Section 3.2</a> of
+the aggregation function.<a href="#section-6.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-6.1.2-2">In this section, we describe how to achieve <code>(EPSILON, DELTA)</code>-DP for
+<code>Prio3Histogram</code> <span><a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-vdaf-06#section-7.4.4" class="relref">Section 7.4.4</a> of [<a href="#VDAF" class="cite xref">VDAF</a>]</span> by asking each Aggregator to
+independently add discrete Gaussian noise to its aggregate share.<a href="#section-6.1.2-2" class="pilcrow">¶</a></p>
 <div id="discrete-gaussian-mechanism-for-aggregator-dp">
 <section id="section-6.1.2.1">
             <h5 id="name-discrete-gaussian-mechanism">
 <a href="#section-6.1.2.1" class="section-number selfRef">6.1.2.1. </a><a href="#name-discrete-gaussian-mechanism" class="section-name selfRef">Discrete Gaussian Mechanism for Aggregator-DP</a>
             </h5>
-<p id="section-6.1.2.1-1">We use the discrete Gaussian mechanism described
-in <a href="#discrete-gaussian" class="auto internal xref">Section 4.2</a>, which has mean of 0, and is initialized with a <code>SIGMA</code>
-parameter that stands for the standard deviation of the Gaussian distribution.
-In order to achieve <code>(EPSILON, DELTA)</code>-DP under the OAOC trust model, all
-Aggregators need to independently add discrete Gaussian noise to all coordinates
-of their aggregate shares.<a href="#section-6.1.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-6.1.2.1-2">To compute the parameter <code>SIGMA</code> for discrete Gaussian, Theorem 7 in <span>[<a href="#CKS20" class="cite xref">CKS20</a>]</span>
-and Theorem 8 in <span>[<a href="#BW18" class="cite xref">BW18</a>]</span> have shown that the <code>SIGMA</code> parameter can be tuned to
-achieve <code>(EPSILON, DELTA)</code>-DP, for a given L2-<code>SENSITIVITY</code> <a href="#sensitivity" class="auto internal xref">Section 3.2</a> of
-an aggregation function. In a histogram use case where each Client submits an
-one-hot vector, the L2-<code>SENSITIVITY</code> is <code>sqrt(2)</code>, because changing one
-coordinate of a Client measurement affects two coordinates. Algorithm 1 in
-<span>[<a href="#BW18" class="cite xref">BW18</a>]</span> elaborates on the details of this tuning algorithm, and we will refer
-to the calculation in the open sourced code <span>[<a href="#AGM" class="cite xref">AGM</a>]</span>.
-&gt; JC: It's also worth exploring the utility of discrete Gaussian proven by
-&gt; Definition 3 in <span>[<a href="#CKS20" class="cite xref">CKS20</a>]</span>, which defines the concentrated-DP achieved by
-&gt; discrete Gaussian. Concentrated-DP is then converted to approximate-DP, which
-&gt; is our target here. As a first draft, we won't overwhelm readers with other
-&gt; types of DP.<a href="#section-6.1.2.1-2" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="vdaf-robustness">
-<section id="section-6.1.2.2">
-            <h5 id="name-vdaf-robustness-2">
-<a href="#section-6.1.2.2" class="section-number selfRef">6.1.2.2. </a><a href="#name-vdaf-robustness-2" class="section-name selfRef">VDAF Robustness</a>
-            </h5>
-<p id="section-6.1.2.2-1">We will use <code>Prio3Histogram</code> <span><a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-vdaf-06#section-7.4.4" class="relref">Section 7.4.4</a> of [<a href="#VDAF" class="cite xref">VDAF</a>]</span> to ensure that each Client
-only has exactly one bit set in its measurement, since there is no Client-DP
-needed.
-&gt; TODO(junyechen1996): We will need to recommend how to interpret large
-&gt; unsigned integers as negative noise from Gaussian, after VDAF aggregation.<a href="#section-6.1.2.2-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.1.2.2-2">
+<p id="section-6.1.2.1-1">We use the discrete Gaussian mechanism described in <a href="#discrete-gaussian" class="auto internal xref">Section 4.2</a>, which
+has a mean of 0, and is initialized with a <code>SIGMA</code> parameter that stands for the
+standard deviation of the Gaussian distribution. In order to achieve
+<code>(EPSILON, DELTA)</code>-DP in the OAOC trust model, all Aggregators need to
+independently add discrete Gaussian noise to all coordinates of their aggregate
+shares.<a href="#section-6.1.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1.2.1-2">Theorem 8 in <span>[<a href="#BW18" class="cite xref">BW18</a>]</span> shows how to compute <code>SIGMA</code> parameter for continuous
+Gaussian, based on the given <code>(EPSILON, DELTA)</code>-DP parameters and
+L2-sensitivity, and Theorem 7 in <span>[<a href="#CKS20" class="cite xref">CKS20</a>]</span> shows a similar result for discrete
+Gaussian. In a histogram use case where each Client submits an one-hot vector,
+the L2-sensitivity is <code>sqrt(2)</code>, because transforming an one-hot vector into
+another will affect two coordinates, e.g., transforming an one-hot vector
+<code>[1, 0]</code> to <code>[0, 1]</code> changes L2-sensitivity by
+<code>sqrt((1 - 0)^2 + (0 - 1)^2) = sqrt(2)</code>. Algorithm 1 in <span>[<a href="#BW18" class="cite xref">BW18</a>]</span> elaborates on
+how to compute <code>SIGMA</code>, and we will refer to the calculation in the open sourced
+code <span>[<a href="#AGM" class="cite xref">AGM</a>]</span>.<a href="#section-6.1.2.1-2" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-6.1.2.1-3.1">
+                <p id="section-6.1.2.1-3.1.1">JC: We will need to provide an explanation of the parameter calculation in
+the draft itself, instead of merely referring to the code.<a href="#section-6.1.2.1-3.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-6.1.2.1-4.1">
+                <p id="section-6.1.2.1-4.1.1">JC: <span>[<a href="#CKS20" class="cite xref">CKS20</a>]</span> mentions in Theorem 7 about the approximate-DP guarantee
+achieved by discrete <span>[<a href="#CKS20" class="cite xref">CKS20</a>]</span> and continuous Gaussian <span>[<a href="#BW18" class="cite xref">BW18</a>]</span> that:
+The discrete and continuous Gaussian attain almost identical guarantees for
+large <code>SIGMA</code>, but the discretization creates a small difference that becomes
+apparent for small <code>SIGMA</code>.
+Therefore, if we use Algorithm 1 from <span>[<a href="#BW18" class="cite xref">BW18</a>]</span>, we will need to be careful
+when <code>SIGMA</code> is small, i.e., the desired <code>(EPSILON, DELTA)</code>-DP is weak.<a href="#section-6.1.2.1-4.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-6.1.2.1-5.1">
+                <p id="section-6.1.2.1-5.1.1">JC: It's also worth exploring the utility of discrete Gaussian proven by
+Definition 3 in <span>[<a href="#CKS20" class="cite xref">CKS20</a>]</span>, which defines the concentrated-DP achieved by
+discrete Gaussian. Concentrated-DP is then converted to approximate-DP, which
+is our target here. As a first draft, we won't overwhelm readers with other
+types of DP.<a href="#section-6.1.2.1-5.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+<div class="alignLeft art-text artwork" id="section-6.1.2.1-6">
 <pre>
 class HistogramWithAggregatorDp(DpPolicy):
     Field = Histogram.Field
-    # A measurement is an unsigned integer, indicating an index
-    # less than `Histogram.length`.
+    # A measurement is an unsigned integer, indicating an index less
+    # than `Histogram.length`.
     Measurement = Histogram.Measurement
     AggShare = list[Field]
     AggResult = Histogram.AggResult
@@ -2180,9 +2189,9 @@ class HistogramWithAggregatorDp(DpPolicy):
     def __init__(self, epsilon: float, delta: float):
         # TODO(junyechen1996): Consider using fixed precision or large
         # decimal for parameters like `epsilon` and `delta`. (#23)
-        # Transforming a one-hot vector into another will affect two
-        # coordinates, so the change in L2-sensitivity is
-        # `sqrt(1 + 1) = sqrt(2)`.
+        # Transforming an one-hot vector into another will affect two
+        # coordinates, e.g. from [1, 0, 0] to [0, 1, 0], so the change
+        # in L2-sensitivity is `sqrt(1 + 1) = sqrt(2)`.
         dgauss_sigma = agm.calibrateAnalyticGaussianMechanism(
             epsilon, delta, math.sqrt(2.0)
         )
@@ -2193,8 +2202,8 @@ class HistogramWithAggregatorDp(DpPolicy):
                                agg_share: AggShare,
                                ) -&gt; AggShare:
         """
-        Sample discrete Gaussian noise, and merge it with the aggregate
-        share.
+        Sample discrete Gaussian noise, and merge it with the
+        aggregate share.
         """
         noise_vec = self.dgauss_mechanism.sample_noise(len(agg_share))
         result = []
@@ -2213,25 +2222,25 @@ class HistogramWithAggregatorDp(DpPolicy):
         # since we haven't fully implemented discrete Gaussian
         # mechanism (#10).
         return agg_result
-</pre><a href="#section-6.1.2.2-2" class="pilcrow">¶</a>
+</pre><a href="#section-6.1.2.1-6" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="utility-1">
-<section id="section-6.1.2.3">
+<section id="section-6.1.2.2">
             <h5 id="name-utility-2">
-<a href="#section-6.1.2.3" class="section-number selfRef">6.1.2.3. </a><a href="#name-utility-2" class="section-name selfRef">Utility</a>
+<a href="#section-6.1.2.2" class="section-number selfRef">6.1.2.2. </a><a href="#name-utility-2" class="section-name selfRef">Utility</a>
             </h5>
-<p id="section-6.1.2.3-1">We will demonstrate the utility of this policy in the table below in terms of
+<p id="section-6.1.2.2-1">We will demonstrate the utility of this policy in the table below in terms of
 the standard deviation <code>SIGMA</code> in discrete Gaussian needed to achieve various
 combinations of <code>(EPSILON, DELTA)</code>-DP, based on the open-sourced code in
-<span>[<a href="#AGM" class="cite xref">AGM</a>]</span>.<a href="#section-6.1.2.3-1" class="pilcrow">¶</a></p>
-<p id="section-6.1.2.3-2">It's worth noting that if more than one Aggregator is honest, we will lose some
+<span>[<a href="#AGM" class="cite xref">AGM</a>]</span>.<a href="#section-6.1.2.2-1" class="pilcrow">¶</a></p>
+<p id="section-6.1.2.2-2">It's worth noting that if more than one Aggregator is honest, we will lose some
 utility because each Aggregator is independently adding noise. The standard
 deviation in the aggregate result thus becomes <code>SIGMA * sqrt(c)</code>, where <code>c</code> is
 the number of honest Aggregators. In the table below, the numbers in
 "Standard deviation" column assume <code>c = 2</code>. The numbers in
-"Standard deviation (OAOC)" column assume only one Aggregator is honest.<a href="#section-6.1.2.3-2" class="pilcrow">¶</a></p>
+"Standard deviation (OAOC)" column assume only one Aggregator is honest.<a href="#section-6.1.2.2-2" class="pilcrow">¶</a></p>
 <span id="name-utility-of-pure-aggregator-"></span><div id="histogram-aggregator-dp">
 <table class="center" id="table-2">
               <caption>
@@ -2270,18 +2279,6 @@ the number of honest Aggregators. In the table below, the numbers in
 </div>
 </section>
 </div>
-</section>
-</div>
-<div id="conclusion">
-<section id="section-6.1.3">
-          <h4 id="name-conclusion">
-<a href="#section-6.1.3" class="section-number selfRef">6.1.3. </a><a href="#name-conclusion" class="section-name selfRef">Conclusion</a>
-          </h4>
-<p id="section-6.1.3-1">We just demonstrated two simple policies that achieve the same level of
-<code>(EPSILON, DELTA)</code>-DP on histogram use case, under different trust models. They
-are comparable in terms of utility, but because the second policy with only
-Aggregator-DP requires all Aggregators to independently add noise to maintain
-OAOC trust model, we lose some utility when more than one Aggregator is honest.<a href="#section-6.1.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>

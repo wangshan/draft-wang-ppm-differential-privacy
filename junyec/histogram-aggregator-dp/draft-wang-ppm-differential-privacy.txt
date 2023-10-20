@@ -92,7 +92,6 @@ Table of Contents
      6.1.  Histograms
        6.1.1.  Prio3MultiHotHistogram with Client-DP
        6.1.2.  Prio3Histogram with Aggregator-DP
-       6.1.3.  Conclusion
    7.  Security Considerations
    8.  IANA Considerations
    9.  References
@@ -707,9 +706,11 @@ Table of Contents
    DP on this use case: one which uses only a Client-DP mechanism and
    targets the OAMC trust model, and another which uses only an
    Aggregator-DP mechanism and targets the more stringent OAOC trust
-   model.  We will then compare the utility of both policies in
-   different settings of EPSILON and DELTA, which can be tuned to
-   provide different levels of DP guarantee.
+   model.  We discover that both policies in different settings of
+   EPSILON and DELTA provide comparable utility, except that the policy
+   in the OAOC trust model requires all Aggregators to independently add
+   noise, so we lose some utility when more than one Aggregator is
+   honest.
 
 6.1.1.  Prio3MultiHotHistogram with Client-DP
 
@@ -722,11 +723,11 @@ Table of Contents
 
    Client-DP allows Clients to protect their privacy by adding noise to
    their measurements directly, as described in Appendix B.1.  Analyses
-   ([FMT20] and [FMT22]) have shown that, under OAMC trust model, we get
-   good (EPSILON, DELTA)-DP, by aggregating noisy Clients' measurements
-   with Client-DP.  In this policy, we will describe how to achieve
-   (EPSILON, DELTA)-DP, with binary randomized response Client-DP
-   mechanism, along with Prio3MultiHotHistogram VDAF for robustness
+   ([FMT20] and [FMT22]) have shown that, in the OAMC trust model, we
+   get good (EPSILON, DELTA)-DP, by aggregating noisy Clients'
+   measurements with Client-DP.  In this policy, we will describe how to
+   achieve (EPSILON, DELTA)-DP, with binary randomized response Client-
+   DP mechanism, along with Prio3MultiHotHistogram VDAF for robustness
    considerations.
 
 6.1.1.1.  Client-DP Mechanism
@@ -820,99 +821,107 @@ Table of Contents
 6.1.2.  Prio3Histogram with Aggregator-DP
 
    Aggregator-DP requires Aggregators to add noise to their aggregate
-   shares before outputting them.  Under OAOC trust model, we can
+   shares before outputting them.  In the OAOC trust model, we can
    achieve good EPSILON-DP, or (EPSILON, DELTA)-DP, as long as at least
    one of the Aggregators is honest.  The amount of noise needed by
    Aggregator-DP typically depends on the target DP parameters EPSILON
-   and DELTA, and also the SENSITIVITY of the aggregation function.
+   and DELTA, and also the SENSITIVITY Section 3.2 of the aggregation
+   function.
 
-   In this section we describe how to achieve (EPSILON, DELTA)-DP for
-   Prio3Histogram by asking each Aggregator to independently add
-   discrete Gaussian noise to its aggregate share.
+   In this section, we describe how to achieve (EPSILON, DELTA)-DP for
+   Prio3Histogram Section 7.4.4 of [VDAF] by asking each Aggregator to
+   independently add discrete Gaussian noise to its aggregate share.
 
 6.1.2.1.  Discrete Gaussian Mechanism for Aggregator-DP
 
    We use the discrete Gaussian mechanism described in Section 4.2,
-   which has mean of 0, and is initialized with a SIGMA parameter that
+   which has a mean of 0, and is initialized with a SIGMA parameter that
    stands for the standard deviation of the Gaussian distribution.  In
-   order to achieve (EPSILON, DELTA)-DP under the OAOC trust model, all
+   order to achieve (EPSILON, DELTA)-DP in the OAOC trust model, all
    Aggregators need to independently add discrete Gaussian noise to all
    coordinates of their aggregate shares.
 
-   To compute the parameter SIGMA for discrete Gaussian, Theorem 7 in
-   [CKS20] and Theorem 8 in [BW18] have shown that the SIGMA parameter
-   can be tuned to achieve (EPSILON, DELTA)-DP, for a given
-   L2-SENSITIVITY Section 3.2 of an aggregation function.  In a
-   histogram use case where each Client submits an one-hot vector, the
-   L2-SENSITIVITY is sqrt(2), because changing one coordinate of a
-   Client measurement affects two coordinates.  Algorithm 1 in [BW18]
-   elaborates on the details of this tuning algorithm, and we will refer
-   to the calculation in the open sourced code [AGM]. > JC: It's also
-   worth exploring the utility of discrete Gaussian proven by >
-   Definition 3 in [CKS20], which defines the concentrated-DP achieved
-   by > discrete Gaussian.  Concentrated-DP is then converted to
-   approximate-DP, which > is our target here.  As a first draft, we
-   won't overwhelm readers with other > types of DP.
+   Theorem 8 in [BW18] shows how to compute SIGMA parameter for
+   continuous Gaussian, based on the given (EPSILON, DELTA)-DP
+   parameters and L2-sensitivity, and Theorem 7 in [CKS20] shows a
+   similar result for discrete Gaussian.  In a histogram use case where
+   each Client submits an one-hot vector, the L2-sensitivity is sqrt(2),
+   because transforming an one-hot vector into another will affect two
+   coordinates, e.g., transforming an one-hot vector [1, 0] to [0, 1]
+   changes L2-sensitivity by sqrt((1 - 0)^2 + (0 - 1)^2) = sqrt(2).
+   Algorithm 1 in [BW18] elaborates on how to compute SIGMA, and we will
+   refer to the calculation in the open sourced code [AGM].
 
-6.1.2.2.  VDAF Robustness
+      JC: We will need to provide an explanation of the parameter
+      calculation in the draft itself, instead of merely referring to
+      the code.
 
-   We will use Prio3Histogram Section 7.4.4 of [VDAF] to ensure that
-   each Client only has exactly one bit set in its measurement, since
-   there is no Client-DP needed. > TODO(junyechen1996): We will need to
-   recommend how to interpret large > unsigned integers as negative
-   noise from Gaussian, after VDAF aggregation.
+      JC: [CKS20] mentions in Theorem 7 about the approximate-DP
+      guarantee achieved by discrete [CKS20] and continuous Gaussian
+      [BW18] that: The discrete and continuous Gaussian attain almost
+      identical guarantees for large SIGMA, but the discretization
+      creates a small difference that becomes apparent for small SIGMA.
+      Therefore, if we use Algorithm 1 from [BW18], we will need to be
+      careful when SIGMA is small, i.e., the desired (EPSILON, DELTA)-DP
+      is weak.
 
- class HistogramWithAggregatorDp(DpPolicy):
-     Field = Histogram.Field
-     # A measurement is an unsigned integer, indicating an index
-     # less than `Histogram.length`.
-     Measurement = Histogram.Measurement
-     AggShare = list[Field]
-     AggResult = Histogram.AggResult
-     # The final aggregate result should be a vector of signed
-     # integers, because discrete Gaussian could produce negative
-     # noise that may have a larger absolute value than the count
-     # before noise.
-     DebiasedAggResult = list[int]
+      JC: It's also worth exploring the utility of discrete Gaussian
+      proven by Definition 3 in [CKS20], which defines the concentrated-
+      DP achieved by discrete Gaussian.  Concentrated-DP is then
+      converted to approximate-DP, which is our target here.  As a first
+      draft, we won't overwhelm readers with other types of DP.
 
-     def __init__(self, epsilon: float, delta: float):
-         # TODO(junyechen1996): Consider using fixed precision or large
-         # decimal for parameters like `epsilon` and `delta`. (#23)
-         # Transforming a one-hot vector into another will affect two
-         # coordinates, so the change in L2-sensitivity is
-         # `sqrt(1 + 1) = sqrt(2)`.
-         dgauss_sigma = agm.calibrateAnalyticGaussianMechanism(
-             epsilon, delta, math.sqrt(2.0)
-         )
-         self.dgauss_mechanism = \
-             DiscreteGaussianWithZeroMean(dgauss_sigma)
+  class HistogramWithAggregatorDp(DpPolicy):
+      Field = Histogram.Field
+      # A measurement is an unsigned integer, indicating an index less
+      # than `Histogram.length`.
+      Measurement = Histogram.Measurement
+      AggShare = list[Field]
+      AggResult = Histogram.AggResult
+      # The final aggregate result should be a vector of signed
+      # integers, because discrete Gaussian could produce negative
+      # noise that may have a larger absolute value than the count
+      # before noise.
+      DebiasedAggResult = list[int]
 
-     def add_noise_to_agg_share(self,
-                                agg_share: AggShare,
-                                ) -> AggShare:
-         """
-         Sample discrete Gaussian noise, and merge it with the aggregate
-         share.
-         """
-         noise_vec = self.dgauss_mechanism.sample_noise(len(agg_share))
-         result = []
-         for (agg_share_i, noise_vec_i) in zip(agg_share, noise_vec):
-             if noise_vec_i < 0:
-                 noise_vec_i = Field.MODULUS + noise_vec_i
-             result.append(agg_share_i + self.Field(noise_vec_i))
-         return result
+      def __init__(self, epsilon: float, delta: float):
+          # TODO(junyechen1996): Consider using fixed precision or large
+          # decimal for parameters like `epsilon` and `delta`. (#23)
+          # Transforming an one-hot vector into another will affect two
+          # coordinates, e.g. from [1, 0, 0] to [0, 1, 0], so the change
+          # in L2-sensitivity is `sqrt(1 + 1) = sqrt(2)`.
+          dgauss_sigma = agm.calibrateAnalyticGaussianMechanism(
+              epsilon, delta, math.sqrt(2.0)
+          )
+          self.dgauss_mechanism = \
+              DiscreteGaussianWithZeroMean(dgauss_sigma)
 
-     def debias_agg_result(self,
-                           agg_result: AggResult,
-                           meas_count: int,
-                           ) -> DebiasedAggResult:
-         # TODO(junyechen1996): Interpret large unsigned integers as
-         # negative values or 0 properly. For now, directly return it,
-         # since we haven't fully implemented discrete Gaussian
-         # mechanism (#10).
-         return agg_result
+      def add_noise_to_agg_share(self,
+                                 agg_share: AggShare,
+                                 ) -> AggShare:
+          """
+          Sample discrete Gaussian noise, and merge it with the
+          aggregate share.
+          """
+          noise_vec = self.dgauss_mechanism.sample_noise(len(agg_share))
+          result = []
+          for (agg_share_i, noise_vec_i) in zip(agg_share, noise_vec):
+              if noise_vec_i < 0:
+                  noise_vec_i = Field.MODULUS + noise_vec_i
+              result.append(agg_share_i + self.Field(noise_vec_i))
+          return result
 
-6.1.2.3.  Utility
+      def debias_agg_result(self,
+                            agg_result: AggResult,
+                            meas_count: int,
+                            ) -> DebiasedAggResult:
+          # TODO(junyechen1996): Interpret large unsigned integers as
+          # negative values or 0 properly. For now, directly return it,
+          # since we haven't fully implemented discrete Gaussian
+          # mechanism (#10).
+          return agg_result
+
+6.1.2.2.  Utility
 
    We will demonstrate the utility of this policy in the table below in
    terms of the standard deviation SIGMA in discrete Gaussian needed to
@@ -938,15 +947,6 @@ Table of Contents
    +---------+-------+--------------------+---------------------------+
 
       Table 2: Utility of Pure Aggregator-DP for histogram use case.
-
-6.1.3.  Conclusion
-
-   We just demonstrated two simple policies that achieve the same level
-   of (EPSILON, DELTA)-DP on histogram use case, under different trust
-   models.  They are comparable in terms of utility, but because the
-   second policy with only Aggregator-DP requires all Aggregators to
-   independently add noise to maintain OAOC trust model, we lose some
-   utility when more than one Aggregator is honest.
 
 7.  Security Considerations
 
