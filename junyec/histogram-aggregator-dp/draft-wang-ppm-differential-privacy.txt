@@ -823,8 +823,8 @@ Table of Contents
    shares before outputting them.  Under OAOC trust model, we can
    achieve good EPSILON-DP, or (EPSILON, DELTA)-DP, as long as at least
    one of the Aggregators is honest.  The amount of noise needed by
-   Aggregator-DP typically depends on the target DP parameters EPSILON,
-   DELTA, and also the SENSITIVITY of the aggregation function.
+   Aggregator-DP typically depends on the target DP parameters EPSILON
+   and DELTA, and also the SENSITIVITY of the aggregation function.
 
    In this policy, we will describe how to achieve (EPSILON, DELTA)-DP,
    by asking each Aggregator to independently add discrete Gaussian
