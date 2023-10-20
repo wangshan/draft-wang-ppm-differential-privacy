@@ -869,7 +869,7 @@ Table of Contents
       Measurement = Histogram.Measurement
       AggShare = list[Field]
       AggResult = Histogram.AggResult
-      # The final aggregate result should be a vector of *signed*
+      # The final aggregate result should be a vector of signed
       # integers, because discrete Gaussian could produce negative
       # noise which may have a larger absolute value than the count
       # before noise.
