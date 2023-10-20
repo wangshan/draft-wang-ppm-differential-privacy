@@ -302,7 +302,7 @@ Table of Contents
    *  L1 sensitivity: the sum of the absolute values of differences at
       all coordinates of the neighboring Client measurements.
 
-   *  L2 sensitivity: the sum of squares of the differences at all
+   *  L2 sensitivity: the sum of the squares of the differences at all
       coordinates of the neighboring Client measurements.
 
 3.3.  Trust Models
