@@ -295,7 +295,7 @@ Table of Contents
    Differential privacy noise sometimes needs to be calibered based on
    the SENSITIVITY of an aggregation function used to compute the
    aggregate result over Client measurements.  Sensitivity characterizes
-   how much a change in a Client measurement can affect aggregate
+   how much a change in a Client measurement can affect the aggregate
    result.  In this document, we focus on the L1 and L2 sensitivity.  We
    define them as a function over two neighboring Client measurements:
 
