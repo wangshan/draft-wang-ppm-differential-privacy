@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-10-19T00:52:42.034876+00:00",
+  "timestamp": "2023-10-22T00:56:05.620693+00:00",
   "repo": "wangshan/draft-wang-ppm-differential-privacy",
   "labels": [
     {
@@ -247,6 +247,30 @@
       "updatedAt": "2023-10-18T16:13:26Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 26,
+      "id": "I_kwDOJ7sZWc50Y3eJ",
+      "title": "Steering DP definitions in the right direction",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/issues/26",
+      "state": "OPEN",
+      "author": "cjpatton",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "While reviewing the binary randomized response mechanism (#22) for which we have a sort of \"one-off\" DP definition, I had the following thought.\r\n\r\nIn the medium term, I think we should spend time thinking through how this notion of DP relates to the notion of DP we've already defined.\r\n\r\nLong term, I think our goal for PPM should be to have a single (or as few as possible) notions of DP. That way we have a standard methodology (or methodologies) for evaluating DP mechanisms and policies. The fact that there are so many DP notions in the literature that may or may not be comparable is a huge problem for standardization.\r\n\r\nRelatedly, I believe there is an important research question here: for a given application (DAP) systematize the DP notions in the literature that apply such that we can compare them to one another (at least qualitatively, but ideally quantitatively). Presumably there are trade-offs to be made, depending on which notion of DP you pick; what we want at the end of the day is the right DP notion that allows us to make sense of what to do for DAP.\r\n\r\n_Originally posted by @cjpatton in https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/22#discussion_r1365830045_\r\n            ",
+      "createdAt": "2023-10-19T16:42:54Z",
+      "updatedAt": "2023-10-19T17:50:19Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree we shouldn't complicate the spec if we don't have to. The case with binary randomized response is that it is a simple local randomizer, but only works in deletion-DP model, which is worth mentioning because a `EPSILON_0`-DP in deletion-DP translates to an upper bound of `2 * EPSILON_0`-DP in replacement-DP (Definition II.4 in [EFMR+20](https://arxiv.org/pdf/2001.03618.pdf) and Definition C.1 in [MJTB+22](https://arxiv.org/pdf/2211.10082.pdf)). I think we only need to deal with deletion-DP in the Client-DP mechanisms, but from an aggregate result point of view, we always want to provide DP in replacement-DP model, which is how DP is defined in overview section of the draft. Hence currently we only introduce deletion-DP in binary randomized response.\r\n\r\nThere are other notions of DP we may need to introduce, e.g. other definitions of DP budget instead of pure `EPSILON`-DP and `(EPSILON, DELTA)`-DP, e.g. [R\u00e9nyi-DP](https://arxiv.org/abs/1702.07476), [Concentrated-DP](https://arxiv.org/abs/1605.02065), which are more optimal during composition of DP budgets if we need to enforce DP budgets. But we can think about these when we get there.\r\n\r\n> for a given application (DAP) systematize the DP notions in the literature that apply such that we can compare them to one another (at least qualitatively, but ideally quantitatively).\r\n\r\nI agree we should compare the tradeoffs, so users can pick the right DP policy based on the deployment environment they are in. I assume that's one of the goals of this draft. To start with, quantitatively, we can probably compare utility, communication cost, and qualitatively, trust model?",
+          "createdAt": "2023-10-19T17:50:19Z",
+          "updatedAt": "2023-10-19T17:50:19Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -1519,7 +1543,7 @@
       "labels": [],
       "body": "\u2026efore outputting aggregate share\r\n\r\n- Note to reviewers: this is a stacked PR on top of #2 and #4 .",
       "createdAt": "2023-07-16T16:01:36Z",
-      "updatedAt": "2023-07-20T18:17:05Z",
+      "updatedAt": "2023-10-19T17:58:39Z",
       "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
       "baseRefName": "junyec/dp-mechanism",
       "baseRefOid": "c4cb46900c66a996182d7a1fc32721f903ec0009",
@@ -3413,7 +3437,7 @@
       "labels": [],
       "body": "Set up reference implementation folder structure with the DP mechanisms, DP policies, and the submoduled VDAF reference implementation.",
       "createdAt": "2023-10-17T11:07:30Z",
-      "updatedAt": "2023-10-18T17:45:01Z",
+      "updatedAt": "2023-10-19T17:58:34Z",
       "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
       "baseRefName": "main",
       "baseRefOid": "1592b0352b60b1ca05723a3b5253029927ea8bb1",
@@ -3767,24 +3791,26 @@
       "id": "PR_kwDOJ7sZWc5dANLO",
       "title": "Clean up text for Client-DP",
       "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/22",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "junyechen1996",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Specify randomized response sampler and specify how to instantiate Prio3MultiHotHistogram with the maximum number of 1s",
       "createdAt": "2023-10-17T11:08:03Z",
-      "updatedAt": "2023-10-18T20:17:27Z",
+      "updatedAt": "2023-10-19T17:58:25Z",
       "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
       "baseRefName": "main",
       "baseRefOid": "3d401e96c7e8beb127102a6ff6cadf6cb08ef213",
       "headRepository": "wangshan/draft-wang-ppm-differential-privacy",
       "headRefName": "junyec/histogram-client-dp",
-      "headRefOid": "131939d3e845675b7ce973121e7801176053b383",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "3b61a86e3f7470d20944df3d4b4f31bc6bbe565b",
+      "closedAt": "2023-10-19T17:58:21Z",
+      "mergedAt": "2023-10-19T17:58:21Z",
+      "mergedBy": "junyechen1996",
+      "mergeCommit": {
+        "oid": "9f88426c7f1b958cc41f028fcad5a222b7eb9f7e"
+      },
       "comments": [
         {
           "author": "junyechen1996",
@@ -3792,6 +3818,13 @@
           "body": "Reviewer's note: stacked PR on #21 ",
           "createdAt": "2023-10-17T11:08:35Z",
           "updatedAt": "2023-10-17T11:08:35Z"
+        },
+        {
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Squashed.",
+          "createdAt": "2023-10-19T17:58:13Z",
+          "updatedAt": "2023-10-19T17:58:13Z"
         }
       ],
       "reviews": [
@@ -3987,6 +4020,530 @@
               "body": "This isn't suitable as an intro paragraph. I suggest moving it below the paragraph that mentions approximate DP and OAMC trust model.",
               "createdAt": "2023-10-18T20:16:30Z",
               "updatedAt": "2023-10-18T20:17:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc5kivQc",
+          "commit": {
+            "abbreviatedOid": "240394d"
+          },
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "I think the open threads are:\r\n\r\n- intro text for binary randomized response: https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/22/files#r1364485590\r\n- clarification about input data type for binary randomized response: https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/22#discussion_r1364988709\r\n- definition of replacement-DP and deletion-DP: https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/22#discussion_r1365655577",
+          "createdAt": "2023-10-19T06:28:45Z",
+          "updatedAt": "2023-10-19T14:45:18Z",
+          "comments": [
+            {
+              "originalPosition": 49,
+              "body": "Yes, good idea. It indeed works under OC trust model.",
+              "createdAt": "2023-10-19T06:28:45Z",
+              "updatedAt": "2023-10-19T14:44:30Z"
+            },
+            {
+              "originalPosition": 51,
+              "body": "The vanilla binary randomized response operates on a bit. I described it with an example with a bit, let me know if it makes things clearer.\r\n\r\nI did mention in the next paragraph: \"we generalize binary randomized response mechanism by applying it independently at all coordinates of a Client's bit vector\".",
+              "createdAt": "2023-10-19T06:39:33Z",
+              "updatedAt": "2023-10-19T14:44:30Z"
+            },
+            {
+              "originalPosition": 46,
+              "body": "I opened up this section with binary randomized response's parameters and inputs right now. I mention `EPSILON_0`-DP in OC trust model now, which I think we've already defined at this point?",
+              "createdAt": "2023-10-19T14:34:38Z",
+              "updatedAt": "2023-10-19T14:44:30Z"
+            },
+            {
+              "originalPosition": 56,
+              "body": "Good point. Move that part of the text to overview now, where we've been defining `EPSILON`-DP and `(EPSILON, DELTA)`-DP in terms of replacement-DP. I didn't go in depth on deletion-DP, which I only elaborated in the section for binary randomized response.",
+              "createdAt": "2023-10-19T14:36:32Z",
+              "updatedAt": "2023-10-19T14:44:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc5kn5U5",
+          "commit": {
+            "abbreviatedOid": "346de9d"
+          },
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thanks for your thoroughness! Looks good to me. I have one high level comment, but it's bigger this PR so I'll move it to an issue.",
+          "createdAt": "2023-10-19T16:26:22Z",
+          "updatedAt": "2023-10-19T16:35:41Z",
+          "comments": [
+            {
+              "originalPosition": 152,
+              "body": "```suggestion\r\nmeasurement `D` from the measurement from an average Client.\r\n```",
+              "createdAt": "2023-10-19T16:26:22Z",
+              "updatedAt": "2023-10-19T16:35:41Z"
+            },
+            {
+              "originalPosition": 131,
+              "body": "This section is well-scoped, and I don't want to change anything for now.\r\n\r\nIn the medium term, I think we should spend time thinking through how this notion of DP relates to the notion of DP we've already defined.\r\n\r\nLong term, I think our goal for PPM should be to have a single (or as few as possible) notions of DP. That way we have a standard methodology (or methodologies) for evaluating DP mechanisms and policies. The fact that there are so many DP notions in the literature that may or may not be comparable is a huge problem for standardization.\r\n\r\nRelatedly, I believe there is an important research question here: for a given application (DAP) systematize the DP notions in the literature that apply such that we can compare them to one another (at least qualitatively, but ideally quantitatively). Presumably there are trade-offs to be made, depending on which notion of DP you pick; what we want at the end of the day is the right DP notion that allows us to make sense of what to do for DAP.",
+              "createdAt": "2023-10-19T16:32:56Z",
+              "updatedAt": "2023-10-19T16:35:41Z"
+            },
+            {
+              "originalPosition": 46,
+              "body": "Looks much better, thanks!",
+              "createdAt": "2023-10-19T16:33:26Z",
+              "updatedAt": "2023-10-19T16:35:41Z"
+            },
+            {
+              "originalPosition": 103,
+              "body": "nit: A better intro sentence would be: \"This section described the binary randomized response mechanism.\"",
+              "createdAt": "2023-10-19T16:33:57Z",
+              "updatedAt": "2023-10-19T16:35:41Z"
+            },
+            {
+              "originalPosition": 51,
+              "body": "Yup, that clarifies it, thanks.",
+              "createdAt": "2023-10-19T16:34:21Z",
+              "updatedAt": "2023-10-19T16:35:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc5kogYa",
+          "commit": {
+            "abbreviatedOid": "3b61a86"
+          },
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-19T17:54:15Z",
+          "updatedAt": "2023-10-19T17:57:32Z",
+          "comments": [
+            {
+              "originalPosition": 131,
+              "body": "Agreed. Let's continue discussing in issue.",
+              "createdAt": "2023-10-19T17:54:16Z",
+              "updatedAt": "2023-10-19T17:57:32Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 25,
+      "id": "PR_kwDOJ7sZWc5dOnv5",
+      "title": "Clean up text for Aggregator-DP",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/25",
+      "state": "MERGED",
+      "author": "junyechen1996",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Specify how to compute discrete Gaussian parameters in order to achieve (EPSILON, DELTA)-DP, and submodule the GitHub repo with the analysis from BW18.",
+      "createdAt": "2023-10-19T06:25:47Z",
+      "updatedAt": "2023-10-20T18:35:43Z",
+      "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "baseRefName": "main",
+      "baseRefOid": "9f88426c7f1b958cc41f028fcad5a222b7eb9f7e",
+      "headRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "headRefName": "junyec/histogram-aggregator-dp",
+      "headRefOid": "a0c59b4c08c99228b575fc2febe4b6ebae621904",
+      "closedAt": "2023-10-20T18:35:30Z",
+      "mergedAt": "2023-10-20T18:35:30Z",
+      "mergedBy": "junyechen1996",
+      "mergeCommit": {
+        "oid": "8224fc03e96bd1ab035d1907a276db463b003ed7"
+      },
+      "comments": [
+        {
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Reviewers' note: stacked PR on #22 .",
+          "createdAt": "2023-10-19T06:26:18Z",
+          "updatedAt": "2023-10-19T06:26:18Z"
+        },
+        {
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Squashed.",
+          "createdAt": "2023-10-20T18:35:25Z",
+          "updatedAt": "2023-10-20T18:35:25Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOJ7sZWc5kp6p5",
+          "commit": {
+            "abbreviatedOid": "4ca3102"
+          },
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Looking good. Once again, please ask @wangshan to weigh in on the details of the DP policy, as I don't have the context to evaluate these. (Shan, you should check at least that the details match the cited papers, as far as you can tell.)",
+          "createdAt": "2023-10-19T21:38:08Z",
+          "updatedAt": "2023-10-19T21:58:46Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "```suggestion\r\nClient measurement can affect the aggregate result. In this document, we focus on\r\n```",
+              "createdAt": "2023-10-19T21:38:08Z",
+              "updatedAt": "2023-10-19T21:58:46Z"
+            },
+            {
+              "originalPosition": 32,
+              "body": "```suggestion\r\n* L1 sensitivity: the sum of the absolute values of differences at all coordinates\r\n```",
+              "createdAt": "2023-10-19T21:38:22Z",
+              "updatedAt": "2023-10-19T21:58:46Z"
+            },
+            {
+              "originalPosition": 34,
+              "body": "```suggestion\r\n* L2 sensitivity: the sum of the squares of the differences at all coordinates of\r\n```",
+              "createdAt": "2023-10-19T21:38:31Z",
+              "updatedAt": "2023-10-19T21:58:46Z"
+            },
+            {
+              "originalPosition": 64,
+              "body": "```suggestion\r\nparameters `EPSILON` and `DELTA`, and also the `SENSITIVITY` of the aggregation\r\n```",
+              "createdAt": "2023-10-19T21:39:23Z",
+              "updatedAt": "2023-10-19T21:58:46Z"
+            },
+            {
+              "originalPosition": 70,
+              "body": "Simpler. Plus, what are \"aggregation considerations\"? :)\r\n```suggestion\r\nIn this section we describe how to achieve `(EPSILON, DELTA)`-DP for `Prio3Histogram` by asking\r\neach Aggregator to independently add discrete Gaussian noise to its aggregate\r\nshare.\r\n```",
+              "createdAt": "2023-10-19T21:41:50Z",
+              "updatedAt": "2023-10-19T21:58:46Z"
+            },
+            {
+              "originalPosition": 74,
+              "body": "```suggestion\r\nWe use the discrete Gaussian mechanism described\r\n```",
+              "createdAt": "2023-10-19T21:42:24Z",
+              "updatedAt": "2023-10-19T21:58:46Z"
+            },
+            {
+              "originalPosition": 77,
+              "body": "Also, I think \"in\" sounds better than \"under\", though I'm not sure which would is more grammatically correct.\r\n```suggestion\r\nIn order to achieve `(EPSILON, DELTA)`-DP under the OAOC trust model, all\r\n```",
+              "createdAt": "2023-10-19T21:43:40Z",
+              "updatedAt": "2023-10-19T21:58:46Z"
+            },
+            {
+              "originalPosition": 82,
+              "body": "Why are two citations needed/useful?",
+              "createdAt": "2023-10-19T21:45:23Z",
+              "updatedAt": "2023-10-19T21:58:46Z"
+            },
+            {
+              "originalPosition": 84,
+              "body": "\"To compute the parameter ... an aggregation function.\": This sentence can be simplified. How about something like: \"Theorem 7 in {{CKS20}} shows how to compute `SIGMA` for given approximate-DP parameters and L2-sensitivity.\"",
+              "createdAt": "2023-10-19T21:46:40Z",
+              "updatedAt": "2023-10-19T21:58:46Z"
+            },
+            {
+              "originalPosition": 86,
+              "body": "\"because changing one coordinate of a Client measurement affects two coordinates\": What does this mean? Please unpack this a bit in the text.",
+              "createdAt": "2023-10-19T21:48:12Z",
+              "updatedAt": "2023-10-19T21:58:46Z"
+            },
+            {
+              "originalPosition": 88,
+              "body": "Eventually this draft will need to be self-describing, i.e., it won't be sufficient to refer to code associated with some research paper. I'd leave an author note here so you remember to do this later.",
+              "createdAt": "2023-10-19T21:49:42Z",
+              "updatedAt": "2023-10-19T21:58:47Z"
+            },
+            {
+              "originalPosition": 97,
+              "body": "```suggestion\r\nWe will use `Prio3Histogram` {{Section 7.4.4 of !VDAF}} to ensure that each Client\r\n```",
+              "createdAt": "2023-10-19T21:50:20Z",
+              "updatedAt": "2023-10-19T21:58:47Z"
+            },
+            {
+              "originalPosition": 95,
+              "body": "Why is this a section? Also, why are we talking about robustness here? Our purpose is to describe a DP policy, whose security goals are orthogonal.",
+              "createdAt": "2023-10-19T21:51:14Z",
+              "updatedAt": "2023-10-19T21:58:47Z"
+            },
+            {
+              "originalPosition": 129,
+              "body": "```suggestion\r\n    # The final aggregate result should be a vector of signed\r\n```",
+              "createdAt": "2023-10-19T21:51:49Z",
+              "updatedAt": "2023-10-19T21:58:47Z"
+            },
+            {
+              "originalPosition": 131,
+              "body": "```suggestion\r\n    # noise that may have a larger absolute value than the count\r\n```",
+              "createdAt": "2023-10-19T21:52:01Z",
+              "updatedAt": "2023-10-19T21:58:47Z"
+            },
+            {
+              "originalPosition": 138,
+              "body": "```suggestion\r\n        # Transforming a one-hot vector into another will affect two\r\n```",
+              "createdAt": "2023-10-19T21:53:14Z",
+              "updatedAt": "2023-10-19T21:58:47Z"
+            },
+            {
+              "originalPosition": 157,
+              "body": "```suggestion\r\n        Sample discrete Gaussian noise, and merge it with the aggregate\r\n```",
+              "createdAt": "2023-10-19T21:53:50Z",
+              "updatedAt": "2023-10-19T21:58:47Z"
+            },
+            {
+              "originalPosition": 226,
+              "body": "Good summary! However, drafts don't usually have Conclusion sections the way papers do. I think this is a useful thing to note, but let's put it before the policies somewhere.",
+              "createdAt": "2023-10-19T21:55:51Z",
+              "updatedAt": "2023-10-19T21:58:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc5ktXT3",
+          "commit": {
+            "abbreviatedOid": "077e398"
+          },
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "I believe the open threads are:\r\n\r\n- Why two citations for discrete Gaussian: https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/25#discussion_r1366164798\r\n- Clarify why L2-sensitivity is sqrt(2): https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/25#discussion_r1366174380",
+          "createdAt": "2023-10-20T09:19:53Z",
+          "updatedAt": "2023-10-20T10:43:55Z",
+          "comments": [
+            {
+              "originalPosition": 70,
+              "body": "Copied some of the texts from Client-DP :) ",
+              "createdAt": "2023-10-20T09:19:53Z",
+              "updatedAt": "2023-10-20T10:43:56Z"
+            },
+            {
+              "originalPosition": 77,
+              "body": "Me neither. I can change it to \"in\".",
+              "createdAt": "2023-10-20T09:21:02Z",
+              "updatedAt": "2023-10-20T10:43:56Z"
+            },
+            {
+              "originalPosition": 95,
+              "body": "Removed it. I thought I'd do something similar like the Client-DP section by briefly describing why use this VDAF.",
+              "createdAt": "2023-10-20T09:43:32Z",
+              "updatedAt": "2023-10-20T10:43:56Z"
+            },
+            {
+              "originalPosition": 226,
+              "body": "Moved it to intro of histogram use case.",
+              "createdAt": "2023-10-20T09:43:47Z",
+              "updatedAt": "2023-10-20T10:43:56Z"
+            },
+            {
+              "originalPosition": 88,
+              "body": "Added an author note there.",
+              "createdAt": "2023-10-20T09:44:06Z",
+              "updatedAt": "2023-10-20T10:43:56Z"
+            },
+            {
+              "originalPosition": 84,
+              "body": "Good point. Fixed.",
+              "createdAt": "2023-10-20T10:24:46Z",
+              "updatedAt": "2023-10-20T10:43:56Z"
+            },
+            {
+              "originalPosition": 82,
+              "body": "So Theorem 8 of [BW18](https://arxiv.org/pdf/1805.06530.pdf) is the first paper that has the analysis for why *continuous* Gaussian achieves `(EPSILON, DELTA)`-DP. Theorem 7 in [CKS20](https://arxiv.org/pdf/2004.00010.pdf) shows similar result for discrete Gaussian.\r\n\r\nThere is a caveat though, also related to one feedback from Kunal: CKS20 makes a note that: when `SIGMA` is small, there is small difference in `(EPSILON, DELTA)` achieved by continuous and discrete Gaussian (Figure 1 has some details). If we use the algorithm from BW18 (which is intended for continuous Gaussian), we need to be careful when `SIGMA` is small, i.e., when the desired `(EPSILON, DELTA)`-DP is weak. I made an author note in the draft.",
+              "createdAt": "2023-10-20T10:30:58Z",
+              "updatedAt": "2023-10-20T10:45:02Z"
+            },
+            {
+              "originalPosition": 86,
+              "body": "I clarified further:\r\n\r\n> because transforming an one-hot vector into another will affect two coordinates, e.g., transforming an one-hot vector `[1, 0, 0]` to `[0, 1, 0]` changes L2-sensitivity by `sqrt(2)`.",
+              "createdAt": "2023-10-20T10:31:35Z",
+              "updatedAt": "2023-10-20T10:43:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc5kxRkq",
+          "commit": {
+            "abbreviatedOid": "4ca3102"
+          },
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-20T17:49:31Z",
+          "updatedAt": "2023-10-20T17:49:31Z",
+          "comments": [
+            {
+              "originalPosition": 86,
+              "body": "Thanks!",
+              "createdAt": "2023-10-20T17:49:31Z",
+              "updatedAt": "2023-10-20T17:49:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc5kxRzO",
+          "commit": {
+            "abbreviatedOid": "4ca3102"
+          },
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-20T17:50:13Z",
+          "updatedAt": "2023-10-20T17:50:14Z",
+          "comments": [
+            {
+              "originalPosition": 82,
+              "body": "Good enough for now.",
+              "createdAt": "2023-10-20T17:50:14Z",
+              "updatedAt": "2023-10-20T17:50:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc5kxR4L",
+          "commit": {
+            "abbreviatedOid": "7090455"
+          },
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-20T17:50:29Z",
+          "updatedAt": "2023-10-20T17:50:29Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 27,
+      "id": "PR_kwDOJ7sZWc5dagte",
+      "title": "Kunal's feedback on namings and citations",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/27",
+      "state": "OPEN",
+      "author": "junyechen1996",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-10-20T19:11:01Z",
+      "updatedAt": "2023-10-20T21:15:47Z",
+      "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "baseRefName": "main",
+      "baseRefOid": "8224fc03e96bd1ab035d1907a276db463b003ed7",
+      "headRepository": "junyechen1996/draft-wang-ppm-differential-privacy-1",
+      "headRefName": "junyec/kunal-feedback",
+      "headRefOid": "44a7f9bdbdc400ba34e83ea70b7af4e404411db4",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOJ7sZWc5kxylY",
+          "commit": {
+            "abbreviatedOid": "44a7f9b"
+          },
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-20T19:12:08Z",
+          "updatedAt": "2023-10-20T19:19:05Z",
+          "comments": [
+            {
+              "originalPosition": 53,
+              "body": "From Kunal: \"in general, the rate at which CLT gives convergence to Gaussian is not good enough to get reasonable (eps, delta)-DP guarantees. While it may provide intuition, if we want to use, say, sum of binomials to get something like a Gaussian, we would want to analyze it from scratch.\"",
+              "createdAt": "2023-10-20T19:12:08Z",
+              "updatedAt": "2023-10-20T19:19:05Z"
+            },
+            {
+              "originalPosition": 263,
+              "body": "Not sure what @kunal-talwar wants to say here. Waiting to hear back from him.",
+              "createdAt": "2023-10-20T19:13:38Z",
+              "updatedAt": "2023-10-20T19:19:05Z"
+            },
+            {
+              "originalPosition": 184,
+              "body": "From Kunal: we should change Client-DP to Client randomization, and Aggregator-DP to Aggregator randomization. Client or Aggregator-DP typically means DP guarantee, e.g. `EPSILON`-DP, or `(EPSILON, DELTA)`-DP.",
+              "createdAt": "2023-10-20T19:14:59Z",
+              "updatedAt": "2023-10-20T19:19:05Z"
+            },
+            {
+              "originalPosition": 602,
+              "body": "This paragraph is mainly talking about Aggregator compensation, but currently in Appendix. We could remove it too if we don't want to distract readers at this point.",
+              "createdAt": "2023-10-20T19:16:50Z",
+              "updatedAt": "2023-10-20T19:19:05Z"
+            },
+            {
+              "originalPosition": 609,
+              "body": "Putting other definitions of neighboring batches into Appendix per Kunal's suggestion.",
+              "createdAt": "2023-10-20T19:17:12Z",
+              "updatedAt": "2023-10-20T19:19:05Z"
+            },
+            {
+              "originalPosition": 196,
+              "body": "From Kunal: we should at least cite the original proposal of RAPPOR, but [MJTB+22](https://arxiv.org/abs/2211.10082) has a clean description of the symmetric RAPPOR that we use here.",
+              "createdAt": "2023-10-20T19:18:17Z",
+              "updatedAt": "2023-10-20T19:19:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc5kyEmz",
+          "commit": {
+            "abbreviatedOid": "44a7f9b"
+          },
+          "author": "wangshan",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-20T20:14:22Z",
+          "updatedAt": "2023-10-20T20:19:36Z",
+          "comments": [
+            {
+              "originalPosition": 117,
+              "body": "@kunal-talwar how to distinguish between malicious and honest-but-curious parties?",
+              "createdAt": "2023-10-20T20:14:22Z",
+              "updatedAt": "2023-10-20T20:19:36Z"
+            },
+            {
+              "originalPosition": 159,
+              "body": "Do we want to explain why this is the case?",
+              "createdAt": "2023-10-20T20:15:39Z",
+              "updatedAt": "2023-10-20T20:19:36Z"
+            },
+            {
+              "originalPosition": 184,
+              "body": "I agree with the rename. However, do we want some text to explain that the goal of DpPolicy is to achieve Aggregator-DP guarantee, using either client-randomisation or aggregator randomisation.",
+              "createdAt": "2023-10-20T20:18:03Z",
+              "updatedAt": "2023-10-20T20:19:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc5kyTB-",
+          "commit": {
+            "abbreviatedOid": "44a7f9b"
+          },
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "This looks to be a strict improvement.",
+          "createdAt": "2023-10-20T21:10:52Z",
+          "updatedAt": "2023-10-20T21:15:47Z",
+          "comments": [
+            {
+              "originalPosition": 106,
+              "body": "How does one formalize \"polynomially small\"? Is there a security parameter in some DP definitions?\r\n\r\nIs there a different way to word this?",
+              "createdAt": "2023-10-20T21:10:53Z",
+              "updatedAt": "2023-10-20T21:15:47Z"
+            },
+            {
+              "originalPosition": 117,
+              "body": "I suspect the distinction won't be helpful. For the purposes of (differential) privacy, suppose that all parties corrupted by the attacker are fully malicious and not just semi-honest.",
+              "createdAt": "2023-10-20T21:12:15Z",
+              "updatedAt": "2023-10-20T21:15:47Z"
+            },
+            {
+              "originalPosition": 184,
+              "body": "New terminology sounds good to me, just make sure it's consistent.\r\n@wangshan I don't think saying \"Aggregator-DP guarantee\" is meaningful unless we define it. For now, pure-DP and approximate-DP are the only well-defined terms.",
+              "createdAt": "2023-10-20T21:14:30Z",
+              "updatedAt": "2023-10-20T21:15:47Z"
             }
           ]
         }
