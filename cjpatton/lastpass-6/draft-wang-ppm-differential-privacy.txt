@@ -415,7 +415,7 @@ Table of Contents
    achieve a smaller DELTA and thereby a smaller overall DP bound (i.e.,
    stronger privacy).
 
-   A concrete DP mechansim implements the following methods:
+   A concrete DP mechanism implements the following methods:
 
    *  DpMechanism.add_noise(data: DataType) -> DataType adds noise to
       the input data (i.e., a measurement or an aggregate share).  Some
@@ -423,7 +423,7 @@ Table of Contents
 
    *  DpMechanism.sample_noise(dimension: int) -> DataType samples noise
       of length dimension, with the DP mechanism.  The interpretation of
-      dimension generally depends on the data type.  Called by
+      dimension generally depends on the data type.  It may be called by
       DpMechanism.add_noise().
 
    *  DpMechanism.debias(data: DataType, meas_count: int) ->
