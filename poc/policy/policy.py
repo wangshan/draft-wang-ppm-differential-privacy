@@ -62,7 +62,7 @@ class DpPolicy:
 
 
 # NOTE This is used to generate {{run-dp-policy-with-vdaf}}.
-def run_dp_policy_with_vdaf(
+def run_vdaf_with_dp_policy(
     dp_policy: DpPolicy,
     Vdaf: Vdaf,
     agg_param: Vdaf.AggParam,

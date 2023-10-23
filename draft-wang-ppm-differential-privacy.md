@@ -700,21 +700,21 @@ class SymmetricRappor(DpMechanism):
 
 # DP Policies for VDAFs {#policies}
 
-The section defines a generic interface for DP policies for VDAFs.
+The section defines a generic interface for DP policies for VDAFs. A DP policy
+composes the following operations with execution of a VDAF:
 
-We will define an interface `DpPolicy` that composes the following:
+1. An optional Client randomization mechanism that adds noise to Clients'
+   measurements prior to sharding.
 
-* An optional Client randomization mechanism that adds noise to Clients'
-  measurements.
+1. An optional Aggregator randomization mechanism that adds noise to an
+   Aggregator's aggregate share prior to unsharding.
 
-* An optional Aggregator randomization mechanism that adds noise to an
-  Aggregator's aggregate share.
+1. An optional debiasing step that removes the bias in DP mechanisms (i.e.
+  `DpMechanism.debias`) after unsharding.
 
-* An optional debiasing step that removes the bias in DP mechanisms (i.e.
-  `DpMechanism.debias`).
-
-The composition of Client and Aggregator randomization mechanisms defines the DP
-policy for a VDAF, and enforces the DP guarantee.
+The composition of Client and Aggregator randomization mechanisms defines the
+DP policy for a VDAF, and enforces the DP guarantee. In particular, a concrete
+DP policy is a subclass of `DpPolicy`:
 
 ~~~
 class DpPolicy:
@@ -762,11 +762,12 @@ class DpPolicy:
 
 ## Executing DP Policies with VDAFs {#run-dp-policy-with-vdaf}
 
-The execution of `DpPolicy` with a `Vdaf` can thus be summarized as the
-following:
+The execution of `DpPolicy` with a `Vdaf` can thus be summarized by the
+following computational steps (these are carried out by DAP in a distributed
+manner):
 
 ~~~
-def run_dp_policy_with_vdaf(
+def run_vdaf_with_dp_policy(
     dp_policy: DpPolicy,
     Vdaf: Vdaf,
     agg_param: Vdaf.AggParam,
