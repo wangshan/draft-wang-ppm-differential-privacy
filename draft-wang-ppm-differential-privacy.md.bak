@@ -324,11 +324,11 @@ in DAP. It does so in the following stages:
    systems, including algorithms for sampling from discrete Laplace and
    Gaussian distributions.
 
-1. {{policies}} defines DP policies that are implemented with DP mechanisms, their composition with VDAFs, and their
-   execution semantics for DAP. {{run-vdaf-with-dp-policy}} then demonstrates how to execute VDAFs with DP policies.
+1. {{policies}} defines DP policies, their composition with VDAFs, and their
+   execution semantics for DAP.
 
 1. {{use-cases}} specifies compositions of concrete VDAFs with concrete DP
-   policies for achieving DP for specific DAP use cases.
+   policies for achieving DP for specific DAP use caes.
 
 The following considerations are out-of-scope for this document:
 
@@ -361,7 +361,7 @@ Let `exp(EPSILON)` denote raising the numeric constant `e` to the power of
 
 DP formalizes a property of any randomized algorithm that takes in a sequence
 of measurements, aggregates them, and outputs an aggregate result. Intuitively,
-this property guarantees that no single measurement significantly impacts the
+this property guarantees that no single measurement signficantly impacts the
 value of the aggregate result. This intuition is formalized by {{DMNS06}} as
 follows.
 
@@ -423,7 +423,7 @@ Other variants of DP are possible; see the literature review in
 
 ## Sensitivity
 
-Differential privacy noise sometimes needs to be calibrated based on the
+Differential privacy noise sometimes needs to be calibered based on the
 `SENSITIVITY` of the aggregation function used to compute the aggregate result
 over Client measurements. Sensitivity characterizes how much a change in a
 Client measurement can affect the aggregate result. In this document, we focus
@@ -467,7 +467,7 @@ models.
 > KT(issue#28): Here we seem to be assuming corrupted = malicious. Is there any
 > benefit to a more refined distinction (i.e. honest-but-curious vs malicious).
 > I suspect we would always want secure against malicious, but perhaps there are
-> settings where we are OK with security against bad behavior that is not
+> settings where we are ok with security against bad behavior that is not
 > catchable during an audit.
 
 ### OAMC: One-Aggregator-Most-Clients
@@ -488,7 +488,7 @@ to provide protection for the honest Client's measurement.
 > TODO(issue#15) For the simple Aggregator-noise mechanism, if the malicious
 > Aggregator cheats by not adding noise, then the aggregate result is not DP
 > from the point of view of the honest Aggregator, unless the honest
-> Aggregator "forgets" the randomness it used. Describe this "attack" in
+> Aggregagtor "forgets" the randomness it used. Describe this "attack" in
 > "Security Considerations" and say why it's irrelevant.
 
 ## OC: One-Client
@@ -755,7 +755,7 @@ class DpPolicy:
         return agg_result
 ~~~
 
-## Executing DP Policies with VDAFs {#run-vdaf-with-dp-policy}
+## Executing DP Policies with VDAFs {#run-dp-policy-with-vdaf}
 
 The execution of `DpPolicy` with a `Vdaf` can thus be summarized by the
 following computational steps (these are carried out by DAP in a distributed
@@ -1149,7 +1149,7 @@ provides the privacy guarantee of the aggregation.
 There are primarily two models in the literature for defining two "neighboring
 batches": deletion (or removal) of one measurement, and replacement (or
 substitution) of one measurement with another {{KM11}}. In the DAP setting, the
-protocol leaks the number of measurements in each batch collected and the
+protocol leaks the nubmer of measurements in each batch collected and the
 appropriate version of deletion-DP considers substitution by a fixed value
 (e.g. zero). In other words, two batches of measurements `D1` and `D2` are
 "neighboring" for deletion-DP if `D2` can be obtained from `D1` by replacing one
