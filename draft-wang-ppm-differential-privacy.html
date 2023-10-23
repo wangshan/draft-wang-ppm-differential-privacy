@@ -1315,9 +1315,10 @@ is made possible by using a Verifiable Distributed Aggregation Function
 Execution of A VDAF involves: a large set of "Clients" who produce
 cryptographically protected measurements, called "reports"; a small number of
 "Aggregators" who consume reports and produce the cryptographically protected
-aggregate; and a "Collector" who consumes the aggregate result. Distributing
-the computation of the aggregate in this manner ensures that, as long as one
-Aggregator is honest, no attacker can learn an honest Client's measurement.<a href="#section-1-2" class="pilcrow">¶</a></p>
+aggregate; and a "Collector" who consumes the plaintext aggregate result.
+Distributing the computation of the aggregate in this manner ensures that, as
+long as one Aggregator is honest, no attacker can learn an honest Client's
+measurement.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">Depending on the application, protecting the measurements may not be sufficient
 for privacy, since the aggregate itself can reveal privacy-sensitive
 information. As an illustrative example, consider using DAP/VDAF to summarize
@@ -1336,7 +1337,7 @@ output does not change signficantly as a result of removing one of the
 measurements (or substituting it with another).<a href="#section-1-4" class="pilcrow">¶</a></p>
 <p id="section-1-5">VDAFs are not DP on their own, but they can be composed with a variety of
 mechanisms that endow them with this property. All such mechanisms work by
-introducing "noise" into the computation that is carefully calibrated for a
+introducing noise into the computation that is carefully calibrated for a
 number of application-specific parameters, including the structure and number
 of measurements, the desired aggregation function, and the degree of "utility"
 required. Intuitively, a high degree of privacy can be achieved by adding a lot
@@ -1354,13 +1355,12 @@ both Clients and Aggregators may participate in generating the noise.<a href="#s
 in DAP. It does so in the following stages:<a href="#section-1-8" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-1-9">
 <li id="section-1-9.1">
-          <p id="section-1-9.1.1"><a href="#overview" class="auto internal xref">Section 3</a> describes the notion(s) of DP that are compatible with DAP and
-provides a systematization of applicable DP policies from the literature.
+          <p id="section-1-9.1.1"><a href="#overview" class="auto internal xref">Section 3</a> describes the notion(s) of DP that are compatible with DAP.
 Security is defined in a few different "trust models" in which we assume
 that some fraction of the parties execute the protocol honestly. Of course
 in reality, whether such assumptions hold is usually outside of our control.
 Thus our goal is to design DP policies that still provide some degree of
-protection in more pessimistic trust models.<a href="#section-1-9.1.1" class="pilcrow">¶</a></p>
+protection in more pessimistic trust models. (We call this "hedging".)<a href="#section-1-9.1.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-1-9.2">
           <p id="section-1-9.2.1"><a href="#mechanisms" class="auto internal xref">Section 4</a> specifies various mechanisms required for building DP
@@ -1390,7 +1390,9 @@ no guidance for this process.<a href="#section-1-11.1.1" class="pilcrow">¶</a><
 </li>
         <li id="section-1-11.2">
           <p id="section-1-11.2.1">This document describes a particular class of narrowly-scoped DP policies.
-Other, more sophisticated policies are possible. [TODO: Add citations.]<a href="#section-1-11.2.1" class="pilcrow">¶</a></p>
+Other, more sophisticated policies are possible. [TODO: Add citations. Here
+we're thinking of things like DPrio, which may be more appropriate to
+specify as DAP report extensions.]<a href="#section-1-11.2.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-1-11.3">
           <p id="section-1-11.3.1">The mechanisms described in <a href="#mechanisms" class="auto internal xref">Section 4</a> are intended for use beyond
