@@ -268,9 +268,10 @@ is made possible by using a Verifiable Distributed Aggregation Function
 Execution of A VDAF involves: a large set of "Clients" who produce
 cryptographically protected measurements, called "reports"; a small number of
 "Aggregators" who consume reports and produce the cryptographically protected
-aggregate; and a "Collector" who consumes the aggregate result. Distributing
-the computation of the aggregate in this manner ensures that, as long as one
-Aggregator is honest, no attacker can learn an honest Client's measurement.
+aggregate; and a "Collector" who consumes the plaintext aggregate result.
+Distributing the computation of the aggregate in this manner ensures that, as
+long as one Aggregator is honest, no attacker can learn an honest Client's
+measurement.
 
 Depending on the application, protecting the measurements may not be sufficient
 for privacy, since the aggregate itself can reveal privacy-sensitive
@@ -292,7 +293,7 @@ measurements (or substituting it with another).
 
 VDAFs are not DP on their own, but they can be composed with a variety of
 mechanisms that endow them with this property. All such mechanisms work by
-introducing "noise" into the computation that is carefully calibrated for a
+introducing noise into the computation that is carefully calibrated for a
 number of application-specific parameters, including the structure and number
 of measurements, the desired aggregation function, and the degree of "utility"
 required. Intuitively, a high degree of privacy can be achieved by adding a lot
@@ -312,13 +313,12 @@ both Clients and Aggregators may participate in generating the noise.
 The primary goal of this document is to specify how DP policies are implemented
 in DAP. It does so in the following stages:
 
-1. {{overview}} describes the notion(s) of DP that are compatible with DAP and
-   provides a systematization of applicable DP policies from the literature.
+1. {{overview}} describes the notion(s) of DP that are compatible with DAP.
    Security is defined in a few different "trust models" in which we assume
    that some fraction of the parties execute the protocol honestly. Of course
    in reality, whether such assumptions hold is usually outside of our control.
    Thus our goal is to design DP policies that still provide some degree of
-   protection in more pessimistic trust models.
+   protection in more pessimistic trust models. (We call this "hedging".)
 
 1. {{mechanisms}} specifies various mechanisms required for building DP
    systems, including algorithms for sampling from discrete Laplace and
@@ -342,7 +342,9 @@ The following considerations are out-of-scope for this document:
    no guidance for this process.
 
 1. This document describes a particular class of narrowly-scoped DP policies.
-   Other, more sophisticated policies are possible. [TODO: Add citations.]
+   Other, more sophisticated policies are possible. [TODO: Add citations. Here
+   we're thinking of things like DPrio, which may be more appropriate to
+   specify as DAP report extensions.]
 
 1. The mechanisms described in {{mechanisms}} are intended for use beyond
    DAP/VDAF. However, this document does not describe general-purpose DP
