@@ -1838,25 +1838,26 @@ class SymmetricRappor(DpMechanism):
       <h2 id="name-dp-policies-for-vdafs">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-dp-policies-for-vdafs" class="section-name selfRef">DP Policies for VDAFs</a>
       </h2>
-<p id="section-5-1">The section defines a generic interface for DP policies for VDAFs.<a href="#section-5-1" class="pilcrow">¶</a></p>
-<p id="section-5-2">We will define an interface <code>DpPolicy</code> that composes the following:<a href="#section-5-2" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-5-3.1">
-          <p id="section-5-3.1.1">An optional Client randomization mechanism that adds noise to Clients'
-measurements.<a href="#section-5-3.1.1" class="pilcrow">¶</a></p>
+<p id="section-5-1">The section defines a generic interface for DP policies for VDAFs. A DP policy
+composes the following operations with execution of a VDAF:<a href="#section-5-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-5-2">
+<li id="section-5-2.1">
+          <p id="section-5-2.1.1">An optional Client randomization mechanism that adds noise to Clients'
+measurements prior to sharding.<a href="#section-5-2.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-5-3.2">
-          <p id="section-5-3.2.1">An optional Aggregator randomization mechanism that adds noise to an
-Aggregator's aggregate share.<a href="#section-5-3.2.1" class="pilcrow">¶</a></p>
+        <li id="section-5-2.2">
+          <p id="section-5-2.2.1">An optional Aggregator randomization mechanism that adds noise to an
+Aggregator's aggregate share prior to unsharding.<a href="#section-5-2.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-5-3.3">
-          <p id="section-5-3.3.1">An optional debiasing step that removes the bias in DP mechanisms (i.e.
-<code>DpMechanism.debias</code>).<a href="#section-5-3.3.1" class="pilcrow">¶</a></p>
+        <li id="section-5-2.3">
+          <p id="section-5-2.3.1">An optional debiasing step that removes the bias in DP mechanisms (i.e.
+  <code>DpMechanism.debias</code>) after unsharding.<a href="#section-5-2.3.1" class="pilcrow">¶</a></p>
 </li>
-      </ul>
-<p id="section-5-4">The composition of Client and Aggregator randomization mechanisms defines the DP
-policy for a VDAF, and enforces the DP guarantee.<a href="#section-5-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5-5">
+      </ol>
+<p id="section-5-3">The composition of Client and Aggregator randomization mechanisms defines the
+DP policy for a VDAF, and enforces the DP guarantee. In particular, a concrete
+DP policy is a subclass of <code>DpPolicy</code>:<a href="#section-5-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5-4">
 <pre>
 class DpPolicy:
     # Client measurement type.
@@ -1899,18 +1900,19 @@ class DpPolicy:
         implementation is to do nothing.
         """
         return agg_result
-</pre><a href="#section-5-5" class="pilcrow">¶</a>
+</pre><a href="#section-5-4" class="pilcrow">¶</a>
 </div>
 <div id="run-dp-policy-with-vdaf">
 <section id="section-5.1">
         <h3 id="name-executing-dp-policies-with-">
 <a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-executing-dp-policies-with-" class="section-name selfRef">Executing DP Policies with VDAFs</a>
         </h3>
-<p id="section-5.1-1">The execution of <code>DpPolicy</code> with a <code>Vdaf</code> can thus be summarized as the
-following:<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1-1">The execution of <code>DpPolicy</code> with a <code>Vdaf</code> can thus be summarized by the
+following computational steps (these are carried out by DAP in a distributed
+manner):<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.1-2">
 <pre>
-def run_dp_policy_with_vdaf(
+def run_vdaf_with_dp_policy(
     dp_policy: DpPolicy,
     Vdaf: Vdaf,
     agg_param: Vdaf.AggParam,
