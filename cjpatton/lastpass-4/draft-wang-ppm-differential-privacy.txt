@@ -406,6 +406,11 @@ Table of Contents
    DP policies.  The algorithms are designed to securely expand a short,
    uniform random seed into a sample from the target given distribution.
 
+      TODO For now we don't actually expand a seed into a sample; we
+      just use coin flips that are local to the relevant algorithm.
+      Update the API so that take a random seed instead so that we can
+      derive test vectors.
+
    Each mechanism has internal parameters that determine how much noise
    will be added to its input data.  Note that a mechanism that is
    initialized with its internal parameters can achieve different
@@ -536,25 +541,10 @@ Table of Contents
 
 4.3.2.  Reference Implementation
 
-   A reference implementation of symmetric RAPPOR can be found below.
-   The three methods for DpMechanism achieves the following
-   functionalities respectively:
+   Symmetric RAPPOR is specified by the DP mechanism SymmetricRappor
+   below.
 
-   *  SymmetricRappor.add_noise(data: list[int]) -> list[int] applies
-      symmetric RAPPOR to the input bit vector data.
-
-   *  SymmetricRappor.sample_noise(dimension: int) -> list[int] applies
-      symmetric RAPPOR on a bit vector of length dimension with all
-      zeros, and returns it.
-
-   *  SymmetricRappor.debias(data: list[int], meas_count: int) ->
-      list[float] debiases the list of unsigned integers data based on
-      the number of measurements meas_count.
-
-      TODO: We need to align with Xof specified in the VDAF draft.
-      Currently we get away with just using random.random() in python to
-      make the symmetric RAPPOR functional.  TODO: We could make the
-      sampler more efficient if we use binomial.
+      TODO: We could make the sampler more efficient if we use binomial.
 
    import random
 
