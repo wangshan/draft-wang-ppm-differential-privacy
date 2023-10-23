@@ -1492,18 +1492,18 @@ in many cases allow for much smaller noise compared to pure-DP mechanisms. See
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-sensitivity" class="section-name selfRef">Sensitivity</a>
         </h3>
 <p id="section-3.2-1">Differential privacy noise sometimes needs to be calibered based on the
-<code>SENSITIVITY</code> of an aggregation function used to compute the aggregate result
+<code>SENSITIVITY</code> of the aggregation function used to compute the aggregate result
 over Client measurements. Sensitivity characterizes how much a change in a
-Client measurement can affect the aggregate result. In this document, we focus on
-the L1 and L2 sensitivity. We define them as a function over two neighboring
+Client measurement can affect the aggregate result. In this document, we focus
+on the L1 and L2 sensitivity. We define them as a function over two neighboring
 Client measurements:<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.2-2.1">
-            <p id="section-3.2-2.1.1">L1 sensitivity: the sum of the absolute values of differences at all coordinates
+            <p id="section-3.2-2.1.1">L1 Sensitivity: the sum of the absolute values of differences at all coordinates
 of the neighboring Client measurements.<a href="#section-3.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.2-2.2">
-            <p id="section-3.2-2.2.1">L2 sensitivity: the sum of the squares of the differences at all coordinates of
+            <p id="section-3.2-2.2.1">L2 Sensitivity: the sum of the squares of the differences at all coordinates of
 the neighboring Client measurements.<a href="#section-3.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
@@ -1530,9 +1530,9 @@ corrupts a subset of the parties.<a href="#section-3.3-2" class="pilcrow">¶</a>
 <p id="section-3.3-3">We say the protocol is pure-DP (resp. approximate-DP) if the view of any
 computationally bounded attacker can be efficiently simulated by a simulator
 that itself is pure-DP (or approximate-DP) as defined above. (The simulator
-takes the measurements as input and outputs a value that is computationally
-indistinguishable from the transcript of the protocol's execution in the
-presence of the attacker.)<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+takes the measurements as input and outputs a value that should be
+computationally indistinguishable from the transcript of the protocol's
+execution in the presence of the attacker.)<a href="#section-3.3-3" class="pilcrow">¶</a></p>
 <p id="section-3.3-4">Whether this property holds for a given DP policy depends on which parties can
 be trusted to execute the protocol correctly (i.e., which parties are not
 corrupted by the attacker). We consider three, increasingly pessimistic trust
@@ -1552,11 +1552,11 @@ catchable during an audit.<a href="#section-3.3-5.1.1" class="pilcrow">¶</a></p
 <a href="#section-3.3.1" class="section-number selfRef">3.3.1. </a><a href="#name-oamc-one-aggregator-most-cl" class="section-name selfRef">OAMC: One-Aggregator-Most-Clients</a>
           </h4>
 <p id="section-3.3.1-1">Assume that most Clients and one Aggregator are honest and that the other
-Aggregator and the Collector are controlled by the attacker. When all Clients
-are honest, this corresponds to the same trust model as the base DAP protocol.
-The degree of privacy provided (i.e., the value of <code>EPSILON</code> for pure-DP) for
-most protocols in this setting would degrade gracefully as the number of honest
-Clients decreases.<a href="#section-3.3.1-1" class="pilcrow">¶</a></p>
+Aggregator (DAP involves just two Aggregators) and the Collector are controlled
+by the attacker. When all Clients are honest, this corresponds to the same
+trust model as the base DAP protocol. The degree of privacy provided (i.e., the
+value of <code>EPSILON</code> for pure-DP) for most protocols in this setting would
+degrade gracefully as the number of honest Clients decreases.<a href="#section-3.3.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="oaoc-one-aggregator-one-client">
@@ -1586,11 +1586,11 @@ Aggregagtor "forgets" the randomness it used. Describe this "attack" in
 <a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-oc-one-client" class="section-name selfRef">OC: One-Client</a>
         </h3>
 <p id="section-3.4-1">Assume that all parties, including all but one Client, both Aggregators, and
-the Collector are controlled by the attacker. The best a policy can hope for is
-that the honest Client's measurement has "local-DP". This property is defined
-the same way as pure- or approximate-DP. Typically, the bound on <code>EPSILON</code> that
-we aim to achieve for local-DP would be larger than that in a more optimistic
-trust model.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+the Collector are controlled by the attacker. The best the honest Client can
+hope for is that its measurement has "local-DP". This property is defined the
+same way as pure- or approximate-DP, but the bound on <code>EPSILON</code> that we would
+aim to achieve for local-DP would typically be larger than that in a more
+optimistic trust model.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="hedging">
