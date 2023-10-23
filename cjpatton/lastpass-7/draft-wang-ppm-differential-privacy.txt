@@ -194,8 +194,10 @@ Table of Contents
        systems, including algorithms for sampling from discrete Laplace
        and Gaussian distributions.
 
-   3.  Section 5 defines DP policies, their composition with VDAFs, and
-       their execution semantics for DAP.
+   3.  Section 5 defines DP policies that are implemented with DP
+       mechanisms, their composition with VDAFs, and their execution
+       semantics for DAP.  Section 5.1 then demonstrates how to execute
+       VDAFs with DP policies.
 
    4.  Section 6 specifies compositions of concrete VDAFs with concrete
        DP policies for achieving DP for specific DAP use cases.
