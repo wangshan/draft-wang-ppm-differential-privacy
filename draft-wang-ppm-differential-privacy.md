@@ -355,7 +355,7 @@ The following considerations are out-of-scope for this document:
 
 {::boilerplate bcp14-tagged}
 
-This document uses the same conventions for error handling as {{!DAP}}.
+This document uses Python3 for describing algorithms.
 
 Let `exp(EPSILON)` denote raising the numeric constant `e` to the power of
 `EPSILON`.
@@ -521,34 +521,37 @@ weaker bound.
 
 This section describes various mechanisms required for implementing DP
 policies. The algorithms are designed to securely expand a short, uniform
-random seed into a sample from a given distribution.
+random seed into a sample from the target given distribution.
+
+> TODO For now we don't actually expand a seed into a sample; we just use coin
+> flips that are local to the relevant algorithm. Update the API so that take a
+> random seed instead so that we can derive test vectors.
 
 Each mechanism has internal parameters that determine how much noise will be
-added to its input data. The internal parameters are typically computed by
-support methods in order to output the desired `EPSILON`-DP, or
-`(EPSILON, DELTA)`-DP. It is worth noting that a mechanism that is initialized
-with its internal parameters can achieve different combinations of DP
-parameters, e.g. `(EPSILON, DELTA)`-DP, or `(EPSILON', DELTA')`-DP, where
-`EPSILON < EPSILON'` and `DELTA > DELTA'`, because if we make `EPSILON` larger
-(i.e., weaker privacy), we may achieve a smaller `DELTA` (i.e., stronger
-privacy).
+added to its input data. Note that a mechanism that is initialized with its
+internal parameters can achieve different combinations of DP parameters, e.g.
+`(EPSILON, DELTA)`-DP, or `(EPSILON', DELTA')`-DP, where `EPSILON < EPSILON'`
+and `DELTA > DELTA'`, because if we make `EPSILON` larger (i.e., weaker
+privacy), we may achieve a smaller `DELTA` and thereby a smaller overall DP
+bound (i.e., stronger privacy).
 
-We also expect DP mechanisms to contain the following functionalities:
+A concrete DP mechanism implements the following methods:
 
 * `DpMechanism.add_noise(data: DataType) -> DataType` adds noise to the input
-  `data` (i.e. a measurement or an aggregate share). Some DP mechanisms apply
+  `data` (i.e., a measurement or an aggregate share). Some DP mechanisms apply
   noise based on the input data.
 
-* `DpMechanism.sample_noise(dimension: int) -> DataType` samples noise of length
-  `dimension`, with the DP mechanism.
+* `DpMechanism.sample_noise(dimension: int) -> DataType` samples noise of
+  length `dimension`, with the DP mechanism. The interpretation of `dimension`
+  generally depends on the data type. It may be called by `DpMechanism.add_noise()`.
 
 * `DpMechanism.debias(data: DataType, meas_count: int) -> DebiasedDataType`
   debiases the noised `data` based on the number of measurements `meas_count`.
-  Note that not all noise will need this functionality. Some DP mechanisms will
-  need this functionality, for example, {{symmetric-rappor}} has a debiasing
-  step that removes bias.
+  Note that not all mechanisms will implement this method. Some do, such as
+  {{symmetric-rappor}}.
 
-Therefore, we define three methods for an interface `DpMechanism`:
+Putting this together a DP mechanism is a concrete subclass of `DPMechanism`
+defined below:
 
 ~~~
 class DpMechanism:
@@ -593,31 +596,33 @@ class DpMechanism:
 
 ## Symmetric RAPPOR {#symmetric-rappor}
 
-This section describes symmetric RAPPOR that was first proposed in {{EPK14}},
-and the exact algorithm we use here is detailed in Appendix C.1 of {{MJTB+22}}.
-It is initialized with a parameter `EPSILON_0`. It takes in a bit vector, and
-outputs a noisy version that flips the bits at some coordinates.
+This section describes Symmetric RAPPOR, a DP mechanism first proposed in
+{{EPK14}}, and refined in Appendix C.1 of {{MJTB+22}}. (The specification here
+reflects the refined version.) It is initialized with a parameter `EPSILON_0`.
+It takes in a bit vector and outputs a noisy version that with randomly flipped
+bits.
 
 Symmetric RAPPOR applies "binary randomized response mechanism" at each
 coordinate. Binary randomized response takes in a single bit `x`. The bit is
 flipped to `1 - x` with probability `1 / (exp(EPSILON_0) + 1)`. For example, if
 `EPSILON_0` is configured to be 3, and the input to binary randomized response
-is a 0, the bit will be flipped to be 1 with probability `1 / (exp(3) + 1)`,
-otherwise, it will stay as a 0.
+is a `0`, the bit will be flipped to be 1 with probability `1 / (exp(3) + 1)`,
+otherwise, it will stay as a `0`.
 
 Under OC trust model, by applying binary randomized response with `EPSILON_0`
-parameter to its measurement, the Client gets `EPSILON_0`-DP in deletion-DP
-model (Definition II.4 of {{EFMR+20}}, and Definition C.1 of {{MJTB+22}}).
-A formal definition of deletion-DP is elaborated in {{rappor-deletion-dp}}.
+parameter to its measurement, the Client gets `EPSILON_0`-DP with deletion
+(Definition II.4 of {{EFMR+20}}, and Definition C.1 of {{MJTB+22}}). A formal
+definition of deletion-DP is elaborated in {{rappor-deletion-dp}}.
 
-Symmetric RAPPOR generalizes binary randomized response mechanism by applying it
-independently at all coordinates of a Client's bit vector. Under OAMC trust
-model, it is proven in Appendix C.1.3 of {{MJTB+22}} that we get good
-`(EPSILON, DELTA)`-DP in the replacement-DP model, by aggregating a batch of
-noisy Client measurements, each of which is a bit vector with exactly one bit
-set, and is noised with symmetric RAPPOR. The final aggregate result needs to be
-"debiased" due to the noise added by the Clients, and is expressed as a vector
-of floats, because of floating point arithmetic.
+Symmetric RAPPOR generalizes binary randomized response mechanism by applying
+it independently at all coordinates of a Client's bit vector. Under OAMC trust
+model, it is proven in Appendix C.1.3 of {{MJTB+22}} that strong `(EPSILON,
+DELTA)`-DP can be achieved by aggregating a batch of noisy Client measurements,
+each of which is a bit vector with exactly one bit set, and is noised with
+symmetric RAPPOR. The final aggregate result needs to be "debiased" due to the
+noise added by the Clients. The debiased data type is expressed as a vector of
+floats, because of floating point arithmetic. [CP: "because of floating point
+arithmetic" is a bit vague.]
 
 Since the noise generated by each Client at each coordinate is independent, and
 as the number of Clients `n` grows, the noise distribution at each coordinate
@@ -649,22 +654,8 @@ measurement `D` from the measurement from an average Client.
 
 ### Reference Implementation
 
-A reference implementation of symmetric RAPPOR can be found below. The three
-methods for `DpMechanism` achieves the following functionalities respectively:
+Symmetric RAPPOR is specified by the DP mechanism `SymmetricRappor` below.
 
-* `SymmetricRappor.add_noise(data: list[int]) -> list[int]` applies symmetric
-  RAPPOR to the input bit vector `data`.
-
-* `SymmetricRappor.sample_noise(dimension: int) -> list[int]` applies symmetric
-  RAPPOR on a bit vector of length `dimension` with all zeros, and returns it.
-
-* `SymmetricRappor.debias(data: list[int], meas_count: int) -> list[float]`
-  debiases the list of unsigned integers `data` based on the number of
-  measurements `meas_count`.
-
-> TODO: We need to align with `Xof` specified in the VDAF draft. Currently
-> we get away with just using `random.random()` in python to make the symmetric
-> RAPPOR functional.
 > TODO: We could make the sampler more efficient if we use binomial.
 
 ~~~
