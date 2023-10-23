@@ -958,9 +958,9 @@ achieve various combinations of `(EPSILON, DELTA)`-DP.
 
 | `EPSILON`       | `DELTA`     | Standard deviation    | Internal Parameters          |
 |:----------------|:------------|:----------------------|:-----------------------------|
-| 0.317           | 1e-9        | 26.1336               | n = 100000, EPSILON_0 = 5.0  |
-| 0.906           | 1e-9        | 12.2799               | n = 100000, EPSILON_0 = 6.5  |
-| 1.528           | 1e-9        | 5.7939                | n = 100000, EPSILON_0 = 8.0  |
+| 0.317           | 1e-9        | 26.1337               | n = 100000, EPSILON_0 = 5.0  |
+| 0.906           | 1e-9        | 12.2800               | n = 100000, EPSILON_0 = 6.5  |
+| 1.528           | 1e-9        | 9.5580                | n = 100000, EPSILON_0 = 7.0  |
 {: #histogram-client-dp title="Utility of Pure Client Randomization for histogram use case."}
 
 ### Prio3Histogram with Aggregator Randomization
