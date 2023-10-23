@@ -1368,17 +1368,12 @@ systems, including algorithms for sampling from discrete Laplace and
 Gaussian distributions.<a href="#section-1-9.2.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-1-9.3">
-          <p id="section-1-9.3.1"><a href="#policies" class="auto internal xref">Section 5</a> defines DP policies and specifies concrete policies for
-endowing VDAFs in <span>[<a href="#VDAF" class="cite xref">VDAF</a>]</span> with DP. [TODO: And other drafts, once they
-appear.] [CP: This API may not be compatible with all DP polices we might
-want to implement.]<a href="#section-1-9.3.1" class="pilcrow">¶</a></p>
+          <p id="section-1-9.3.1"><a href="#policies" class="auto internal xref">Section 5</a> defines DP policies that are implemented with DP mechanisms, their composition with VDAFs, and their
+execution semantics for DAP. <a href="#run-vdaf-with-dp-policy" class="auto internal xref">Section 5.1</a> then demonstrates how to execute VDAFs with DP policies.<a href="#section-1-9.3.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-1-9.4">
-          <p id="section-1-9.4.1"><a href="#dp-in-dap" class="auto internal xref">Section 5.2</a> specifies the integration of DP policies from the previous
-section into DAP. In particular, it describes changes to the Client,
-Aggregator, and Collector behavior required to implement the policy. [CP:
-This integration might not be compatible with all DP policies we might
-want to implement.]<a href="#section-1-9.4.1" class="pilcrow">¶</a></p>
+          <p id="section-1-9.4.1"><a href="#use-cases" class="auto internal xref">Section 6</a> specifies compositions of concrete VDAFs with concrete DP
+policies for achieving DP for specific DAP use cases.<a href="#section-1-9.4.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
 <p id="section-1-10">The following considerations are out-of-scope for this document:<a href="#section-1-10" class="pilcrow">¶</a></p>
@@ -1902,7 +1897,7 @@ class DpPolicy:
         return agg_result
 </pre><a href="#section-5-4" class="pilcrow">¶</a>
 </div>
-<div id="run-dp-policy-with-vdaf">
+<div id="run-vdaf-with-dp-policy">
 <section id="section-5.1">
         <h3 id="name-executing-dp-policies-with-">
 <a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-executing-dp-policies-with-" class="section-name selfRef">Executing DP Policies with VDAFs</a>
@@ -2021,70 +2016,57 @@ def run_vdaf_with_dp_policy(
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-histograms" class="section-name selfRef">Histograms</a>
         </h3>
 <p id="section-6.1-1">Many applications require aggregating histograms in which each Client submits a
-bit vector with exactly one bit set, also known as, "one-hot vector". We
-describe two policies that achieve <code>(EPSILON, DELTA)</code>-DP on this use case: one
-which uses only a Client randomization mechanism and targets the OAMC trust
-model, and another which uses only an Aggregator randomization mechanism and
+bit vector with exactly one bit set, also known as, "one-hot vector".<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-2">We describe two policies that achieve <code>(EPSILON, DELTA)</code>-DP for this use case.
+The first uses only a Client randomization mechanism and targets the OAMC trust
+model. The second uses only an Aggregator randomization mechanism and
 targets the more stringent OAOC trust model. We discover that both policies in
 different settings of <code>EPSILON</code> and <code>DELTA</code> provide comparable utility, except
 that the policy in the OAOC trust model requires all Aggregators to
 independently add noise, so we lose some utility when more than one Aggregator
-is honest.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+is honest.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
 <div id="prio3multihothistogram-with-client-randomization">
 <section id="section-6.1.1">
           <h4 id="name-prio3multihothistogram-with">
 <a href="#section-6.1.1" class="section-number selfRef">6.1.1. </a><a href="#name-prio3multihothistogram-with" class="section-name selfRef">Prio3MultiHotHistogram with Client Randomization</a>
           </h4>
+<p id="section-6.1.1-1">Client randomization allows Clients to protect their privacy by adding noise to
+their measurements directly, as described in <a href="#levels" class="auto internal xref">Appendix B.1</a>. Analyses (<span>[<a href="#FMT20" class="cite xref">FMT20</a>]</span> and
+<span>[<a href="#FMT22" class="cite xref">FMT22</a>]</span>) have shown that, in the OAMC trust model, we get good approximate-DP
+by aggregating noisy Clients' measurements with Client randomization. In this
+policy, we will describe how to achieve approximate-DP, with each Client
+applying symmetric RAPPOR to its measurement.<a href="#section-6.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1.1-2">Our target VDAF is Prio3Histogram as specified in <span>[<a href="#VDAF" class="cite xref">VDAF</a>]</span>. This uses the
+<code>Histogram</code> circuit to enforce one-hotness of the measurement. Due to the
+noising mechanism, a less strict circuit is required that tolerates a bounded
+number of non-<code>0</code> entries in the vector. We call this Prio3MultiHotHistogram.<a href="#section-6.1.1-2" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-6.1.1-1.1">
-              <p id="section-6.1.1-1.1.1">JC: For robustness, currently we will use a private VDAF
-<code>Prio3MultiHotHistogram</code> discussed in
-https://github.com/cfrg/draft-irtf-cfrg-vdaf/issues/287, that supports
-checking for bounded number of 1s after the one-hot vector goes through
-symmetric RAPPOR on Client. We will need to update VDAF draft to specify
-the validity circuit.<a href="#section-6.1.1-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal ulEmpty" id="section-6.1.1-3.1">
+              <p id="section-6.1.1-3.1.1">JC: Specify Prio3MultiHotHistogram. This may end up in the base VDAF draft.
+In the meantime, there is a reference implementation here:
+https://github.com/cfrg/draft-irtf-cfrg-vdaf/blob/main/poc/vdaf_prio3.py<a href="#section-6.1.1-3.1.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-6.1.1-2">Client randomization allows Clients to protect their privacy by adding noise to
-their measurements directly, as described in <a href="#levels" class="auto internal xref">Appendix B.1</a>. Analyses (<span>[<a href="#FMT20" class="cite xref">FMT20</a>]</span> and
-<span>[<a href="#FMT22" class="cite xref">FMT22</a>]</span>) have shown that, in the OAMC trust model, we get good
-<code>(EPSILON, DELTA)</code>-DP, by aggregating noisy Clients' measurements with
-Client randomization. In this policy, we will describe how to achieve
-<code>(EPSILON, DELTA)</code>-DP, with each Client applying symmetric RAPPOR to its
-measurement, along with <code>Prio3MultiHotHistogram</code> VDAF for robustness
-considerations.<a href="#section-6.1.1-2" class="pilcrow">¶</a></p>
-<div id="client-randomization-mechanism">
-<section id="section-6.1.1.1">
-            <h5 id="name-client-randomization-mechan">
-<a href="#section-6.1.1.1" class="section-number selfRef">6.1.1.1. </a><a href="#name-client-randomization-mechan" class="section-name selfRef">Client Randomization Mechanism</a>
-            </h5>
-<p id="section-6.1.1.1-1">The Client randomization we will use here is the symmetric RAPPOR mechanism
+<p id="section-6.1.1-4">The Client randomization we will use here is the symmetric RAPPOR mechanism of
 <a href="#symmetric-rappor" class="auto internal xref">Section 4.3</a>, which is initialized with a <code>EPSILON_0</code> parameter. We get
 <code>(EPSILON, DELTA)</code>-DP in the aggregate result, as long as there are at least
 <code>batch_size</code> number of honest Clients, each of which applies symmetric RAPPOR
 to its measurement, and contributes the noisy measurement to the batch. The
 <code>(EPSILON, DELTA)</code>-DP degrades gracefully as the number of honest Clients
 decreases, i.e., we can still achieve <code>(EPSILON', DELTA)</code>-DP, where <code>EPSILON'</code>
-is larger than <code>EPSILON</code>.<a href="#section-6.1.1.1-1" class="pilcrow">¶</a></p>
+is larger than <code>EPSILON</code>.<a href="#section-6.1.1-4" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-6.1.1.1-2.1">
-                <p id="section-6.1.1.1-2.1.1">TODO(junyechen1996): Justify why RR with <code>EPSILON_0</code> + <code>batch_size</code> can
-achieve <code>(EPSILON, DELTA)</code>-DP in the aggregate result.<a href="#section-6.1.1.1-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal ulEmpty" id="section-6.1.1-5.1">
+              <p id="section-6.1.1-5.1.1">TODO(junyechen1996): Justify why RR with <code>EPSILON_0</code> + <code>batch_size</code> can
+achieve <code>(EPSILON, DELTA)</code>-DP in the aggregate result.<a href="#section-6.1.1-5.1.1" class="pilcrow">¶</a></p>
 </li>
-            </ul>
-</section>
-</div>
-<div id="client-dp-vdaf-robustness">
-<section id="section-6.1.1.2">
-            <h5 id="name-vdaf-robustness">
-<a href="#section-6.1.1.2" class="section-number selfRef">6.1.1.2. </a><a href="#name-vdaf-robustness" class="section-name selfRef">VDAF Robustness</a>
-            </h5>
-<p id="section-6.1.1.2-1">Because applying symmetric RAPPOR to an one-hot Client measurement can cause the
+          </ul>
+<p id="section-6.1.1-6">Because applying symmetric RAPPOR to an one-hot Client measurement can cause the
 noisy measurement to have multiple bits set, we need to check the noisy
 measurement has at most <code>m</code> number of 1s, per Section 4.5 of <span>[<a href="#TWMJ_23" class="cite xref">TWMJ_23</a>]</span>, to
 ensure robustness against malicious Clients, who attempt to bias the final
-histogram by setting many coordinates to be 1.<a href="#section-6.1.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-6.1.1.2-2">Assume the length of the Client measurement is <code>d</code>, and there is exactly one bit
+histogram by setting many coordinates to be 1.<a href="#section-6.1.1-6" class="pilcrow">¶</a></p>
+<p id="section-6.1.1-7">Assume the length of the Client measurement is <code>d</code>, and there is exactly one bit
 set. For the <code>d - 1</code> coordinates with 0s, the probability <code>p_0</code> of changing a
 coordinate from 0 to 1 is <code>1 / (exp(EPSILON_0) + 1)</code> per <a href="#symmetric-rappor" class="auto internal xref">Section 4.3</a>,
 so we can model the number of 1s in the noisy measurement as a binomial random
@@ -2093,12 +2075,12 @@ bit that is already set. Our goal is to ensure the probability <code>p</code> of
 exceeding <code>m</code> is small enough, i.e., the false positive rate of a noisy
 measurement from an honest Client having more than <code>m</code> bits is at most <code>p</code>. This
 is equivalent to finding <code>m</code> and <code>p</code>, such that the cumulative distribution
-function (CDF) satisfies <code>Pr(C &lt;= m - 1) &gt;= 1 - p</code>.<a href="#section-6.1.1.2-2" class="pilcrow">¶</a></p>
-<p id="section-6.1.1.2-3">Once we find <code>m</code>, we will use it to instantiate <code>Prio3MultiHotHistogram</code> to
+function (CDF) satisfies <code>Pr(C &lt;= m - 1) &gt;= 1 - p</code>.<a href="#section-6.1.1-7" class="pilcrow">¶</a></p>
+<p id="section-6.1.1-8">Once we find <code>m</code>, we will use it to instantiate <code>Prio3MultiHotHistogram</code> to
 perform verification and aggregation. The final aggregate result is debiased
 based on the number of measurements according to <a href="#symmetric-rappor" class="auto internal xref">Section 4.3</a>, in order
-to reduce the bias introduced during Client randomization.<a href="#section-6.1.1.2-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.1.1.2-4">
+to reduce the bias introduced during Client randomization.<a href="#section-6.1.1-8" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.1.1-9">
 <pre>
 class MultiHotHistogramWithClientRandomization(DpPolicy):
     Field = MultiHotHistogram.Field
@@ -2122,21 +2104,19 @@ class MultiHotHistogramWithClientRandomization(DpPolicy):
                           meas_count: int,
                           ) -&gt; DebiasedAggResult:
         return self.rappor.debias(agg_result, meas_count)
-</pre><a href="#section-6.1.1.2-4" class="pilcrow">¶</a>
-</div>
-</section>
+</pre><a href="#section-6.1.1-9" class="pilcrow">¶</a>
 </div>
 <div id="utility">
-<section id="section-6.1.1.3">
+<section id="section-6.1.1.1">
             <h5 id="name-utility">
-<a href="#section-6.1.1.3" class="section-number selfRef">6.1.1.3. </a><a href="#name-utility" class="section-name selfRef">Utility</a>
+<a href="#section-6.1.1.1" class="section-number selfRef">6.1.1.1. </a><a href="#name-utility" class="section-name selfRef">Utility</a>
             </h5>
-<p id="section-6.1.1.3-1">As discussed in <a href="#symmetric-rappor" class="auto internal xref">Section 4.3</a>, as the number of Clients <code>n</code> increases,
+<p id="section-6.1.1.1-1">As discussed in <a href="#symmetric-rappor" class="auto internal xref">Section 4.3</a>, as the number of Clients <code>n</code> increases,
 the noise at each coordinate of the debiased aggregate result approximates a
 Gaussian distribution with mean 0, and standard deviation
 <code>sqrt(n * exp(EPSILON_0) / (exp(EPSILON_0) - 1)^2)</code>. We will look at the
 standard deviation generated by symmetric RAPPOR from <code>n</code> Clients, in order to
-achieve various combinations of <code>(EPSILON, DELTA)</code>-DP.<a href="#section-6.1.1.3-1" class="pilcrow">¶</a></p>
+achieve various combinations of <code>(EPSILON, DELTA)</code>-DP.<a href="#section-6.1.1.1-1" class="pilcrow">¶</a></p>
 <span id="name-utility-of-pure-client-rand"></span><div id="histogram-client-dp">
 <table class="center" id="table-1">
               <caption>
@@ -2191,54 +2171,48 @@ the <code>SENSITIVITY</code> <a href="#sensitivity" class="auto internal xref">S
 <p id="section-6.1.2-2">In this section, we describe how to achieve <code>(EPSILON, DELTA)</code>-DP for
 <code>Prio3Histogram</code> <span><a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-vdaf-06#section-7.4.4" class="relref">Section 7.4.4</a> of [<a href="#VDAF" class="cite xref">VDAF</a>]</span> by asking each Aggregator to
 independently add discrete Gaussian noise to its aggregate share.<a href="#section-6.1.2-2" class="pilcrow">¶</a></p>
-<div id="discrete-gaussian-mechanism-for-aggregator-randomization">
-<section id="section-6.1.2.1">
-            <h5 id="name-discrete-gaussian-mechanism">
-<a href="#section-6.1.2.1" class="section-number selfRef">6.1.2.1. </a><a href="#name-discrete-gaussian-mechanism" class="section-name selfRef">Discrete Gaussian Mechanism for Aggregator randomization</a>
-            </h5>
-<p id="section-6.1.2.1-1">We use the discrete Gaussian mechanism described in <a href="#discrete-gaussian" class="auto internal xref">Section 4.2</a>, which
+<p id="section-6.1.2-3">We use the discrete Gaussian mechanism described in <a href="#discrete-gaussian" class="auto internal xref">Section 4.2</a>, which
 has a mean of 0, and is initialized with a <code>SIGMA</code> parameter that stands for the
 standard deviation of the Gaussian distribution. In order to achieve
 <code>(EPSILON, DELTA)</code>-DP in the OAOC trust model, all Aggregators need to
 independently add discrete Gaussian noise to all coordinates of their aggregate
-shares.<a href="#section-6.1.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-6.1.2.1-2">Theorem 8 in <span>[<a href="#BW18" class="cite xref">BW18</a>]</span> shows how to compute <code>SIGMA</code> parameter for continuous
+shares.<a href="#section-6.1.2-3" class="pilcrow">¶</a></p>
+<p id="section-6.1.2-4">Theorem 8 in <span>[<a href="#BW18" class="cite xref">BW18</a>]</span> shows how to compute <code>SIGMA</code> parameter for continuous
 Gaussian, based on the given <code>(EPSILON, DELTA)</code>-DP parameters and
 L2-sensitivity, and Theorem 7 in <span>[<a href="#CKS20" class="cite xref">CKS20</a>]</span> shows a similar result for discrete
-Gaussian. In a histogram use case where each Client submits an one-hot vector,
-the L2-sensitivity is <code>sqrt(2)</code>, because transforming an one-hot vector into
-another will affect two coordinates, e.g., transforming an one-hot vector
-<code>[1, 0]</code> to <code>[0, 1]</code> changes L2-sensitivity by
+Gaussian. For the current use case, the L2-sensitivity is <code>sqrt(2)</code>, because
+transforming an one-hot vector into another will affect two coordinates, e.g.,
+transforming an one-hot vector <code>[1, 0]</code> to <code>[0, 1]</code> changes L2-sensitivity by
 <code>sqrt((1 - 0)^2 + (0 - 1)^2) = sqrt(2)</code>. Algorithm 1 in <span>[<a href="#BW18" class="cite xref">BW18</a>]</span> elaborates on
-how to compute <code>SIGMA</code>, and we will refer to the calculation in the open sourced
-code <span>[<a href="#AGM" class="cite xref">AGM</a>]</span>.<a href="#section-6.1.2.1-2" class="pilcrow">¶</a></p>
+how to compute <code>SIGMA</code>, and we will refer to the calculation in the open
+sourced code <span>[<a href="#AGM" class="cite xref">AGM</a>]</span>.<a href="#section-6.1.2-4" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-6.1.2.1-3.1">
-                <p id="section-6.1.2.1-3.1.1">JC: We will need to provide an explanation of the parameter calculation in
-the draft itself, instead of merely referring to the code.<a href="#section-6.1.2.1-3.1.1" class="pilcrow">¶</a></p>
+<li class="normal ulEmpty" id="section-6.1.2-5.1">
+              <p id="section-6.1.2-5.1.1">JC: We will need to provide an explanation of the parameter calculation in
+the draft itself, instead of merely referring to the code.<a href="#section-6.1.2-5.1.1" class="pilcrow">¶</a></p>
 </li>
-            </ul>
+          </ul>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-6.1.2.1-4.1">
-                <p id="section-6.1.2.1-4.1.1">KT: <span>[<a href="#CKS20" class="cite xref">CKS20</a>]</span> mentions in Theorem 7 about the difference of approximate-DP
+<li class="normal ulEmpty" id="section-6.1.2-6.1">
+              <p id="section-6.1.2-6.1.1">KT: <span>[<a href="#CKS20" class="cite xref">CKS20</a>]</span> mentions in Theorem 7 about the difference of approximate-DP
 achieved by discrete <span>[<a href="#CKS20" class="cite xref">CKS20</a>]</span> and continuous Gaussian <span>[<a href="#BW18" class="cite xref">BW18</a>]</span> that:
 The discrete and continuous Gaussian attain almost identical guarantees for
 large <code>SIGMA</code>, but the discretization creates a small difference that becomes
 apparent for small <code>SIGMA</code>.
 Therefore, if we use Algorithm 1 from <span>[<a href="#BW18" class="cite xref">BW18</a>]</span>, we will need to be careful
-when <code>SIGMA</code> is small, i.e., the desired <code>(EPSILON, DELTA)</code>-DP is weak.<a href="#section-6.1.2.1-4.1.1" class="pilcrow">¶</a></p>
+when <code>SIGMA</code> is small, i.e., the desired <code>(EPSILON, DELTA)</code>-DP is weak.<a href="#section-6.1.2-6.1.1" class="pilcrow">¶</a></p>
 </li>
-            </ul>
+          </ul>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-6.1.2.1-5.1">
-                <p id="section-6.1.2.1-5.1.1">JC: It's also worth exploring the utility of discrete Gaussian proven by
+<li class="normal ulEmpty" id="section-6.1.2-7.1">
+              <p id="section-6.1.2-7.1.1">JC: It's also worth exploring the utility of discrete Gaussian proven by
 Definition 3 in <span>[<a href="#CKS20" class="cite xref">CKS20</a>]</span>, which defines the concentrated-DP achieved by
 discrete Gaussian. Concentrated-DP is then converted to approximate-DP, which
 is our target here. As a first draft, we won't overwhelm readers with other
-types of DP.<a href="#section-6.1.2.1-5.1.1" class="pilcrow">¶</a></p>
+types of DP.<a href="#section-6.1.2-7.1.1" class="pilcrow">¶</a></p>
 </li>
-            </ul>
-<div class="alignLeft art-text artwork" id="section-6.1.2.1-6">
+          </ul>
+<div class="alignLeft art-text artwork" id="section-6.1.2-8">
 <pre>
 class HistogramWithAggregatorRandomization(DpPolicy):
     Field = Histogram.Field
@@ -2289,25 +2263,23 @@ class HistogramWithAggregatorRandomization(DpPolicy):
         # since we haven't fully implemented discrete Gaussian
         # mechanism (#10).
         return agg_result
-</pre><a href="#section-6.1.2.1-6" class="pilcrow">¶</a>
-</div>
-</section>
+</pre><a href="#section-6.1.2-8" class="pilcrow">¶</a>
 </div>
 <div id="utility-1">
-<section id="section-6.1.2.2">
+<section id="section-6.1.2.1">
             <h5 id="name-utility-2">
-<a href="#section-6.1.2.2" class="section-number selfRef">6.1.2.2. </a><a href="#name-utility-2" class="section-name selfRef">Utility</a>
+<a href="#section-6.1.2.1" class="section-number selfRef">6.1.2.1. </a><a href="#name-utility-2" class="section-name selfRef">Utility</a>
             </h5>
-<p id="section-6.1.2.2-1">We will demonstrate the utility of this policy in the table below in terms of
+<p id="section-6.1.2.1-1">We will demonstrate the utility of this policy in the table below in terms of
 the standard deviation <code>SIGMA</code> in discrete Gaussian needed to achieve various
 combinations of <code>(EPSILON, DELTA)</code>-DP, based on the open-sourced code in
-<span>[<a href="#AGM" class="cite xref">AGM</a>]</span>.<a href="#section-6.1.2.2-1" class="pilcrow">¶</a></p>
-<p id="section-6.1.2.2-2">It's worth noting that if more than one Aggregator is honest, we will lose some
+<span>[<a href="#AGM" class="cite xref">AGM</a>]</span>.<a href="#section-6.1.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1.2.1-2">It's worth noting that if more than one Aggregator is honest, we will lose some
 utility because each Aggregator is independently adding noise. The standard
 deviation in the aggregate result thus becomes <code>SIGMA * sqrt(c)</code>, where <code>c</code> is
 the number of honest Aggregators. In the table below, the numbers in
 "Standard deviation" column assume <code>c = 2</code>. The numbers in
-"Standard deviation (OAOC)" column assume only one Aggregator is honest.<a href="#section-6.1.2.2-2" class="pilcrow">¶</a></p>
+"Standard deviation (OAOC)" column assume only one Aggregator is honest.<a href="#section-6.1.2.1-2" class="pilcrow">¶</a></p>
 <span id="name-utility-of-pure-aggregator-"></span><div id="histogram-aggregator-dp">
 <table class="center" id="table-2">
               <caption>
