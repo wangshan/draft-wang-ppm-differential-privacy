@@ -429,15 +429,15 @@ Other variants of DP are possible; see the literature review in
 ## Sensitivity
 
 Differential privacy noise sometimes needs to be calibered based on the
-`SENSITIVITY` of an aggregation function used to compute the aggregate result
+`SENSITIVITY` of the aggregation function used to compute the aggregate result
 over Client measurements. Sensitivity characterizes how much a change in a
-Client measurement can affect the aggregate result. In this document, we focus on
-the L1 and L2 sensitivity. We define them as a function over two neighboring
+Client measurement can affect the aggregate result. In this document, we focus
+on the L1 and L2 sensitivity. We define them as a function over two neighboring
 Client measurements:
 
-* L1 sensitivity: the sum of the absolute values of differences at all coordinates
+* L1 Sensitivity: the sum of the absolute values of differences at all coordinates
   of the neighboring Client measurements.
-* L2 sensitivity: the sum of the squares of the differences at all coordinates of
+* L2 Sensitivity: the sum of the squares of the differences at all coordinates of
   the neighboring Client measurements.
 
 ## Trust Models
@@ -460,9 +460,9 @@ corrupts a subset of the parties.
 We say the protocol is pure-DP (resp. approximate-DP) if the view of any
 computationally bounded attacker can be efficiently simulated by a simulator
 that itself is pure-DP (or approximate-DP) as defined above. (The simulator
-takes the measurements as input and outputs a value that is computationally
-indistinguishable from the transcript of the protocol's execution in the
-presence of the attacker.)
+takes the measurements as input and outputs a value that should be
+computationally indistinguishable from the transcript of the protocol's
+execution in the presence of the attacker.)
 
 Whether this property holds for a given DP policy depends on which parties can
 be trusted to execute the protocol correctly (i.e., which parties are not
@@ -478,11 +478,11 @@ models.
 ### OAMC: One-Aggregator-Most-Clients
 
 Assume that most Clients and one Aggregator are honest and that the other
-Aggregator and the Collector are controlled by the attacker. When all Clients
-are honest, this corresponds to the same trust model as the base DAP protocol.
-The degree of privacy provided (i.e., the value of `EPSILON` for pure-DP) for
-most protocols in this setting would degrade gracefully as the number of honest
-Clients decreases.
+Aggregator (DAP involves just two Aggregators) and the Collector are controlled
+by the attacker. When all Clients are honest, this corresponds to the same
+trust model as the base DAP protocol. The degree of privacy provided (i.e., the
+value of `EPSILON` for pure-DP) for most protocols in this setting would
+degrade gracefully as the number of honest Clients decreases.
 
 ### OAOC: One-Aggregator-One-Client
 
@@ -499,11 +499,11 @@ to provide protection for the honest Client's measurement.
 ## OC: One-Client
 
 Assume that all parties, including all but one Client, both Aggregators, and
-the Collector are controlled by the attacker. The best a policy can hope for is
-that the honest Client's measurement has "local-DP". This property is defined
-the same way as pure- or approximate-DP. Typically, the bound on `EPSILON` that
-we aim to achieve for local-DP would be larger than that in a more optimistic
-trust model.
+the Collector are controlled by the attacker. The best the honest Client can
+hope for is that its measurement has "local-DP". This property is defined the
+same way as pure- or approximate-DP, but the bound on `EPSILON` that we would
+aim to achieve for local-DP would typically be larger than that in a more
+optimistic trust model.
 
 ## Hedging
 
