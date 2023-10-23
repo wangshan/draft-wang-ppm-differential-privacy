@@ -1002,9 +1002,9 @@ Table of Contents
    [DAP]      Geoghegan, T., Patton, C., Rescorla, E., and C. A. Wood,
               "Distributed Aggregation Protocol for Privacy Preserving
               Measurement", Work in Progress, Internet-Draft, draft-
-              ietf-ppm-dap-05, 10 July 2023,
+              ietf-ppm-dap-07, 14 September 2023,
               <https://datatracker.ietf.org/doc/html/draft-ietf-ppm-dap-
-              05>.
+              07>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -1025,9 +1025,9 @@ Table of Contents
 
    [VDAF]     Barnes, R., Cook, D., Patton, C., and P. Schoppmann,
               "Verifiable Distributed Aggregation Functions", Work in
-              Progress, Internet-Draft, draft-irtf-cfrg-vdaf-06, 15 June
-              2023, <https://datatracker.ietf.org/doc/html/draft-irtf-
-              cfrg-vdaf-06>.
+              Progress, Internet-Draft, draft-irtf-cfrg-vdaf-07, 31
+              August 2023, <https://datatracker.ietf.org/doc/html/draft-
+              irtf-cfrg-vdaf-07>.
 
 9.2.  Informative References
 
