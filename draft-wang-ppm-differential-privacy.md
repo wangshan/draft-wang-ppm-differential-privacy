@@ -245,12 +245,20 @@ informative:
 
 --- abstract
 
-TODO Abstract
-
+Differential Privacy (DP) is a property of a secure aggregation mechanism that
+ensures that no single input measurement significantly impacts the distribution
+of the aggregate result. This is a stronger property than what systems like the
+Distributed Aggregation Protocol (DAP) are designed to achieve. This document
+describes a variety of DP mechansisms applicable to DAP, and, for a variety of
+common use cases, lifts DAP to a protocol that also achieves DP.
 
 --- middle
 
 # Introduction
+
+[TO BE REMOVED BY RFC EDITOR: The source for this draft and and the reference
+implementations of mechanisms and policies can be found at
+https://github.com/wangshan/draft-wang-ppm-differential-privacy.]
 
 Multi-party computation systems like the Distributed Aggregration Protocol
 {{!DAP=I-D.draft-ietf-ppm-dap-05}} enable secure aggregation of measurements
