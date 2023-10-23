@@ -324,16 +324,11 @@ in DAP. It does so in the following stages:
    systems, including algorithms for sampling from discrete Laplace and
    Gaussian distributions.
 
-1. {{policies}} defines DP policies and specifies concrete policies for
-   endowing VDAFs in {{!VDAF}} with DP. [TODO: And other drafts, once they
-   appear.] [CP: This API may not be compatible with all DP polices we might
-   want to implement.]
+1. {{policies}} defines DP policies that are implemented with DP mechanisms, their composition with VDAFs, and their
+   execution semantics for DAP. {{run-vdaf-with-dp-policy}} then demonstrates how to execute VDAFs with DP policies.
 
-1. {{dp-in-dap}} specifies the integration of DP policies from the previous
-   section into DAP. In particular, it describes changes to the Client,
-   Aggregator, and Collector behavior required to implement the policy. [CP:
-   This integration might not be compatible with all DP policies we might
-   want to implement.]
+1. {{use-cases}} specifies compositions of concrete VDAFs with concrete DP
+   policies for achieving DP for specific DAP use cases.
 
 The following considerations are out-of-scope for this document:
 
@@ -760,7 +755,7 @@ class DpPolicy:
         return agg_result
 ~~~
 
-## Executing DP Policies with VDAFs {#run-dp-policy-with-vdaf}
+## Executing DP Policies with VDAFs {#run-vdaf-with-dp-policy}
 
 The execution of `DpPolicy` with a `Vdaf` can thus be summarized by the
 following computational steps (these are carried out by DAP in a distributed
@@ -853,15 +848,16 @@ def run_vdaf_with_dp_policy(
 
 > TODO: Specify integration of a `DpPolicy` into DAP.
 
-# Use Cases
+# Use Cases {#use-cases}
 
 ## Histograms
 
 Many applications require aggregating histograms in which each Client submits a
-bit vector with exactly one bit set, also known as, "one-hot vector". We
-describe two policies that achieve `(EPSILON, DELTA)`-DP on this use case: one
-which uses only a Client randomization mechanism and targets the OAMC trust
-model, and another which uses only an Aggregator randomization mechanism and
+bit vector with exactly one bit set, also known as, "one-hot vector".
+
+We describe two policies that achieve `(EPSILON, DELTA)`-DP for this use case.
+The first uses only a Client randomization mechanism and targets the OAMC trust
+model. The second uses only an Aggregator randomization mechanism and
 targets the more stringent OAOC trust model. We discover that both policies in
 different settings of `EPSILON` and `DELTA` provide comparable utility, except
 that the policy in the OAOC trust model requires all Aggregators to
@@ -870,25 +866,23 @@ is honest.
 
 ### Prio3MultiHotHistogram with Client Randomization
 
-> JC: For robustness, currently we will use a private VDAF
-> `Prio3MultiHotHistogram` discussed in
-> https://github.com/cfrg/draft-irtf-cfrg-vdaf/issues/287, that supports
-> checking for bounded number of 1s after the one-hot vector goes through
-> symmetric RAPPOR on Client. We will need to update VDAF draft to specify
-> the validity circuit.
-
 Client randomization allows Clients to protect their privacy by adding noise to
 their measurements directly, as described in {{levels}}. Analyses ({{FMT20}} and
-{{FMT22}}) have shown that, in the OAMC trust model, we get good
-`(EPSILON, DELTA)`-DP, by aggregating noisy Clients' measurements with
-Client randomization. In this policy, we will describe how to achieve
-`(EPSILON, DELTA)`-DP, with each Client applying symmetric RAPPOR to its
-measurement, along with `Prio3MultiHotHistogram` VDAF for robustness
-considerations.
+{{FMT22}}) have shown that, in the OAMC trust model, we get good approximate-DP
+by aggregating noisy Clients' measurements with Client randomization. In this
+policy, we will describe how to achieve approximate-DP, with each Client
+applying symmetric RAPPOR to its measurement.
 
-#### Client Randomization Mechanism
+Our target VDAF is Prio3Histogram as specified in {{!VDAF}}. This uses the
+`Histogram` circuit to enforce one-hotness of the measurement. Due to the
+noising mechanism, a less strict circuit is required that tolerates a bounded
+number of non-`0` entries in the vector. We call this Prio3MultiHotHistogram.
 
-The Client randomization we will use here is the symmetric RAPPOR mechanism
+> JC: Specify Prio3MultiHotHistogram. This may end up in the base VDAF draft.
+> In the meantime, there is a reference implementation here:
+> https://github.com/cfrg/draft-irtf-cfrg-vdaf/blob/main/poc/vdaf_prio3.py
+
+The Client randomization we will use here is the symmetric RAPPOR mechanism of
 {{symmetric-rappor}}, which is initialized with a `EPSILON_0` parameter. We get
 `(EPSILON, DELTA)`-DP in the aggregate result, as long as there are at least
 `batch_size` number of honest Clients, each of which applies symmetric RAPPOR
@@ -899,8 +893,6 @@ is larger than `EPSILON`.
 
 > TODO(junyechen1996): Justify why RR with `EPSILON_0` + `batch_size` can
 > achieve `(EPSILON, DELTA)`-DP in the aggregate result.
-
-#### VDAF Robustness {#client-dp-vdaf-robustness}
 
 Because applying symmetric RAPPOR to an one-hot Client measurement can cause the
 noisy measurement to have multiple bits set, we need to check the noisy
@@ -978,8 +970,6 @@ In this section, we describe how to achieve `(EPSILON, DELTA)`-DP for
 `Prio3Histogram` {{Section 7.4.4 of !VDAF}} by asking each Aggregator to
 independently add discrete Gaussian noise to its aggregate share.
 
-#### Discrete Gaussian Mechanism for Aggregator randomization
-
 We use the discrete Gaussian mechanism described in {{discrete-gaussian}}, which
 has a mean of 0, and is initialized with a `SIGMA` parameter that stands for the
 standard deviation of the Gaussian distribution. In order to achieve
@@ -990,13 +980,12 @@ shares.
 Theorem 8 in {{BW18}} shows how to compute `SIGMA` parameter for continuous
 Gaussian, based on the given `(EPSILON, DELTA)`-DP parameters and
 L2-sensitivity, and Theorem 7 in {{CKS20}} shows a similar result for discrete
-Gaussian. In a histogram use case where each Client submits an one-hot vector,
-the L2-sensitivity is `sqrt(2)`, because transforming an one-hot vector into
-another will affect two coordinates, e.g., transforming an one-hot vector
-`[1, 0]` to `[0, 1]` changes L2-sensitivity by
+Gaussian. For the current use case, the L2-sensitivity is `sqrt(2)`, because
+transforming an one-hot vector into another will affect two coordinates, e.g.,
+transforming an one-hot vector `[1, 0]` to `[0, 1]` changes L2-sensitivity by
 `sqrt((1 - 0)^2 + (0 - 1)^2) = sqrt(2)`. Algorithm 1 in {{BW18}} elaborates on
-how to compute `SIGMA`, and we will refer to the calculation in the open sourced
-code {{AGM}}.
+how to compute `SIGMA`, and we will refer to the calculation in the open
+sourced code {{AGM}}.
 
 > JC: We will need to provide an explanation of the parameter calculation in
 > the draft itself, instead of merely referring to the code.
