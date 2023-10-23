@@ -1633,7 +1633,7 @@ internal parameters can achieve different combinations of DP parameters, e.g.
 and <code>DELTA &gt; DELTA'</code>, because if we make <code>EPSILON</code> larger (i.e., weaker
 privacy), we may achieve a smaller <code>DELTA</code> and thereby a smaller overall DP
 bound (i.e., stronger privacy).<a href="#section-4-3" class="pilcrow">¶</a></p>
-<p id="section-4-4">A concrete DP mechansim implements the following methods:<a href="#section-4-4" class="pilcrow">¶</a></p>
+<p id="section-4-4">A concrete DP mechanism implements the following methods:<a href="#section-4-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4-5.1">
           <p id="section-4-5.1.1"><code>DpMechanism.add_noise(data: DataType) -&gt; DataType</code> adds noise to the input
@@ -1643,7 +1643,7 @@ noise based on the input data.<a href="#section-4-5.1.1" class="pilcrow">¶</a><
         <li class="normal" id="section-4-5.2">
           <p id="section-4-5.2.1"><code>DpMechanism.sample_noise(dimension: int) -&gt; DataType</code> samples noise of
 length <code>dimension</code>, with the DP mechanism. The interpretation of <code>dimension</code>
-generally depends on the data type. Called by <code>DpMechanism.add_noise()</code>.<a href="#section-4-5.2.1" class="pilcrow">¶</a></p>
+generally depends on the data type. It may be called by <code>DpMechanism.add_noise()</code>.<a href="#section-4-5.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-4-5.3">
           <p id="section-4-5.3.1"><code>DpMechanism.debias(data: DataType, meas_count: int) -&gt; DebiasedDataType</code>
