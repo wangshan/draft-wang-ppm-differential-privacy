@@ -20,7 +20,7 @@ Abstract
 
    Differential Privacy (DP) is a property of a secure aggregation
    mechanism that ensures that no single input measurement significantly
-   impacts the value of the aggregate result.  This is a stronger
+   impacts the distribution of the aggregate result.  This is a stronger
    property than what systems like the Distributed Aggregation Protocol
    (DAP) are designed to achieve.  This document describes a variety of
    DP mechansisms applicable to DAP, and, for a variety of common use
