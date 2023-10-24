@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-10-22T00:56:05.620693+00:00",
+  "timestamp": "2023-10-24T00:52:27.962538+00:00",
   "repo": "wangshan/draft-wang-ppm-differential-privacy",
   "labels": [
     {
@@ -271,6 +271,22 @@
           "updatedAt": "2023-10-19T17:50:19Z"
         }
       ]
+    },
+    {
+      "number": 28,
+      "id": "I_kwDOJ7sZWc50q5XE",
+      "title": "Benefit of assuming honest-but-curious party instead of malicious party in trust models",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/issues/28",
+      "state": "OPEN",
+      "author": "junyechen1996",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Originally discussed [here](https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/27/files#r1367450249)",
+      "createdAt": "2023-10-23T15:08:52Z",
+      "updatedAt": "2023-10-23T15:08:52Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -4413,24 +4429,26 @@
       "id": "PR_kwDOJ7sZWc5dagte",
       "title": "Kunal's feedback on namings and citations",
       "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/27",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "junyechen1996",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2023-10-20T19:11:01Z",
-      "updatedAt": "2023-10-20T21:15:47Z",
+      "updatedAt": "2023-10-23T15:37:08Z",
       "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
       "baseRefName": "main",
       "baseRefOid": "8224fc03e96bd1ab035d1907a276db463b003ed7",
       "headRepository": "junyechen1996/draft-wang-ppm-differential-privacy-1",
       "headRefName": "junyec/kunal-feedback",
-      "headRefOid": "44a7f9bdbdc400ba34e83ea70b7af4e404411db4",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "663bb61acc30b924206813381f19f702ffb8531a",
+      "closedAt": "2023-10-23T15:37:08Z",
+      "mergedAt": "2023-10-23T15:37:08Z",
+      "mergedBy": "junyechen1996",
+      "mergeCommit": {
+        "oid": "986ac0be31fa248b70ea82d8f155179658aa429f"
+      },
       "comments": [],
       "reviews": [
         {
@@ -4544,6 +4562,632 @@
               "body": "New terminology sounds good to me, just make sure it's consistent.\r\n@wangshan I don't think saying \"Aggregator-DP guarantee\" is meaningful unless we define it. For now, pure-DP and approximate-DP are the only well-defined terms.",
               "createdAt": "2023-10-20T21:14:30Z",
               "updatedAt": "2023-10-20T21:15:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc5k5kDg",
+          "commit": {
+            "abbreviatedOid": "44a7f9b"
+          },
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Remaining opens (none are huge blockers before draft cut deadline):\r\n\r\n- difference between malicious and honest-but-curious (also putting it in issue #28 ): https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/27/files#r1367450249\r\n- Formally define local- and aggregate-DP guarantee: https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/27/files#r1367489263\r\n- how to define \"polynomially small\" in the batch size (https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/27/files#r1367487174): I've clarified it in the draft.",
+          "createdAt": "2023-10-23T15:01:20Z",
+          "updatedAt": "2023-10-23T15:13:08Z",
+          "comments": [
+            {
+              "originalPosition": 106,
+              "body": "I clarified it a bit:\r\n\r\n> `DELTA` can intuitively be understood as the probability that a piece of information is leaked, e.g., a Client measurement is leaked, so `DELTA` is typically taken to be polynomially small in the batch size or smaller, i.e., some value much smaller than `1 / batch_size`.",
+              "createdAt": "2023-10-23T15:01:20Z",
+              "updatedAt": "2023-10-23T15:13:08Z"
+            },
+            {
+              "originalPosition": 159,
+              "body": "Explained it a bit:\r\n\r\n> where `EPSILON < EPSILON'` and `DELTA > DELTA'`, because if we make `EPSILON` larger (i.e., weaker privacy), we may achieve a smaller `DELTA` (i.e., stronger privacy).",
+              "createdAt": "2023-10-23T15:02:18Z",
+              "updatedAt": "2023-10-23T15:13:08Z"
+            },
+            {
+              "originalPosition": 184,
+              "body": "nit: I think papers have been referring the guarantee achieved by DP policy to be \"aggregate differential privacy\". The guarantee achieved at Client is referred to as Client- or local-DP guarantee.\r\n\r\nNot a huge blocker: I think we need a section to formally define Client- (or local-) or aggregate- (or central-) DP guarantee, which are currently in {{levels}}. For the pure-DP and approximate-DP we've defined, we've been assuming aggregate DP guarantee.",
+              "createdAt": "2023-10-23T15:05:47Z",
+              "updatedAt": "2023-10-23T15:13:08Z"
+            },
+            {
+              "originalPosition": 263,
+              "body": "From Kunal: describe what each of the three methods of `DpMechanism` does. I've clarified them now.",
+              "createdAt": "2023-10-23T15:06:20Z",
+              "updatedAt": "2023-10-23T15:13:08Z"
+            },
+            {
+              "originalPosition": 117,
+              "body": "Putting it into an issue instead: #28 ",
+              "createdAt": "2023-10-23T15:09:33Z",
+              "updatedAt": "2023-10-23T15:13:08Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 29,
+      "id": "PR_kwDOJ7sZWc5dkg_D",
+      "title": "Fix local epsilon in one of the RAPPOR numbers",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/29",
+      "state": "MERGED",
+      "author": "junyechen1996",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-10-23T19:54:28Z",
+      "updatedAt": "2023-10-23T19:56:43Z",
+      "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "baseRefName": "main",
+      "baseRefOid": "986ac0be31fa248b70ea82d8f155179658aa429f",
+      "headRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "headRefName": "junyec/fix-rappor-numbers",
+      "headRefOid": "327d6b1a3d1733d7e43f36a18df863dda1849184",
+      "closedAt": "2023-10-23T19:55:27Z",
+      "mergedAt": "2023-10-23T19:55:27Z",
+      "mergedBy": "junyechen1996",
+      "mergeCommit": {
+        "oid": "b7ee569e598553f1de2ee5bfb15cf7a5e9dd85f2"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 30,
+      "id": "PR_kwDOJ7sZWc5dkyPs",
+      "title": "Add an abstract",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/30",
+      "state": "MERGED",
+      "author": "cjpatton",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "kunal-talwar"
+      ],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-10-23T20:48:02Z",
+      "updatedAt": "2023-10-23T21:05:28Z",
+      "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "baseRefName": "main",
+      "baseRefOid": "b7ee569e598553f1de2ee5bfb15cf7a5e9dd85f2",
+      "headRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "headRefName": "cjpatton/lastpass",
+      "headRefOid": "67ed01c720b2c1aec02cff91d2ffbbe971ab0f57",
+      "closedAt": "2023-10-23T21:05:28Z",
+      "mergedAt": "2023-10-23T21:05:28Z",
+      "mergedBy": "cjpatton",
+      "mergeCommit": {
+        "oid": "10e992c0de93890009b8a6e0d3962e5f29d5a983"
+      },
+      "comments": [
+        {
+          "author": "kunal-talwar",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Looks good to me. The only change I would suggest is to replace \"no single input measurement significantly impacts the value of the aggregate result.\" to \"no single input measurement significantly impacts the distribution of the\r\naggregate result.\"",
+          "createdAt": "2023-10-23T20:53:07Z",
+          "updatedAt": "2023-10-23T20:53:07Z"
+        },
+        {
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Done.",
+          "createdAt": "2023-10-23T20:57:58Z",
+          "updatedAt": "2023-10-23T20:57:58Z"
+        },
+        {
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Squashed.",
+          "createdAt": "2023-10-23T21:04:44Z",
+          "updatedAt": "2023-10-23T21:04:44Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOJ7sZWc5k8PKK",
+          "commit": {
+            "abbreviatedOid": "461d266"
+          },
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Some typos, otherwise LGTM.",
+          "createdAt": "2023-10-23T20:59:38Z",
+          "updatedAt": "2023-10-23T21:00:43Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "```suggestion\r\nimplementations of mechanisms and policies can be found at\r\n```",
+              "createdAt": "2023-10-23T20:59:38Z",
+              "updatedAt": "2023-10-23T21:00:43Z"
+            },
+            {
+              "originalPosition": 19,
+              "body": "```suggestion\r\nhttps://github.com/wangshan/draft-wang-ppm-differential-privacy.]\r\n```",
+              "createdAt": "2023-10-23T21:00:00Z",
+              "updatedAt": "2023-10-23T21:00:43Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 31,
+      "id": "PR_kwDOJ7sZWc5dk3tH",
+      "title": "Pass of intro",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/31",
+      "state": "MERGED",
+      "author": "cjpatton",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-10-23T21:06:21Z",
+      "updatedAt": "2023-10-23T21:27:42Z",
+      "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "baseRefName": "main",
+      "baseRefOid": "10e992c0de93890009b8a6e0d3962e5f29d5a983",
+      "headRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "headRefName": "cjpatton/lastpass-2",
+      "headRefOid": "b83e93f053d728a440edfd7122976ca9e818a4ef",
+      "closedAt": "2023-10-23T21:27:42Z",
+      "mergedAt": "2023-10-23T21:27:42Z",
+      "mergedBy": "cjpatton",
+      "mergeCommit": {
+        "oid": "f57d01f697a1a98d075c4e74c9952e236d82b399"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOJ7sZWc5k8Uh0",
+          "commit": {
+            "abbreviatedOid": "b83e93f"
+          },
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-23T21:16:46Z",
+          "updatedAt": "2023-10-23T21:17:35Z",
+          "comments": [
+            {
+              "originalPosition": 37,
+              "body": "Not related to this PR: but do we want to have a bullet point to mention \u201cuse cases\u201d where we show how different DP policies can be used on?",
+              "createdAt": "2023-10-23T21:16:46Z",
+              "updatedAt": "2023-10-23T21:17:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc5k8YWo",
+          "commit": {
+            "abbreviatedOid": "b83e93f"
+          },
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-23T21:27:34Z",
+          "updatedAt": "2023-10-23T21:27:34Z",
+          "comments": [
+            {
+              "originalPosition": 37,
+              "body": "Good call. I'll merge this, then do you wanna follow up with a PR?",
+              "createdAt": "2023-10-23T21:27:34Z",
+              "updatedAt": "2023-10-23T21:27:34Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 32,
+      "id": "PR_kwDOJ7sZWc5dk6Ji",
+      "title": "Pass of Security Goals and Trust Model",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/32",
+      "state": "MERGED",
+      "author": "cjpatton",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Stacked on #31 (merge that first).",
+      "createdAt": "2023-10-23T21:14:44Z",
+      "updatedAt": "2023-10-23T21:35:20Z",
+      "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "baseRefName": "main",
+      "baseRefOid": "f57d01f697a1a98d075c4e74c9952e236d82b399",
+      "headRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "headRefName": "cjpatton/lastpass-3",
+      "headRefOid": "f38e2c0176c3bea817e5636f97d51fcb514a45b5",
+      "closedAt": "2023-10-23T21:35:20Z",
+      "mergedAt": "2023-10-23T21:35:20Z",
+      "mergedBy": "cjpatton",
+      "mergeCommit": {
+        "oid": "ac4ce12a47e150da89d0971dd438b3197b81c510"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOJ7sZWc5k8Wot",
+          "commit": {
+            "abbreviatedOid": "8f8187e"
+          },
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-23T21:24:10Z",
+          "updatedAt": "2023-10-23T21:24:10Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 33,
+      "id": "PR_kwDOJ7sZWc5dlBtP",
+      "title": "Pass of DP mechanisms",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/33",
+      "state": "MERGED",
+      "author": "cjpatton",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "* Move TODOs around\r\n* Tighten up some redundant text\r\n* \"in the deletion-DP model\" to \"DP with deletions\" (a little easier to read)",
+      "createdAt": "2023-10-23T21:41:27Z",
+      "updatedAt": "2023-10-23T22:10:36Z",
+      "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "baseRefName": "main",
+      "baseRefOid": "ac4ce12a47e150da89d0971dd438b3197b81c510",
+      "headRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "headRefName": "cjpatton/lastpass-4",
+      "headRefOid": "dac7c2903de42f85dff232c72222a9664555dde0",
+      "closedAt": "2023-10-23T22:10:36Z",
+      "mergedAt": "2023-10-23T22:10:36Z",
+      "mergedBy": "cjpatton",
+      "mergeCommit": {
+        "oid": "7c09baf5bdbca1f1a175bf856479da4c8fe22a10"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOJ7sZWc5k8hzA",
+          "commit": {
+            "abbreviatedOid": "0eb07c0"
+          },
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-23T22:04:05Z",
+          "updatedAt": "2023-10-23T22:05:43Z",
+          "comments": [
+            {
+              "originalPosition": 37,
+              "body": "```suggestion\r\nA concrete DP mechanism implements the following methods:\r\n```",
+              "createdAt": "2023-10-23T22:04:05Z",
+              "updatedAt": "2023-10-23T22:05:43Z"
+            },
+            {
+              "originalPosition": 48,
+              "body": "```suggestion\r\n  generally depends on the data type. It may be called by `DpMechanism.add_noise()`.\r\n```\r\n\r\n?",
+              "createdAt": "2023-10-23T22:04:42Z",
+              "updatedAt": "2023-10-23T22:05:43Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 34,
+      "id": "PR_kwDOJ7sZWc5dlDkz",
+      "title": "Pass of DP policies",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/34",
+      "state": "MERGED",
+      "author": "cjpatton",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Stacked on #33 (merge that first).",
+      "createdAt": "2023-10-23T21:49:00Z",
+      "updatedAt": "2023-10-23T22:12:56Z",
+      "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "baseRefName": "main",
+      "baseRefOid": "7c09baf5bdbca1f1a175bf856479da4c8fe22a10",
+      "headRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "headRefName": "cjpatton/lastpass-5",
+      "headRefOid": "46cb8d0424f8ed0e95af0b3e59a50f0dcd58071f",
+      "closedAt": "2023-10-23T22:12:56Z",
+      "mergedAt": "2023-10-23T22:12:55Z",
+      "mergedBy": "cjpatton",
+      "mergeCommit": {
+        "oid": "9454dfb0b3d48d2c2055d132d174c9e6669c7e49"
+      },
+      "comments": [
+        {
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Rebased.",
+          "createdAt": "2023-10-23T22:11:23Z",
+          "updatedAt": "2023-10-23T22:11:23Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOJ7sZWc5k8i5K",
+          "commit": {
+            "abbreviatedOid": "8f95b65"
+          },
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-23T22:08:45Z",
+          "updatedAt": "2023-10-23T22:08:45Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 35,
+      "id": "PR_kwDOJ7sZWc5dlH-o",
+      "title": "Pass of use cases and update intro to reflect new structure",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/35",
+      "state": "MERGED",
+      "author": "cjpatton",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Stacked on #34 (merge that first).",
+      "createdAt": "2023-10-23T22:07:13Z",
+      "updatedAt": "2023-10-23T22:33:41Z",
+      "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "baseRefName": "main",
+      "baseRefOid": "9454dfb0b3d48d2c2055d132d174c9e6669c7e49",
+      "headRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "headRefName": "cjpatton/lastpass-6",
+      "headRefOid": "6654eb379d78112979cb3872c1511a07c0886ace",
+      "closedAt": "2023-10-23T22:33:27Z",
+      "mergedAt": "2023-10-23T22:33:27Z",
+      "mergedBy": "cjpatton",
+      "mergeCommit": {
+        "oid": "d2d1235d4a7b0a4ac75db56f929ef90265b6f97c"
+      },
+      "comments": [
+        {
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Rebased.",
+          "createdAt": "2023-10-23T22:13:39Z",
+          "updatedAt": "2023-10-23T22:13:39Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOJ7sZWc5k8jC7",
+          "commit": {
+            "abbreviatedOid": "ef6ee25"
+          },
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Minor nits, otherwise LGTM. Thanks for taking care of restructuring intro!",
+          "createdAt": "2023-10-23T22:09:18Z",
+          "updatedAt": "2023-10-23T22:27:38Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "```suggestion\r\n   policies for achieving DP for specific DAP use cases.\r\n```",
+              "createdAt": "2023-10-23T22:09:18Z",
+              "updatedAt": "2023-10-23T22:27:38Z"
+            },
+            {
+              "originalPosition": 67,
+              "body": "Do you need code quote `` around Prio3Histogram? Similarly for Prio3MultiHotHistogram below.",
+              "createdAt": "2023-10-23T22:12:37Z",
+              "updatedAt": "2023-10-23T22:27:38Z"
+            },
+            {
+              "originalPosition": 8,
+              "body": "Feel free to take it or not, the goal is to connect with the previous bullet point:\r\n\r\n```suggestion\r\n1. {{policies}} defines DP policies that are implemented with DP mechanisms, their composition with VDAFs, and their\r\n```",
+              "createdAt": "2023-10-23T22:19:22Z",
+              "updatedAt": "2023-10-23T22:27:38Z"
+            },
+            {
+              "originalPosition": 9,
+              "body": "Feel free to take it or not:\r\n\r\n```suggestion\r\n   execution semantics for DAP. {{run-dp-policy-with-vdaf}} then demonstrates how to execute VDAFs with DP policies.\r\n```",
+              "createdAt": "2023-10-23T22:21:38Z",
+              "updatedAt": "2023-10-23T22:27:38Z"
+            },
+            {
+              "originalPosition": 56,
+              "body": "Since the function below is renamed to `run_vdaf_with_dp_policy`, maybe make a pass to change it for all ? E.g. \u201cExecuting VDAFs with DP Policies {#run-vdaf-with-dp-policy}\u201d.",
+              "createdAt": "2023-10-23T22:26:45Z",
+              "updatedAt": "2023-10-23T22:27:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc5k8n55",
+          "commit": {
+            "abbreviatedOid": "ef6ee25"
+          },
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-23T22:29:00Z",
+          "updatedAt": "2023-10-23T22:29:00Z",
+          "comments": [
+            {
+              "originalPosition": 67,
+              "body": "I go back and fourth on this: WDYT?",
+              "createdAt": "2023-10-23T22:29:00Z",
+              "updatedAt": "2023-10-23T22:29:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc5k8oYK",
+          "commit": {
+            "abbreviatedOid": "ef6ee25"
+          },
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-23T22:31:18Z",
+          "updatedAt": "2023-10-23T22:31:18Z",
+          "comments": [
+            {
+              "originalPosition": 56,
+              "body": "Done.",
+              "createdAt": "2023-10-23T22:31:18Z",
+              "updatedAt": "2023-10-23T22:31:19Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc5k8o0z",
+          "commit": {
+            "abbreviatedOid": "6654eb3"
+          },
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-23T22:33:31Z",
+          "updatedAt": "2023-10-23T22:33:41Z",
+          "comments": [
+            {
+              "originalPosition": 67,
+              "body": "I say add code quote since `Histogram` below already does it\u2026 but probably not a big deal.",
+              "createdAt": "2023-10-23T22:33:31Z",
+              "updatedAt": "2023-10-23T22:33:41Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 36,
+      "id": "PR_kwDOJ7sZWc5dlMKs",
+      "title": "Spell check",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/36",
+      "state": "MERGED",
+      "author": "cjpatton",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-10-23T22:24:05Z",
+      "updatedAt": "2023-10-23T22:35:54Z",
+      "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "baseRefName": "main",
+      "baseRefOid": "d2d1235d4a7b0a4ac75db56f929ef90265b6f97c",
+      "headRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "headRefName": "cjpatton/lastpass-7",
+      "headRefOid": "ad5605f44f4d40e4948e780c909d52d8a92840eb",
+      "closedAt": "2023-10-23T22:35:54Z",
+      "mergedAt": "2023-10-23T22:35:54Z",
+      "mergedBy": "cjpatton",
+      "mergeCommit": {
+        "oid": "800be43581a071612f39fc7294afa3da796d7fcf"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOJ7sZWc5k8oZK",
+          "commit": {
+            "abbreviatedOid": "2a35127"
+          },
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-23T22:31:22Z",
+          "updatedAt": "2023-10-23T22:31:35Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Just noticed: we need to update DAP and VDAF references.",
+              "createdAt": "2023-10-23T22:31:23Z",
+              "updatedAt": "2023-10-23T22:31:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc5k8owX",
+          "commit": {
+            "abbreviatedOid": "2a35127"
+          },
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-10-23T22:33:10Z",
+          "updatedAt": "2023-10-23T22:33:10Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Good call, will do ",
+              "createdAt": "2023-10-23T22:33:10Z",
+              "updatedAt": "2023-10-23T22:33:11Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 37,
+      "id": "PR_kwDOJ7sZWc5dlPiu",
+      "title": "Miscellaneous",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/37",
+      "state": "MERGED",
+      "author": "cjpatton",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-10-23T22:36:54Z",
+      "updatedAt": "2023-10-23T22:42:06Z",
+      "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "baseRefName": "main",
+      "baseRefOid": "800be43581a071612f39fc7294afa3da796d7fcf",
+      "headRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "headRefName": "cjpatton/lastpass-8-update-refs",
+      "headRefOid": "e435b21dd3b374a99ed9d8340f72d8e64ca31c63",
+      "closedAt": "2023-10-23T22:42:06Z",
+      "mergedAt": "2023-10-23T22:42:06Z",
+      "mergedBy": "cjpatton",
+      "mergeCommit": {
+        "oid": "26e67f5e23118edfcb2f7d723a6f6af6908bc41c"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOJ7sZWc5k8qM3",
+          "commit": {
+            "abbreviatedOid": "e435b21"
+          },
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-23T22:40:03Z",
+          "updatedAt": "2023-10-23T22:40:13Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "I was just about to ask what this file is\u2026 I thought it\u2019s something used for cutting draft.",
+              "createdAt": "2023-10-23T22:40:03Z",
+              "updatedAt": "2023-10-23T22:40:13Z"
             }
           ]
         }
