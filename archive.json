@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-10-24T00:52:27.962538+00:00",
+  "timestamp": "2023-11-07T00:54:03.998630+00:00",
   "repo": "wangshan/draft-wang-ppm-differential-privacy",
   "labels": [
     {
@@ -152,7 +152,7 @@
       "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/issues/13",
       "state": "OPEN",
       "author": "tholop",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Keeping track of something we discussed with @cjpatton: some notions of DP are not achievable with DAP, at least in the current form of the protocol. For instance:\r\n- User-level DP seems hard to enforce if a given user can contribute from multiple devices or across multiple batches. In some cases we can ask users to bound their own contributions and achieve something similar to group privacy, but this might not always doable (e.g. if a user owns two devices that send measurements automatically without keeping track of the global number of measurements). Here is one reference about contribution bounding for user-level DP: https://arxiv.org/pdf/1909.01917.pdf (in the more general context of DP SQL).\r\n- Deletion-DP is not compatible with the current DAP specification that releases the number of measurements in a batch. Some mitigations have been discussed, e.g. by adding dummy reports (I can't find the relevant Github discussion anymore, but here is a comment from the spec: https://github.com/ietf-wg-ppm/draft-ietf-ppm-dap/blob/8fe9e265ea08a14a8aa1aab1d7dcf05498430b15/draft-ietf-ppm-dap.md?plain=1#L2677). Substitution-DP doesn't have this problem. \r\n- More generally, DAP Aggregators have access to some metadata that can pose problems, such as timestamps or Client IPs. Releasing the min/max timestamp of a batch to the Collector is problematic even if Aggregators are honest (unless we use a DP mechanism such as [Report Noisy Max](https://privacytools.seas.harvard.edu/files/privacytools/files/the_algorithmic_foundations_of_differential_privacy_0.pdf) to make this timestamp DP).",
@@ -186,7 +186,7 @@
       "comments": [
         {
           "author": "tholop",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "That's a good point. It's really worth clarifying what are the precise DP guarantees. At the moment, @cjpatton and I are working on something along the lines of \"the view of an adversary that controls the Collector, at most one Aggregator, and any number of Clients is (computationally) DP with respect to the input of honest Clients\".\r\n\r\n> Now consider Agg1 and Collector are run by same entity. Let's assume the independent Agg2 is malicious and chooses for instance, not to add any noise. Even if Agg1 honestly adds noise, this is visible to the Collector, who can simply remove it.\r\n\r\nIf Agg2 is malicious, then Agg1 must be honest. Since Agg1 and Collector are run by the same entity, then Collector is honest too. If Collector is honest, why would they remove the noise? \r\n\r\nEdit: That being said, it might be desirable to provide DP against honest parties too (like the Collector in your example). And indeed, that sounds like a structural deviation from DAP. I don't know how practical that would be.",
           "createdAt": "2023-07-21T00:11:41Z",
           "updatedAt": "2023-07-21T00:14:28Z"
