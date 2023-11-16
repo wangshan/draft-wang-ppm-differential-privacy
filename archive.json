@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-14T00:53:47.571108+00:00",
+  "timestamp": "2023-11-16T00:55:45.845387+00:00",
   "repo": "wangshan/draft-wang-ppm-differential-privacy",
   "labels": [
     {
@@ -332,9 +332,17 @@
       "labels": [],
       "body": "In Section 5 it mentions \r\n> An optional Aggregator randomization mechanism that adds noise to an Aggregator's aggregate share prior to unsharding.\r\n\r\nIs \"sharding\" here talking multiple servers run by the Aggregator parties processing different parts of the data and adding noise to each?   Because that will be more noise than necessary and we should think about adding noise after the unsharding but before revealing the results.  I may be miss understanding the terminology distinguishing \"Aggregator\" which I assume to be a Party that could be processing multiple \"shards\" of data on many servers.   \r\n",
       "createdAt": "2023-11-07T10:58:34Z",
-      "updatedAt": "2023-11-07T10:58:34Z",
+      "updatedAt": "2023-11-14T18:42:55Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Is \"sharding\" here talking multiple servers run by the Aggregator parties processing different parts of the data and adding noise to each?\r\n\r\nYou are right about \"sharding\" (and \"unsharding\" I assume), and one Aggregator processes one piece of data (i.e., \"input share\") from sharding. We've been referencing the terms in the VDAF draft for those ([sharding](https://www.ietf.org/archive/id/draft-irtf-cfrg-vdaf-07.html#name-sharding-2) and [unsharding](https://www.ietf.org/archive/id/draft-irtf-cfrg-vdaf-07.html#name-unsharding-2)). \r\n\r\n> Because that will be more noise than necessary and we should think about adding noise after the unsharding but before revealing the results.\r\n\r\nThat is true that more noise will be added than necessary. Usually the \"collector\" is the party that sees the aggregate result in the clear, so it will be too late to add DP noise then, i.e., the exact result have already been revealed by then.",
+          "createdAt": "2023-11-14T18:42:54Z",
+          "updatedAt": "2023-11-14T18:42:54Z"
+        }
+      ]
     },
     {
       "number": 41,
@@ -348,9 +356,17 @@
       "labels": [],
       "body": "I'd like to clarify how we're thinking about measuring the utility difference between the DP policies.  In section 6.1 it says\r\n> We discover that both policies in different settings of EPSILON and DELTA provide comparable utility. \r\n\r\nAnd in section 6.1.1.1. There is a table looking at utility in terms of standard deviation of the final noise for varying local epsilon and fixed n. To me it would seem the key to seeing how to compare utility between these two settings is to vary n (the number of clients). But the table in section 6.1.1.1.1 maintains a fixed n.  I think it would be nice to see how this changes for varying n: e.g. 1k, 10k, 100k, 1M, 10M and see how this compares to central DP. \r\n",
       "createdAt": "2023-11-07T11:02:34Z",
-      "updatedAt": "2023-11-07T11:02:34Z",
+      "updatedAt": "2023-11-14T16:24:34Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Sounds good. We will provide more numbers with different `n`.",
+          "createdAt": "2023-11-14T16:24:34Z",
+          "updatedAt": "2023-11-14T16:24:34Z"
+        }
+      ]
     },
     {
       "number": 42,
