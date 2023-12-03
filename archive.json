@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-30T00:55:29.925073+00:00",
+  "timestamp": "2023-12-03T00:58:32.888870+00:00",
   "repo": "wangshan/draft-wang-ppm-differential-privacy",
   "labels": [
     {
@@ -316,9 +316,17 @@
       "labels": [],
       "body": "I see there is already some feedback around considering semi-honest or malicious trust models. I\u2019d like to add it would also be good to consider honest majority vs dishonest majority MPC.  We\u2019ve found the 3-party honest majority malicious setting to particularly useful. \r\n\r\nI think there is some distinction to be made here between VDAFs and PPM where in the PPM spec the decision has been to focus on two-parties.  ",
       "createdAt": "2023-11-07T10:55:31Z",
-      "updatedAt": "2023-11-07T10:55:31Z",
+      "updatedAt": "2023-12-01T19:20:18Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Hi Ben, (sorry it took me so long to get reply!)\r\n\r\nI guess it depends somewhat on what we decide the scope of the draft to be.\r\n\r\nRight now our intent is to focus on DAP, and for the moment DAP is not compatible with any 3-party, honest majority MPC. This could change, depending on your requirements, but this is a discussion for DAP and not this draft in particular.\r\n\r\nIf we decide to extend the scope beyond DAP, then I think there are two directions we might go in.\r\n\r\n1. If we want to spell out how in full detail how to run a DP policy alongside the protocol (like we do for DAP), then we need to have a concrete protocol in mind. Further, this would need to be something that some WG at IETF is working on (or likely will work on the future).\r\n2. We could re-scope the draft to be not specific to any particular protocol.",
+          "createdAt": "2023-12-01T19:20:17Z",
+          "updatedAt": "2023-12-01T19:20:17Z"
+        }
+      ]
     },
     {
       "number": 40,
