@@ -634,10 +634,11 @@ approximates a Gaussian distribution, with mean 0, and standard deviation
 
 Let `P1(S, D, E)` denote the probability that a randomized algorithm `S`, on an
 input measurement `D`, outputs a noisy measurement `E`. Let `P2(R, E)` denote
-the probability that a reference noisy output `R` is equal to `E`. A  randomized
-algorithm `S` is said to be `EPSILON_0`-DP in the deletion-DP model, if there
-exists a reference distribution `R`, such that for all possible Client
-measurements `D`, and all possible noisy outputs `E`, we have:
+the probability that a noisy output from the reference distribution `R` is
+equal to `E`. A  randomized algorithm `S` is said to be `EPSILON_0`-DP in the
+deletion-DP model, if there exists a reference distribution `R`, such that for
+all possible Client measurements `D`, and all possible noisy outputs `E`, we
+have:
 
 ~~~
 -EPSILON_0 <= ln(P1(S, D, E) / P2(R, E)) <= EPSILON_0
