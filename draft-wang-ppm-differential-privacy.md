@@ -594,7 +594,7 @@ class DpMechanism:
 This section describes Symmetric RAPPOR, a DP mechanism first proposed in
 {{EPK14}}, and refined in Appendix C.1 of {{MJTB+22}}. (The specification here
 reflects the refined version.) It is initialized with a parameter `EPSILON_0`.
-It takes in a bit vector and outputs a noisy version that with randomly flipped
+It takes in a bit vector and outputs a noisy version with randomly flipped
 bits.
 
 Symmetric RAPPOR applies "binary randomized response mechanism" at each
