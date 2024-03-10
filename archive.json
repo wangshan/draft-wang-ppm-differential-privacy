@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-07T00:42:34.396073+00:00",
+  "timestamp": "2024-03-10T00:55:57.520814+00:00",
   "repo": "wangshan/draft-wang-ppm-differential-privacy",
   "labels": [
     {
@@ -5294,6 +5294,46 @@
               "updatedAt": "2023-10-23T22:40:13Z"
             }
           ]
+        }
+      ]
+    },
+    {
+      "number": 43,
+      "id": "PR_kwDOJ7sZWc5pBMO9",
+      "title": "Editorial changes",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/43",
+      "state": "OPEN",
+      "author": "divergentdave",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "These editorial changes fix some small errors and attempt to clarify language in a few places.",
+      "createdAt": "2024-03-07T21:34:06Z",
+      "updatedAt": "2024-03-08T11:24:35Z",
+      "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "baseRefName": "main",
+      "baseRefOid": "26e67f5e23118edfcb2f7d723a6f6af6908bc41c",
+      "headRepository": "divergentdave/draft-wang-ppm-differential-privacy",
+      "headRefName": "editorial",
+      "headRefOid": "eec508dbc87449f545f4699d7a62a234443c303d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOJ7sZWc5yuCd1",
+          "commit": {
+            "abbreviatedOid": "eec508d"
+          },
+          "author": "wangshan",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "Looks good, thanks for fixing this up @divergentdave!",
+          "createdAt": "2024-03-08T11:24:35Z",
+          "updatedAt": "2024-03-08T11:24:35Z",
+          "comments": []
         }
       ]
     }
