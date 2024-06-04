@@ -18,26 +18,26 @@ Distributed Aggregation Protocol (DAP) are designed to achieve. This document
 describes a variety of DP mechansisms applicable to DAP, and, for a variety of
 common use cases, lifts DAP to a protocol that also achieves DP. 
     " name="description">
-<meta content="xml2rfc 3.18.2" name="generator">
+<meta content="xml2rfc 3.21.0" name="generator">
 <meta content="next generation" name="keyword">
 <meta content="unicorn" name="keyword">
 <meta content="sparkling distributed ledger" name="keyword">
 <meta content="draft-wang-ppm-differential-privacy-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.18.2
-    Python 3.11.6
-    ConfigArgParse 1.5.3
+  xml2rfc 3.21.0
+    Python 3.11.9
+    ConfigArgParse 1.7
     google-i18n-address 3.1.0
     intervaltree 3.1.0
     Jinja2 3.1.2
     lxml 4.9.3
-    platformdirs 3.11.0
+    platformdirs 4.2.1
     pycountry 22.3.5
-    PyYAML 6.0
+    PyYAML 6.0.1
     requests 2.31.0
-    setuptools 67.7.2
+    setuptools 68.2.2
     six 1.16.0
-    wcwidth 0.2.8
+    wcwidth 0.2.13
 -->
 <link href="draft-wang-ppm-differential-privacy.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1036,11 +1036,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">DP-PPM</td>
-<td class="right">October 2023</td>
+<td class="right">June 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Chen, et al.</td>
-<td class="center">Expires 25 April 2024</td>
+<td class="center">Expires 6 December 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1053,12 +1053,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-wang-ppm-differential-privacy-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-10-23" class="published">23 October 2023</time>
+<time datetime="2024-06-04" class="published">4 June 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-04-25">25 April 2024</time></dd>
+<dd class="expires"><time datetime="2024-12-06">6 December 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1129,7 +1129,7 @@ common use cases, lifts DAP to a protocol that also achieves DP.<a href="#sectio
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 25 April 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 6 December 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1138,7 +1138,7 @@ common use cases, lifts DAP to a protocol that also achieves DP.<a href="#sectio
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2023 IETF Trust and the persons identified as the
+            Copyright (c) 2024 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1715,7 +1715,7 @@ class DpMechanism:
 <p id="section-4.3-1">This section describes Symmetric RAPPOR, a DP mechanism first proposed in
 <span>[<a href="#EPK14" class="cite xref">EPK14</a>]</span>, and refined in Appendix C.1 of <span>[<a href="#MJTB_22" class="cite xref">MJTB_22</a>]</span>. (The specification here
 reflects the refined version.) It is initialized with a parameter <code>EPSILON_0</code>.
-It takes in a bit vector and outputs a noisy version that with randomly flipped
+It takes in a bit vector and outputs a noisy version with randomly flipped
 bits.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
 <p id="section-4.3-2">Symmetric RAPPOR applies "binary randomized response mechanism" at each
 coordinate. Binary randomized response takes in a single bit <code>x</code>. The bit is
@@ -1733,9 +1733,10 @@ model, it is proven in Appendix C.1.3 of <span>[<a href="#MJTB_22" class="cite x
 DELTA)</code>-DP can be achieved by aggregating a batch of noisy Client measurements,
 each of which is a bit vector with exactly one bit set, and is noised with
 symmetric RAPPOR. The final aggregate result needs to be "debiased" due to the
-noise added by the Clients. The debiased data type is expressed as a vector of
-floats, because of floating point arithmetic. [CP: "because of floating point
-arithmetic" is a bit vague.]<a href="#section-4.3-4" class="pilcrow">¶</a></p>
+noise added by the Clients. Although the raw aggregate result is a vector of
+integers, the debiased aggregate result is a vector of floats, because the best
+estimate of the true sum depends on <code>exp(EPSILON_0)</code>, and generally won't be an
+integer.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
 <p id="section-4.3-5">Since the noise generated by each Client at each coordinate is independent, and
 as the number of Clients <code>n</code> grows, the noise distribution at each coordinate
 approximates a Gaussian distribution, with mean 0, and standard deviation
@@ -1756,10 +1757,11 @@ applies to DAP.<a href="#section-4.3.1-1.1.1" class="pilcrow">¶</a></p>
           </ul>
 <p id="section-4.3.1-2">Let <code>P1(S, D, E)</code> denote the probability that a randomized algorithm <code>S</code>, on an
 input measurement <code>D</code>, outputs a noisy measurement <code>E</code>. Let <code>P2(R, E)</code> denote
-the probability that a reference noisy output <code>R</code> is equal to <code>E</code>. A  randomized
-algorithm <code>S</code> is said to be <code>EPSILON_0</code>-DP in the deletion-DP model, if there
-exists a reference distribution <code>R</code>, such that for all possible Client
-measurements <code>D</code>, and all possible noisy outputs <code>E</code>, we have:<a href="#section-4.3.1-2" class="pilcrow">¶</a></p>
+the probability that a noisy output from the reference distribution <code>R</code> is
+equal to <code>E</code>. A  randomized algorithm <code>S</code> is said to be <code>EPSILON_0</code>-DP in the
+deletion-DP model, if there exists a reference distribution <code>R</code>, such that for
+all possible Client measurements <code>D</code>, and all possible noisy outputs <code>E</code>, we
+have:<a href="#section-4.3.1-2" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-4.3.1-3">
 <pre>
 -EPSILON_0 &lt;= ln(P1(S, D, E) / P2(R, E)) &lt;= EPSILON_0
@@ -2115,8 +2117,8 @@ class MultiHotHistogramWithClientRandomization(DpPolicy):
 the noise at each coordinate of the debiased aggregate result approximates a
 Gaussian distribution with mean 0, and standard deviation
 <code>sqrt(n * exp(EPSILON_0) / (exp(EPSILON_0) - 1)^2)</code>. We will look at the
-standard deviation generated by symmetric RAPPOR from <code>n</code> Clients, in order to
-achieve various combinations of <code>(EPSILON, DELTA)</code>-DP.<a href="#section-6.1.1.1-1" class="pilcrow">¶</a></p>
+standard deviation generated by symmetric RAPPOR from <code>n</code> Clients, with
+parameter choices that achieve various combinations of <code>(EPSILON, DELTA)</code>-DP.<a href="#section-6.1.1.1-1" class="pilcrow">¶</a></p>
 <span id="name-utility-of-pure-client-rand"></span><div id="histogram-client-dp">
 <table class="center" id="table-1">
               <caption>
