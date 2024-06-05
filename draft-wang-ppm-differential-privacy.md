@@ -427,13 +427,14 @@ Differential privacy noise sometimes needs to be calibrated based on the
 `SENSITIVITY` of the aggregation function used to compute the aggregate result
 over Client measurements. Sensitivity characterizes how much a change in a
 Client measurement can affect the aggregate result. In this document, we focus
-on the L1 and L2 sensitivity. We define them as a function over two neighboring
-Client measurements:
+on the L1 and L2 sensitivity. We define them as the maximum of some distance
+between two aggregate results computed from any neighboring datasets:
 
-* L1 Sensitivity: the sum of the absolute values of differences at all coordinates
-  of the neighboring Client measurements.
-* L2 Sensitivity: the sum of the squares of the differences at all coordinates of
-  the neighboring Client measurements.
+* L1 Sensitivity: the distance is defined as the sum of the absolute values of
+  differences at all coordinates of the neighboring aggregate results.
+* L2 Sensitivity: the distance is defined as the square root of the sum of
+  squares of the differences at all coordinates of the neighboring aggregate
+  results.
 
 ## Trust Models
 
