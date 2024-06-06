@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-06-04T00:58:26.879921+00:00",
+  "timestamp": "2024-06-06T00:57:52.576807+00:00",
   "repo": "wangshan/draft-wang-ppm-differential-privacy",
   "labels": [
     {
@@ -5302,24 +5302,26 @@
       "id": "PR_kwDOJ7sZWc5pBMO9",
       "title": "Editorial changes",
       "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/43",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "divergentdave",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "These editorial changes fix some small errors and attempt to clarify language in a few places.",
       "createdAt": "2024-03-07T21:34:06Z",
-      "updatedAt": "2024-03-08T11:24:35Z",
+      "updatedAt": "2024-06-04T17:03:07Z",
       "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
       "baseRefName": "main",
       "baseRefOid": "26e67f5e23118edfcb2f7d723a6f6af6908bc41c",
       "headRepository": "divergentdave/draft-wang-ppm-differential-privacy",
       "headRefName": "editorial",
       "headRefOid": "eec508dbc87449f545f4699d7a62a234443c303d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-06-04T17:03:07Z",
+      "mergedAt": "2024-06-04T17:03:07Z",
+      "mergedBy": "cjpatton",
+      "mergeCommit": {
+        "oid": "164e8c09df8f724a2fa9028dde5b35b63266a73b"
+      },
       "comments": [],
       "reviews": [
         {
@@ -5336,6 +5338,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 44,
+      "id": "PR_kwDOJ7sZWc5xm77y",
+      "title": "Fix definition of sensitivity",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/44",
+      "state": "OPEN",
+      "author": "divergentdave",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I think the definition of sensitivity is incorrect. Instead of \"a function over two neighboring Client measurements\", it should take two aggregate results from neighboring databases. Similarly, the L1 sensitivity and L2 sensitivity definitions should be measuring differences between aggregate results, and not measurements.",
+      "createdAt": "2024-06-05T21:51:34Z",
+      "updatedAt": "2024-06-05T21:51:35Z",
+      "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "baseRefName": "main",
+      "baseRefOid": "164e8c09df8f724a2fa9028dde5b35b63266a73b",
+      "headRepository": "divergentdave/draft-wang-ppm-differential-privacy",
+      "headRefName": "sensitivity-definition",
+      "headRefOid": "b69e38031e2ef857c2d66de8f477a94ba7efd8e0",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
