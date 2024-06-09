@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-06-06T00:57:52.576807+00:00",
+  "timestamp": "2024-06-09T01:03:38.895972+00:00",
   "repo": "wangshan/draft-wang-ppm-differential-privacy",
   "labels": [
     {
@@ -5351,19 +5351,53 @@
       "labels": [],
       "body": "I think the definition of sensitivity is incorrect. Instead of \"a function over two neighboring Client measurements\", it should take two aggregate results from neighboring databases. Similarly, the L1 sensitivity and L2 sensitivity definitions should be measuring differences between aggregate results, and not measurements.",
       "createdAt": "2024-06-05T21:51:34Z",
-      "updatedAt": "2024-06-05T21:51:35Z",
+      "updatedAt": "2024-06-07T13:42:28Z",
       "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
       "baseRefName": "main",
       "baseRefOid": "164e8c09df8f724a2fa9028dde5b35b63266a73b",
       "headRepository": "divergentdave/draft-wang-ppm-differential-privacy",
       "headRefName": "sensitivity-definition",
-      "headRefOid": "b69e38031e2ef857c2d66de8f477a94ba7efd8e0",
+      "headRefOid": "daf983c2acb35e08ecd67ff09f4811a3a652d0c6",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOJ7sZWc59Qpw5",
+          "commit": {
+            "abbreviatedOid": "b69e380"
+          },
+          "author": "junyechen1996",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thank you.",
+          "createdAt": "2024-06-06T10:00:45Z",
+          "updatedAt": "2024-06-06T10:01:21Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "While you are at it, can you help change line 435 to be \"**the square root** of the sum of squares...\"? Thank you, also thanks to @tholop .",
+              "createdAt": "2024-06-06T10:00:45Z",
+              "updatedAt": "2024-06-06T10:01:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOJ7sZWc59cZhN",
+          "commit": {
+            "abbreviatedOid": "daf983c"
+          },
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-06-07T13:42:28Z",
+          "updatedAt": "2024-06-07T13:42:28Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
