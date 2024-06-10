@@ -5,12 +5,12 @@
 Privacy Preserving Measurement                                   J. Chen
 Internet-Draft                                               A. McMillan
 Intended status: Informational                                Apple Inc.
-Expires: 6 December 2024                                       C. Patton
+Expires: 12 December 2024                                      C. Patton
                                                               Cloudflare
                                                                K. Talwar
                                                                  S. Wang
                                                               Apple Inc.
-                                                             4 June 2024
+                                                            10 June 2024
 
 
                 Differential Privacy Mechanisms for DAP
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 December 2024.
+   This Internet-Draft will expire on 12 December 2024.
 
 Copyright Notice
 
@@ -304,13 +304,16 @@ Table of Contents
    aggregate result over Client measurements.  Sensitivity characterizes
    how much a change in a Client measurement can affect the aggregate
    result.  In this document, we focus on the L1 and L2 sensitivity.  We
-   define them as a function over two neighboring Client measurements:
+   define them as the maximum of some distance between two aggregate
+   results computed from any neighboring datasets:
 
-   *  L1 Sensitivity: the sum of the absolute values of differences at
-      all coordinates of the neighboring Client measurements.
+   *  L1 Sensitivity: the distance is defined as the sum of the absolute
+      values of differences at all coordinates of the neighboring
+      aggregate results.
 
-   *  L2 Sensitivity: the sum of the squares of the differences at all
-      coordinates of the neighboring Client measurements.
+   *  L2 Sensitivity: the distance is defined as the square root of the
+      sum of squares of the differences at all coordinates of the
+      neighboring aggregate results.
 
 3.3.  Trust Models
 
