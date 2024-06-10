@@ -280,9 +280,7 @@ the distribution of the heights of respondents to a survey. If one of the
 respondents is especially short or tall, then their contribution is likely to
 skew the summary statistic in a way that reveals their height. Ideally, no
 individual measurement would have such a significant impact on the aggregate
-result, but in general such leakage is inevitable for exact aggregates. Adding
-some carefully chosen noise to the aggregates can however help hide the
-contribution of one respondent.
+result, but in general such leakage is inevitable for exact aggregates.
 
 This intuition can be formalized by the notion of differential privacy {{DMNS06}}.
 Differentially privacy is a property of an algorithm or protocol that computes
@@ -292,7 +290,7 @@ output does not change significantly as a result of removing one of the
 measurements (or substituting it with another).
 
 VDAFs are not DP on their own, but they can be composed with a variety of
-mechanisms that endow them with this property. All such mechanisms work by
+mechanisms that endow them with this property. Such mechanisms work by
 introducing noise into the computation that is carefully calibrated for a
 number of application-specific parameters, including the structure and number
 of measurements, the desired aggregation function, and the degree of "utility"
@@ -318,14 +316,16 @@ in DAP. It does so in the following stages:
    that some fraction of the parties execute the protocol honestly. Of course
    in reality, whether such assumptions hold is usually outside of our control.
    Thus our goal is to design DP policies that still provide some degree of
-   protection in more pessimistic trust models. (We call this "hedging".)
+   protection in more pessimistic trust models. We call this "hedging".
 
 1. {{mechanisms}} specifies various mechanisms required for building DP
    systems, including algorithms for sampling from discrete Laplace and
    Gaussian distributions.
 
-1. {{policies}} defines DP policies that are implemented with DP mechanisms, their composition with VDAFs, and their
-   execution semantics for DAP. {{run-vdaf-with-dp-policy}} then demonstrates how to execute VDAFs with DP policies.
+1. {{policies}} defines DP policies that are implemented with DP mechanisms,
+   their composition with VDAFs, and their execution semantics for DAP.
+   {{run-vdaf-with-dp-policy}} then demonstrates how to execute VDAFs with DP
+   policies.
 
 1. {{use-cases}} specifies compositions of concrete VDAFs with concrete DP
    policies for achieving DP for specific DAP use cases.
@@ -412,7 +412,7 @@ p(S, D1, r) <= exp(EPSILON) * p(S, D2, r) + DELTA
 
 Compared to pure-DP, approximate-DP loses an additive factor of `DELTA` in the
 bound. `DELTA` can intuitively be understood as the probability that a piece of
-information is leaked (e.g. a Client measurement is leaked), so `DELTA` is
+information is leaked (e.g., a Client measurement is leaked), so `DELTA` is
 typically taken to be polynomially small in the batch size or smaller, i.e.,
 some value much smaller than `1 / batch_size`. Allowing for a small `DELTA` can
 in many cases allow for much smaller noise compared to pure-DP mechanisms. See
@@ -421,30 +421,31 @@ in many cases allow for much smaller noise compared to pure-DP mechanisms. See
 Other variants of DP are possible; see the literature review in
 {{dp-explainer}} for details.
 
+> XXX Cut {{dp-explainer}}?
+
 ## Sensitivity
 
-Differential privacy noise sometimes needs to be calibrated based on the
-`SENSITIVITY` of the aggregation function used to compute the aggregate result
-over Client measurements. Sensitivity characterizes how much a change in a
-Client measurement can affect the aggregate result. In this document, we focus
-on the L1 and L2 sensitivity. We define them as the maximum of some distance
-between two aggregate results computed from any neighboring datasets:
+DP mechanisms often have a parameter known as "sensitivity". Sensitivity is a
+property of the aggregation function being computed that characterizes s how
+much a change in a Client measurement can affect the aggregate result. In this
+document, we focus on the L1 and L2 sensitivity. We define them as the maximum
+distance between two aggregate results computed from any neighboring datasets:
 
 * L1 Sensitivity: the distance is defined as the sum of the absolute values of
   differences at all coordinates of the neighboring aggregate results.
+
 * L2 Sensitivity: the distance is defined as the square root of the sum of
   squares of the differences at all coordinates of the neighboring aggregate
   results.
 
 ## Trust Models
 
-When considering whether a given DP policy is sufficient for DAP, it is not
-enough to consider the mechanisms used in isolation. It is also necessary to
-consider the process by which the policy is executed. In particular, our threat
-model for DAP considers an attacker that participates in the upload,
-aggregation, and collection protocols and may use its resources to attack the
-underlying cryptographic primitives (VDAF {{!VDAF}}, HPKE {{!RFC9180}}, and TLS
-{{!RFC8446}}).
+When considering which how make a protocol DP, it is not enough to consider the
+mechanisms used in isolation. It is also necessary to consider the process by
+which the policy is executed. In particular, our threat model for DAP considers
+an attacker that participates in the upload, aggregation, and collection
+sub-protocols and may use its resources to attack the underlying cryptographic
+primitives (VDAF {{!VDAF}}, HPKE {{!RFC9180}}, and TLS {{!RFC8446}}).
 
 To account for such attackers, our goal for DAP is "computational-DP" as
 described by {{MPRV09}} (Definition 4, "SIM-CDP"). This formalizes the amount
@@ -455,7 +456,7 @@ corrupts a subset of the parties.
 
 We say the protocol is pure-DP (resp. approximate-DP) if the view of any
 computationally bounded attacker can be efficiently simulated by a simulator
-that itself is pure-DP (or approximate-DP) as defined above. (The simulator
+that itself is pure-DP (resp. approximate-DP) as defined above. (The simulator
 takes the measurements as input and outputs a value that should be
 computationally indistinguishable from the transcript of the protocol's
 execution in the presence of the attacker.)
@@ -476,9 +477,9 @@ models.
 Assume that most Clients and one Aggregator are honest and that the other
 Aggregator (DAP involves just two Aggregators) and the Collector are controlled
 by the attacker. When all Clients are honest, this corresponds to the same
-trust model as the base DAP protocol. The degree of privacy provided (i.e., the
-value of `EPSILON` for pure-DP) for most protocols in this setting would
-degrade gracefully as the number of honest Clients decreases.
+trust model for VDAFs. The degree of privacy provided (i.e., the value of
+`EPSILON` for pure-DP) for most protocols in this setting would degrade
+gracefully as the number of honest Clients decreases.
 
 ### OAOC: One-Aggregator-One-Client
 
@@ -490,7 +491,7 @@ to provide protection for the honest Client's measurement.
 > Aggregator cheats by not adding noise, then the aggregate result is not DP
 > from the point of view of the honest Aggregator, unless the honest
 > Aggregator "forgets" the randomness it used. Describe this "attack" in
-> "Security Considerations" and say why it's irrelevant.
+> "Security Considerations".
 
 ## OC: One-Client
 
@@ -498,10 +499,12 @@ Assume that all parties, including all but one Client, both Aggregators, and
 the Collector are controlled by the attacker. The best the honest Client can
 hope for is that its measurement has "local-DP". This property is defined the
 same way as pure- or approximate-DP, but the bound on `EPSILON` that we would
-aim to achieve for local-DP would typically be larger than that in a more
+aim to achieve for local-DP would typically be looser than that in a more
 optimistic trust model.
 
 ## Hedging
+
+> XXX Consider removing hedging as a core requirement.
 
 If a trust model's assumptions turn out to be false in practice, then it is
 desirable for a DP policy to maintain some degree of privacy in a more
@@ -523,64 +526,43 @@ random seed into a sample from the target given distribution.
 > flips that are local to the relevant algorithm. Update the API so that take a
 > random seed instead so that we can derive test vectors.
 
+  > XXX Do this before the draft cut-off for IETF 120 (8 July).
+
 Each mechanism has internal parameters that determine how much noise will be
 added to its input data. Note that a mechanism that is initialized with its
 internal parameters can achieve different combinations of DP parameters, e.g.
 `(EPSILON, DELTA)`-DP, or `(EPSILON', DELTA')`-DP, where `EPSILON < EPSILON'`
 and `DELTA > DELTA'`, because if we make `EPSILON` larger (i.e., weaker
 privacy), we may achieve a smaller `DELTA` and thereby a smaller overall DP
-bound (i.e., stronger privacy).
+bound (i.e., stronger privacy). [XXX Is this relevant here?]
 
-A concrete DP mechanism implements the following methods:
+A concrete `DpMechanism` provides the following methods:
 
 * `DpMechanism.add_noise(data: DataType) -> DataType` adds noise to the input
   `data` (i.e., a measurement or an aggregate share). Some DP mechanisms apply
-  noise based on the input data.
+  noise based on the input data. [XXX What does this mean?] The data type,
+  i.e., `DataType` depends on the VDAF with which the mechanism is composed.
+  Often it will be a vector over some finite field ({{Section 6.1 of !VDAF}}).
 
 * `DpMechanism.sample_noise(dimension: int) -> DataType` samples noise of
   length `dimension`, with the DP mechanism. The interpretation of `dimension`
-  generally depends on the data type. It may be called by `DpMechanism.add_noise()`.
+  generally depends on the data type. It may be called by
+  `DpMechanism.add_noise()`.
+
+  > XXX Why do we need a special API for sampling noise? Does this get called
+  > directly as part of implementing a DP policy?
 
 * `DpMechanism.debias(data: DataType, meas_count: int) -> DebiasedDataType`
   debiases the noised `data` based on the number of measurements `meas_count`.
-  Note that not all mechanisms will implement this method. Some do, such as
-  {{symmetric-rappor}}.
+  Some noising mechanisms, like {{symmetric-rappor}}, add bias to the aggregate
+  result, which this method removes. Note that `DebiasedDataType` will be the
+  same as `DataType`, but may be different in general.
 
-Putting this together a DP mechanism is a concrete subclass of `DPMechanism`
-defined below:
+  > XXX This API says that the `DataType` for `add_noise()` and `debias()` are
+  > the same. Is this too strict? Are there situations where we would add noise
+  > to data of one type, but debias data of another type?
 
-~~~
-class DpMechanism:
-    # The data type applicable to this `DpMechanism`. The type is the
-    # same for the noised data and the un-noised data.
-    DataType = None
-    # Debiased data type after removing bias added by the noise. For
-    # most of the mechanisms, `DebiasedDataType == DataType`.
-    DebiasedDataType = None
-
-    def add_noise(self, data: DataType) -> DataType:
-        """Add noise to a piece of input data. """
-        raise NotImplementedError()
-
-    def sample_noise(self, dimension: int) -> DataType:
-        """
-        Sample noise with the initialized `DpMechanism`. `dimension`
-        is used to determine the length of the output if `DataType` is
-        a list.
-        """
-        raise NotImplementedError()
-
-    def debias(self,
-               data: DataType,
-               meas_count: int) -> DebiasedDataType:
-        """
-        Debias the data due to the added noise, based on the number of
-        measurements `meas_count`. This doesn't apply to all DP
-        mechanisms. Some Client randomization mechanisms need this
-        functionality.
-        """
-        return data
-~~~
+The sections below describe concrete DP mechanisms.
 
 ## Discrete Laplace
 
@@ -590,7 +572,11 @@ class DpMechanism:
 
 > TODO: Specify a Gaussian sampler from Algorithm 3 of {{CKS20}} (#10).
 
+  > XXX Before the draft deadline (8 July).
+
 ## Symmetric RAPPOR {#symmetric-rappor}
+
+> XXX Describe the mechanism first, then its properties.
 
 This section describes Symmetric RAPPOR, a DP mechanism first proposed in
 {{EPK14}}, and refined in Appendix C.1 of {{MJTB+22}}. (The specification here
@@ -598,28 +584,27 @@ reflects the refined version.) It is initialized with a parameter `EPSILON_0`.
 It takes in a bit vector and outputs a noisy version with randomly flipped
 bits.
 
-Symmetric RAPPOR applies "binary randomized response mechanism" at each
-coordinate. Binary randomized response takes in a single bit `x`. The bit is
-flipped to `1 - x` with probability `1 / (exp(EPSILON_0) + 1)`. For example, if
-`EPSILON_0` is configured to be 3, and the input to binary randomized response
-is a `0`, the bit will be flipped to be 1 with probability `1 / (exp(3) + 1)`,
-otherwise, it will stay as a `0`.
+Symmetric RAPPOR applies a binary, randomized response mechanism at each
+coordinate of the vector. Binary randomized response takes in a single bit `x`.
+The bit is flipped to `1 - x` with probability `1 / (exp(EPSILON_0) + 1)`. For
+example, if `EPSILON_0` is configured to be 3, and the input to binary
+randomized response is a `0`, the bit will be flipped to be 1 with probability
+`1 / (exp(3) + 1)`, otherwise, it will stay as a `0`.
 
-Under OC trust model, by applying binary randomized response with `EPSILON_0`
-parameter to its measurement, the Client gets `EPSILON_0`-DP with deletion
+Under the OC trust model, this mechanism provides  `EPSILON_0`-DP with deletion
 (Definition II.4 of {{EFMR+20}}, and Definition C.1 of {{MJTB+22}}). A formal
 definition of deletion-DP is elaborated in {{rappor-deletion-dp}}.
 
+> XXX Related to hedging.
+
 Symmetric RAPPOR generalizes binary randomized response mechanism by applying
-it independently at all coordinates of a Client's bit vector. Under OAMC trust
-model, it is proven in Appendix C.1.3 of {{MJTB+22}} that strong `(EPSILON,
-DELTA)`-DP can be achieved by aggregating a batch of noisy Client measurements,
-each of which is a bit vector with exactly one bit set, and is noised with
-symmetric RAPPOR. The final aggregate result needs to be "debiased" due to the
-noise added by the Clients. Although the raw aggregate result is a vector of
-integers, the debiased aggregate result is a vector of floats, because the best
-estimate of the true sum depends on `exp(EPSILON_0)`, and generally won't be an
-integer.
+it independently at all coordinates of a Client's bit vector. Under the OAMC trust
+model, it is proven in Appendix C.1.3 of {{MJTB+22}} that symmetric RAPPOR
+provides `(EPSILON, DELTA)`-DP. The final aggregate result needs to be debiased
+due to the noise added by the Clients. Although the raw aggregate result is a
+vector of integers, the debiased aggregate result is a vector of floats,
+because the best estimate of the true sum depends on `exp(EPSILON_0)`, and
+generally won't be an integer.
 
 Since the noise generated by each Client at each coordinate is independent, and
 as the number of Clients `n` grows, the noise distribution at each coordinate
@@ -633,6 +618,10 @@ approximates a Gaussian distribution, with mean 0, and standard deviation
 > mechanism that provides deletion-DP in the OC trust model. Putting it in
 > overview might confuse readers early on, because we said only replacement-DP
 > applies to DAP.
+
+  > XXX I think we should remove this definition and just say that, in the OC
+  > trust model, symmetric RAPPOR provides some degree of DP and add a
+  > reference this definition and the analysis.
 
 Let `P1(S, D, E)` denote the probability that a randomized algorithm `S`, on an
 input measurement `D`, outputs a noisy measurement `E`. Let `P2(R, E)` denote
@@ -697,6 +686,9 @@ class SymmetricRappor(DpMechanism):
 ~~~
 
 # DP Policies for VDAFs {#policies}
+
+> XXX Consider removing this section. The use cases section would be rewritten
+> to just describe in prose how the mechanism is executed alongside the VDAF.
 
 The section defines a generic interface for DP policies for VDAFs. A DP policy
 composes the following operations with execution of a VDAF:
@@ -853,6 +845,8 @@ def run_vdaf_with_dp_policy(
 
 # Use Cases {#use-cases}
 
+> XXX What's our goal for this section? Spell it out here.
+
 ## Histograms
 
 Many applications require aggregating histograms in which each Client submits a
@@ -867,52 +861,57 @@ that the policy in the OAOC trust model requires all Aggregators to
 independently add noise, so we lose some utility when more than one Aggregator
 is honest.
 
-### Prio3MultiHotHistogram with Client Randomization
+### Prio3MultihotCountVec with Symmetric RAPPOR
+
+> XXX This will be added to the VDAF draft soon:
+> https://github.com/cfrg/draft-irtf-cfrg-vdaf/pull/349
 
 Client randomization allows Clients to protect their privacy by adding noise to
 their measurements directly, as described in {{levels}}. Analyses ({{FMT20}} and
 {{FMT22}}) have shown that, in the OAMC trust model, we get good approximate-DP
 by aggregating noisy Clients' measurements with Client randomization. In this
 policy, we will describe how to achieve approximate-DP, with each Client
-applying symmetric RAPPOR to its measurement.
+applying symmetric RAPPOR ({{symmetric-rappor}}) to its measurement.
 
-Our target VDAF is Prio3Histogram as specified in {{!VDAF}}. This uses the
-`Histogram` circuit to enforce one-hotness of the measurement. Due to the
-noising mechanism, a less strict circuit is required that tolerates a bounded
-number of non-`0` entries in the vector. We call this Prio3MultiHotHistogram.
+Our target VDAF is Prio3MultihotCountVec as specified in {{!VDAF}}. This
+provides for aggregation of a histogram, but allows the Client to submit a
+measurement with more than one bucket entry set. This is to accommodate the
+noise added by the Client.
 
-> JC: Specify Prio3MultiHotHistogram. This may end up in the base VDAF draft.
-> In the meantime, there is a reference implementation here:
-> https://github.com/cfrg/draft-irtf-cfrg-vdaf/blob/main/poc/vdaf_prio3.py
+Symmetric RAPPOR is initialized with a `EPSILON_0` parameter. If all of the
+Clients apply the mechanism to their measurement correctly, then the protocol
+achieves `(EPSILON, DELTA)`-DP, where:
 
-The Client randomization we will use here is the symmetric RAPPOR mechanism of
-{{symmetric-rappor}}, which is initialized with a `EPSILON_0` parameter. We get
-`(EPSILON, DELTA)`-DP in the aggregate result, as long as there are at least
-`batch_size` number of honest Clients, each of which applies symmetric RAPPOR
-to its measurement, and contributes the noisy measurement to the batch. The
-`(EPSILON, DELTA)`-DP degrades gracefully as the number of honest Clients
-decreases, i.e., we can still achieve `(EPSILON', DELTA)`-DP, where `EPSILON'`
-is larger than `EPSILON`.
+* `EPSILON =` [TODO(junyechen1996) as a function of `EPSILON_0` and the batch
+  size]
 
-> TODO(junyechen1996): Justify why RR with `EPSILON_0` + `batch_size` can
-> achieve `(EPSILON, DELTA)`-DP in the aggregate result.
+* `DELTA =` [TODO(junyechen1996]
 
-Because applying symmetric RAPPOR to an one-hot Client measurement can cause the
-noisy measurement to have multiple bits set, we need to check the noisy
-measurement has at most `m` number of 1s, per Section 4.5 of {{TWMJ+23}}, to
-ensure robustness against malicious Clients, who attempt to bias the final
-histogram by setting many coordinates to be 1.
+Notice that the bound degrades gracefully as the fraction of Clients controlled
+by the attacker increases. [XXX Is this self-evident by the bound?]
 
-Assume the length of the Client measurement is `d`, and there is exactly one bit
-set. For the `d - 1` coordinates with 0s, the probability `p_0` of changing a
+The client's measurement is a one-hot vector, where the non-zero entry is set
+to one. The symmetric RAPPOR mechanism flips each entry of the vector
+independently, with some small probability. As a result, we must permit the
+measurement to have a small number of non-zero entries, per Section 4.5 of
+{{TWMJ+23}}. [XXX Is this reference relevant here?] We denote the maximum
+number of entries set by `m`.
+
+Let `d` denote the length of the unnoised vector.
+For the `d - 1` coordinates with 0s, the probability `p_0` of changing a
 coordinate from 0 to 1 is `1 / (exp(EPSILON_0) + 1)` per {{symmetric-rappor}},
 so we can model the number of 1s in the noisy measurement as a binomial random
 variable `C` with number of trials `d - 1`, and probability `p_0`, plus the one
-bit that is already set. Our goal is to ensure the probability `p` of `1 + C`
-exceeding `m` is small enough, i.e., the false positive rate of a noisy
-measurement from an honest Client having more than `m` bits is at most `p`. This
-is equivalent to finding `m` and `p`, such that the cumulative distribution
-function (CDF) satisfies `Pr(C <= m - 1) >= 1 - p`.
+bit that is already set. [XXX Can we simplify this? Do we need to define `C`?]
+Our goal is to ensure the probability `p` of `1 + C` exceeding `m` is small
+enough, i.e., the false positive rate of a noisy measurement from an honest
+Client having more than `m` bits is at most `p`. This is equivalent to finding
+`m` and `p`, such that the cumulative distribution function (CDF) satisfies
+`Pr(C <= m - 1) >= 1 - p`.
+
+> XXX Instead of giving this analysis, we should specify a procedure for
+> choosing `m`. Is this based on the desired DP bound? What's the probability
+> that we end up with more than `m` entries set?
 
 Once we find `m`, we will use it to instantiate `Prio3MultiHotHistogram` to
 perform verification and aggregation. The final aggregate result is debiased
@@ -948,10 +947,12 @@ class MultiHotHistogramWithClientRandomization(DpPolicy):
 
 As discussed in {{symmetric-rappor}}, as the number of Clients `n` increases,
 the noise at each coordinate of the debiased aggregate result approximates a
-Gaussian distribution with mean 0, and standard deviation
-`sqrt(n * exp(EPSILON_0) / (exp(EPSILON_0) - 1)^2)`. We will look at the
-standard deviation generated by symmetric RAPPOR from `n` Clients, with
-parameter choices that achieve various combinations of `(EPSILON, DELTA)`-DP.
+Gaussian distribution with mean 0, and standard deviation `sqrt(n *
+exp(EPSILON_0) / (exp(EPSILON_0) - 1)^2)`. [XXX Above you write `batch_size`
+instead of `n`. Pick one variable and use it consistently throughout the
+document.] We will look at the standard deviation generated by symmetric RAPPOR
+from `n` Clients, with parameter choices that achieve various combinations of
+`(EPSILON, DELTA)`-DP.
 
 | `EPSILON`       | `DELTA`     | Standard deviation    | Internal Parameters          |
 |:----------------|:------------|:----------------------|:-----------------------------|
@@ -960,35 +961,40 @@ parameter choices that achieve various combinations of `(EPSILON, DELTA)`-DP.
 | 1.528           | 1e-9        | 9.5580                | n = 100000, EPSILON_0 = 7.0  |
 {: #histogram-client-dp title="Utility of Pure Client Randomization for histogram use case."}
 
+> XXX Where it specified how this table was generated?
+
 ### Prio3Histogram with Aggregator Randomization
 
 Aggregator Randomization requires Aggregators to add noise to their aggregate
-shares before outputting them. Under OAOC trust model, we can achieve good
+shares before outputting them. Under the OAOC trust model, we can achieve good
 `EPSILON`-DP, or `(EPSILON, DELTA)`-DP, as long as at least one of the
 Aggregators is honest. The amount of noise needed by the Aggregator randomizer
 typically depends on the target DP parameters `EPSILON` and `DELTA`, and also
-the `SENSITIVITY` {{sensitivity}} of the aggregation function.
+the sensitivity {{sensitivity}} of the aggregation function.
+
+> XXX How would pure-DP be achieved?
 
 In this section, we describe how to achieve `(EPSILON, DELTA)`-DP for
-`Prio3Histogram` {{Section 7.4.4 of !VDAF}} by asking each Aggregator to
+Prio3Histogram {{Section 7.4.4 of !VDAF}} by asking each Aggregator to
 independently add discrete Gaussian noise to its aggregate share.
 
-We use the discrete Gaussian mechanism described in {{discrete-gaussian}}, which
-has a mean of 0, and is initialized with a `SIGMA` parameter that stands for the
-standard deviation of the Gaussian distribution. In order to achieve
-`(EPSILON, DELTA)`-DP in the OAOC trust model, all Aggregators need to
-independently add discrete Gaussian noise to all coordinates of their aggregate
-shares.
+We use the discrete Gaussian mechanism described in {{discrete-gaussian}},
+which has a mean of 0, [XXX Is the mean relevant? Is there every a situation
+where we would pick a non-0 mean?] and is initialized with a `SIGMA` parameter
+that stands for the standard deviation of the Gaussian distribution. In order
+to achieve `(EPSILON, DELTA)`-DP in the OAOC trust model, all Aggregators need
+to independently add discrete Gaussian noise to all coordinates of their
+aggregate shares.
 
 Theorem 8 in {{BW18}} shows how to compute `SIGMA` parameter for continuous
 Gaussian, based on the given `(EPSILON, DELTA)`-DP parameters and
-L2-sensitivity, and Theorem 7 in {{CKS20}} shows a similar result for discrete
-Gaussian. For the current use case, the L2-sensitivity is `sqrt(2)`, because
-transforming an one-hot vector into another will affect two coordinates, e.g.,
-transforming an one-hot vector `[1, 0]` to `[0, 1]` changes L2-sensitivity by
-`sqrt((1 - 0)^2 + (0 - 1)^2) = sqrt(2)`. Algorithm 1 in {{BW18}} elaborates on
-how to compute `SIGMA`, and we will refer to the calculation in the open
-sourced code {{AGM}}.
+L2-sensitivity {{sensitivity}}. Theorem 7 in {{CKS20}} shows a similar result
+for discrete Gaussian. For the current use case, the L2-sensitivity is
+`sqrt(2)`, because transforming an one-hot vector into another will affect two
+coordinates, e.g., transforming an one-hot vector `[1, 0]` to `[0, 1]` changes
+L2-sensitivity by `sqrt((1 - 0)^2 + (0 - 1)^2) = sqrt(2)`. Algorithm 1 in
+{{BW18}} elaborates on how to compute `SIGMA`, and we will refer to the
+calculation in the open sourced code {{AGM}}.
 
 > JC: We will need to provide an explanation of the parameter calculation in
 > the draft itself, instead of merely referring to the code.
@@ -1006,6 +1012,8 @@ sourced code {{AGM}}.
 > discrete Gaussian. Concentrated-DP is then converted to approximate-DP, which
 > is our target here. As a first draft, we won't overwhelm readers with other
 > types of DP.
+
+  > XXX Resolve the above discussion by the draft deadline (8 July).
 
 ~~~
 class HistogramWithAggregatorRandomization(DpPolicy):
@@ -1084,6 +1092,8 @@ the number of honest Aggregators. In the table below, the numbers in
 
 TODO Security
 
+> XXX Let's put together a list before the draft deadline.
+
 # IANA Considerations
 
 This document has no IANA actions.
@@ -1093,11 +1103,19 @@ This document has no IANA actions.
 
 # Contributors
 
+David Cook
+ISRG
+dcook@divviup.org
+
 Pierre Tholoniat
 Columbia University
 pierre@cs.columbia.edu
 
 # Overview of Differential Privacy {#dp-explainer}
+
+> XXX It feels like we haven't figured out the purpose of this section. I'd
+> suggest removing it from the draft and sticking it in some archive file. We
+> can bring back text from it as needed.
 
 Differential privacy is a set of techniques used to protect the privacy of
 individuals when analyzing user's data. It provides a mathematical framework
@@ -1245,6 +1263,8 @@ One can compose multiple zCDP guarantees, per Lemma 1.7 of {{BS16}}.
 Differential Privacy guarantee can only be achieved if data type is applied
 with the correct noise type.
 
-> TODO: Junye to fill, mention DAP is expected to ensure the right pair of VDAF and DP mechanism
+> TODO: Junye to fill, mention DAP is expected to ensure the right pair of VDAF
+> and DP mechanism
 
-> TODO: Chris P: we will mention Prio3SumVec because that's what we use to describe aggregator DP with amplification
+> TODO: Chris P: we will mention Prio3SumVec because that's what we use to
+> describe aggregator DP with amplification
