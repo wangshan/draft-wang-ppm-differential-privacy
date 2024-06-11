@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-06-09T01:03:38.895972+00:00",
+  "timestamp": "2024-06-11T00:59:07.747708+00:00",
   "repo": "wangshan/draft-wang-ppm-differential-privacy",
   "labels": [
     {
@@ -62,9 +62,17 @@
       "labels": [],
       "body": "We should better specify why one will choose to use one DP guarantee over another (e.g. tighter privacy bound) or any limitation of using a DP guarantee (some DP mechanisms are limited to certain guarantees).",
       "createdAt": "2023-07-17T22:51:03Z",
-      "updatedAt": "2023-07-17T22:51:03Z",
+      "updatedAt": "2024-06-10T18:59:30Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "body": "What sorts of things do you mean here? Like pure- versus approximate-DP, or subsitution versus deletion?",
+          "createdAt": "2024-06-10T18:59:30Z",
+          "updatedAt": "2024-06-10T18:59:30Z"
+        }
+      ]
     },
     {
       "number": 7,
@@ -102,16 +110,24 @@
       "id": "I_kwDOJ7sZWc5r01m5",
       "title": "Changes for DAP/VDAF",
       "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/issues/8",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "cjpatton",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This is a tracking issue for changes that will be needed for the DAP and VDAF drafts in order to accommodate the recommendations here.",
       "createdAt": "2023-07-18T03:31:15Z",
-      "updatedAt": "2023-07-18T03:31:15Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-06-10T18:58:35Z",
+      "closedAt": "2024-06-10T18:58:35Z",
+      "comments": [
+        {
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "body": "No changes will be required.",
+          "createdAt": "2024-06-10T18:58:35Z",
+          "updatedAt": "2024-06-10T18:58:35Z"
+        }
+      ]
     },
     {
       "number": 10,
@@ -228,9 +244,17 @@
       "labels": [],
       "body": "This includes `epsilon` and `delta` parameters in DP policies, and also the parameters to initialize samplers, such as `sigma` for discrete Gaussian.",
       "createdAt": "2023-10-18T16:01:44Z",
-      "updatedAt": "2023-10-18T16:01:44Z",
+      "updatedAt": "2024-06-10T19:02:20Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We could say something like \"all real numbers in this draft SHALL be interpreted as 64-bit, floating point numbers as specified in {{blah-blah-blah}}.\"",
+          "createdAt": "2024-06-10T19:02:19Z",
+          "updatedAt": "2024-06-10T19:02:19Z"
+        }
+      ]
     },
     {
       "number": 24,
@@ -5344,25 +5368,35 @@
       "id": "PR_kwDOJ7sZWc5xm77y",
       "title": "Fix definition of sensitivity",
       "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/44",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "divergentdave",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "I think the definition of sensitivity is incorrect. Instead of \"a function over two neighboring Client measurements\", it should take two aggregate results from neighboring databases. Similarly, the L1 sensitivity and L2 sensitivity definitions should be measuring differences between aggregate results, and not measurements.",
       "createdAt": "2024-06-05T21:51:34Z",
-      "updatedAt": "2024-06-07T13:42:28Z",
+      "updatedAt": "2024-06-10T17:13:46Z",
       "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
       "baseRefName": "main",
       "baseRefOid": "164e8c09df8f724a2fa9028dde5b35b63266a73b",
       "headRepository": "divergentdave/draft-wang-ppm-differential-privacy",
       "headRefName": "sensitivity-definition",
-      "headRefOid": "daf983c2acb35e08ecd67ff09f4811a3a652d0c6",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "headRefOid": "4600fd5f07e45ddbbdaeb5ff095ee032e585800a",
+      "closedAt": "2024-06-10T17:13:46Z",
+      "mergedAt": "2024-06-10T17:13:46Z",
+      "mergedBy": "cjpatton",
+      "mergeCommit": {
+        "oid": "b755f843bd0721ffbb549c8c4097619d84aa2184"
+      },
+      "comments": [
+        {
+          "author": "cjpatton",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@divergentdave can you please squash?",
+          "createdAt": "2024-06-10T17:11:13Z",
+          "updatedAt": "2024-06-10T17:11:13Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOJ7sZWc59Qpw5",
@@ -5387,17 +5421,43 @@
         {
           "id": "PRR_kwDOJ7sZWc59cZhN",
           "commit": {
-            "abbreviatedOid": "daf983c"
+            "abbreviatedOid": "4600fd5"
           },
           "author": "cjpatton",
           "authorAssociation": "COLLABORATOR",
           "state": "APPROVED",
           "body": "",
           "createdAt": "2024-06-07T13:42:28Z",
-          "updatedAt": "2024-06-07T13:42:28Z",
+          "updatedAt": "2024-06-10T17:13:01Z",
           "comments": []
         }
       ]
+    },
+    {
+      "number": 45,
+      "id": "PR_kwDOJ7sZWc5yBBSf",
+      "title": "Editorial pass",
+      "url": "https://github.com/wangshan/draft-wang-ppm-differential-privacy/pull/45",
+      "state": "OPEN",
+      "author": "cjpatton",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-06-10T18:57:44Z",
+      "updatedAt": "2024-06-10T18:57:44Z",
+      "baseRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "baseRefName": "main",
+      "baseRefOid": "b755f843bd0721ffbb549c8c4097619d84aa2184",
+      "headRepository": "wangshan/draft-wang-ppm-differential-privacy",
+      "headRefName": "cjpatton/edit",
+      "headRefOid": "6adabb1b19a66f5e89b98b254bdcdb7cbcce989b",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
